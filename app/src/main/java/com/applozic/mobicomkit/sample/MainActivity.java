@@ -22,6 +22,7 @@ import android.widget.Toast;
 import com.applozic.mobicomkit.ApplozicClient;
 import com.applozic.mobicomkit.api.account.user.MobiComUserPreference;
 import com.applozic.mobicomkit.api.account.user.UserClientService;
+import com.applozic.mobicomkit.api.account.user.UserLogoutTask;
 import com.applozic.mobicomkit.api.conversation.Message;
 import com.applozic.mobicomkit.contact.AppContactService;
 import com.applozic.mobicomkit.feed.TopicDetail;
@@ -37,6 +38,7 @@ import com.applozic.mobicommons.people.contact.Contact;
 public class MainActivity extends MobiComActivityForFragment
         implements NavigationDrawerFragment.NavigationDrawerCallbacks, EcommerceFragment.OnFragmentInteractionListener {
 
+    private UserLogoutTask ult;
     public static final String TAKE_ORDER = "takeOrder";
     public static final String TAG = "MainActivity";
     public static final String TAKE_ORDER_USERID_METADATA = "com.applozic.take.order.userId";
@@ -149,11 +151,25 @@ public class MainActivity extends MobiComActivityForFragment
 
         if (position == 2) {
 
-            Toast.makeText(getBaseContext(), "Log out successful", Toast.LENGTH_SHORT).show();
-            new UserClientService(this).logout();
-            Intent intent = new Intent(this, LoginActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-            startActivity(intent);
+            UserLogoutTask.TaskListener ultl=new UserLogoutTask.TaskListener(){
+
+                @Override
+                public void onSuccess(Context context) {
+                    Toast.makeText(getBaseContext(), "Log out successful", Toast.LENGTH_SHORT).show();
+                    new UserClientService(context).logout();
+                    Intent intent = new Intent(context, LoginActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                    startActivity(intent);
+                }
+
+                @Override
+                public void onFailure(Exception exception) {
+
+                }
+            };
+
+            ult=new UserLogoutTask(ultl,this);
+            ult.execute((Void)null);
             finish();
             return;
         }
