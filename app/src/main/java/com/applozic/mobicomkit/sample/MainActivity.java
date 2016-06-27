@@ -1,7 +1,9 @@
 package com.applozic.mobicomkit.sample;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -155,6 +157,7 @@ public class MainActivity extends MobiComActivityForFragment
 
                 @Override
                 public void onSuccess(Context context) {
+                    ult=null;
                     Toast.makeText(getBaseContext(), "Log out successful", Toast.LENGTH_SHORT).show();
                     new UserClientService(context).logout();
                     Intent intent = new Intent(context, LoginActivity.class);
@@ -164,7 +167,19 @@ public class MainActivity extends MobiComActivityForFragment
 
                 @Override
                 public void onFailure(Exception exception) {
-
+                    ult=null;
+                    AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this).create();
+                    alertDialog.setTitle(getString(R.string.text_alert));
+                    alertDialog.setMessage(exception.toString());
+                    alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(android.R.string.ok),
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                }
+                            });
+                    if (!isFinishing()) {
+                        alertDialog.show();
+                    }
                 }
             };
 

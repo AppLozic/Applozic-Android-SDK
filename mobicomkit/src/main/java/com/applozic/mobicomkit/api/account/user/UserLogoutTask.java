@@ -3,8 +3,6 @@ package com.applozic.mobicomkit.api.account.user;
 import android.content.Context;
 import android.os.AsyncTask;
 
-import com.applozic.mobicomkit.api.account.register.RegistrationResponse;
-
 /**
  * Created by APnaturals on 6/27/2016.
  */
@@ -16,10 +14,9 @@ public class UserLogoutTask extends AsyncTask<Void,Void,Boolean> {
     }
 
     private final TaskListener taskListener;
-    private  String mImageLink;
     private final Context context;
     private Exception mException;
-    private RegistrationResponse registrationResponse;
+
 
 
     public UserLogoutTask(TaskListener listener, Context context) {
