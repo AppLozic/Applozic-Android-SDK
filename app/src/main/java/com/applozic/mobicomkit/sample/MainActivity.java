@@ -1,7 +1,9 @@
 package com.applozic.mobicomkit.sample;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -22,6 +24,7 @@ import android.widget.Toast;
 import com.applozic.mobicomkit.ApplozicClient;
 import com.applozic.mobicomkit.api.account.user.MobiComUserPreference;
 import com.applozic.mobicomkit.api.account.user.UserClientService;
+import com.applozic.mobicomkit.api.account.user.UserLogoutTask;
 import com.applozic.mobicomkit.api.conversation.Message;
 import com.applozic.mobicomkit.contact.AppContactService;
 import com.applozic.mobicomkit.feed.TopicDetail;
@@ -37,6 +40,7 @@ import com.applozic.mobicommons.people.contact.Contact;
 public class MainActivity extends MobiComActivityForFragment
         implements NavigationDrawerFragment.NavigationDrawerCallbacks, EcommerceFragment.OnFragmentInteractionListener {
 
+    private UserLogoutTask userLogoutTask;
     public static final String TAKE_ORDER = "takeOrder";
     public static final String TAG = "MainActivity";
     public static final String TAKE_ORDER_USERID_METADATA = "com.applozic.take.order.userId";
@@ -149,11 +153,38 @@ public class MainActivity extends MobiComActivityForFragment
 
         if (position == 2) {
 
-            Toast.makeText(getBaseContext(), "Log out successful", Toast.LENGTH_SHORT).show();
-            new UserClientService(this).logout();
-            Intent intent = new Intent(this, LoginActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-            startActivity(intent);
+            UserLogoutTask.TaskListener userLogoutTaskListener = new UserLogoutTask.TaskListener(){
+
+                @Override
+                public void onSuccess(Context context) {
+                    userLogoutTask = null;
+                    Toast.makeText(getBaseContext(), "Log out successful", Toast.LENGTH_SHORT).show();
+                    new UserClientService(context).logout();
+                    Intent intent = new Intent(context, LoginActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                    startActivity(intent);
+                }
+
+                @Override
+                public void onFailure(Exception exception) {
+                    userLogoutTask = null;
+                    AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this).create();
+                    alertDialog.setTitle(getString(R.string.text_alert));
+                    alertDialog.setMessage(exception.toString());
+                    alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(android.R.string.ok),
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                }
+                            });
+                    if (!isFinishing()) {
+                        alertDialog.show();
+                    }
+                }
+            };
+
+            userLogoutTask = new UserLogoutTask(userLogoutTaskListener,this);
+            userLogoutTask.execute((Void)null);
             finish();
             return;
         }
