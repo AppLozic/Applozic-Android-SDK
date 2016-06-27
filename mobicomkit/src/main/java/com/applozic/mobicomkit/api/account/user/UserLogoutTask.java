@@ -3,9 +3,7 @@ package com.applozic.mobicomkit.api.account.user;
 import android.content.Context;
 import android.os.AsyncTask;
 
-/**
- * Created by APnaturals on 6/27/2016.
- */
+
 public class UserLogoutTask extends AsyncTask<Void,Void,Boolean> {
 
     public interface TaskListener{

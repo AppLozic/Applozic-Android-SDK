@@ -40,7 +40,7 @@ import com.applozic.mobicommons.people.contact.Contact;
 public class MainActivity extends MobiComActivityForFragment
         implements NavigationDrawerFragment.NavigationDrawerCallbacks, EcommerceFragment.OnFragmentInteractionListener {
 
-    private UserLogoutTask ult;
+    private UserLogoutTask userLogoutTask;
     public static final String TAKE_ORDER = "takeOrder";
     public static final String TAG = "MainActivity";
     public static final String TAKE_ORDER_USERID_METADATA = "com.applozic.take.order.userId";
@@ -153,11 +153,11 @@ public class MainActivity extends MobiComActivityForFragment
 
         if (position == 2) {
 
-            UserLogoutTask.TaskListener ultl=new UserLogoutTask.TaskListener(){
+            UserLogoutTask.TaskListener userLogoutTaskListener = new UserLogoutTask.TaskListener(){
 
                 @Override
                 public void onSuccess(Context context) {
-                    ult=null;
+                    userLogoutTask = null;
                     Toast.makeText(getBaseContext(), "Log out successful", Toast.LENGTH_SHORT).show();
                     new UserClientService(context).logout();
                     Intent intent = new Intent(context, LoginActivity.class);
@@ -167,7 +167,7 @@ public class MainActivity extends MobiComActivityForFragment
 
                 @Override
                 public void onFailure(Exception exception) {
-                    ult=null;
+                    userLogoutTask = null;
                     AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this).create();
                     alertDialog.setTitle(getString(R.string.text_alert));
                     alertDialog.setMessage(exception.toString());
@@ -183,8 +183,8 @@ public class MainActivity extends MobiComActivityForFragment
                 }
             };
 
-            ult=new UserLogoutTask(ultl,this);
-            ult.execute((Void)null);
+            userLogoutTask = new UserLogoutTask(userLogoutTaskListener,this);
+            userLogoutTask.execute((Void)null);
             finish();
             return;
         }
