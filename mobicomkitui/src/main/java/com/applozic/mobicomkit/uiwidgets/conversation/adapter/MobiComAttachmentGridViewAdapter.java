@@ -5,22 +5,20 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.provider.OpenableColumns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-
 import com.applozic.mobicomkit.uiwidgets.ApplozicSetting;
 import com.applozic.mobicomkit.uiwidgets.R;
+import com.applozic.mobicommons.commons.image.ImageUtils;
 import com.applozic.mobicommons.file.FileUtils;
 
 import java.util.ArrayList;
@@ -75,12 +73,12 @@ public class MobiComAttachmentGridViewAdapter extends BaseAdapter {
             @Override
             public void onClick(View v) {
 
-                if(position<getCount()-1){
+                if (position < getCount() - 1) {
                     return;
                 }
 
-                if( getCount()> ApplozicSetting.getInstance(context).getMaxAttachmentAllowed()){
-                    Toast.makeText(context,R.string.mobicom_max_attachment_warning,Toast.LENGTH_LONG).show();
+                if (getCount() > ApplozicSetting.getInstance(context).getMaxAttachmentAllowed()) {
+                    Toast.makeText(context, R.string.mobicom_max_attachment_warning, Toast.LENGTH_LONG).show();
                     return;
                 }
 
@@ -108,7 +106,7 @@ public class MobiComAttachmentGridViewAdapter extends BaseAdapter {
         }
          try{
              Uri uri = (Uri) getItem(position);
-             Bitmap previewBitmap = getPreview(uri);
+             Bitmap previewBitmap = ImageUtils.getPreview(context,uri);
              if (previewBitmap != null) {
                  setGalleryView(previewBitmap);
              } else {
@@ -146,27 +144,6 @@ public class MobiComAttachmentGridViewAdapter extends BaseAdapter {
     }
 
 
-    /**
-     *
-     * @param uri
-     * @return
-     */
-    Bitmap getPreview(Uri uri) {
-        String filePath  =FileUtils.getPath(context, uri);
-
-        BitmapFactory.Options bounds = new BitmapFactory.Options();
-        bounds.inJustDecodeBounds = true;
-        BitmapFactory.decodeFile(filePath, bounds);
-        if ((bounds.outWidth == -1) || (bounds.outHeight == -1))
-            return null;
-
-        int originalSize = (bounds.outHeight > bounds.outWidth) ? bounds.outHeight
-                : bounds.outWidth;
-
-        BitmapFactory.Options opts = new BitmapFactory.Options();
-        opts.inSampleSize = originalSize / 200;
-        return BitmapFactory.decodeFile(filePath, opts);
-    }
 
     /**
      *
