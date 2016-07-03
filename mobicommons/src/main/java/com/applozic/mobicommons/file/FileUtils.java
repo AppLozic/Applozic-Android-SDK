@@ -187,6 +187,30 @@ public class FileUtils {
     }
 
     /**
+     *
+     * @param directory
+     * @return
+     */
+
+    public static File getLastModifiedFile(String directory) {
+        File dir = new File(directory);
+        File[] allFiles = dir.listFiles();
+
+        if (allFiles == null || allFiles.length == 0) {
+            return null;
+        }
+
+        File lastModifiedFile = allFiles[0];
+
+        for (int i = 1; i < allFiles.length; i++) {
+            if (lastModifiedFile.lastModified() < allFiles[i].lastModified()) {
+                lastModifiedFile = allFiles[i];
+            }
+        }
+        return lastModifiedFile;
+    }
+
+    /**
      * Returns the path only (without file name).
      *
      * @param file
