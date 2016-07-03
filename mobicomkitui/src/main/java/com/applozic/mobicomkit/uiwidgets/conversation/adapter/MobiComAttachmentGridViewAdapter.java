@@ -125,7 +125,7 @@ public class MobiComAttachmentGridViewAdapter extends BaseAdapter {
     private void setAttachmentView(Uri uri) {
         attachmentImageView.setVisibility(View.VISIBLE);
         fileName.setVisibility(View.VISIBLE);
-        fileName.setText(getFileName(uri));
+        fileName.setText(FileUtils.getFileName(context, uri));
         galleryImageView.setImageBitmap(null);
     }
 
@@ -141,26 +141,6 @@ public class MobiComAttachmentGridViewAdapter extends BaseAdapter {
         fileName.setVisibility(View.GONE);
         attachmentImageView.setVisibility(View.GONE);
         fileSize.setText("New Attachment");
-    }
-
-
-
-    /**
-     *
-     * @param uri
-     * @return
-     */
-    public String getFileName(Uri uri) {
-
-        String fileName=null;
-        Cursor returnCursor =
-                context.getContentResolver().query(uri, null, null, null, null);
-        if (returnCursor != null &&  returnCursor.moveToFirst()) {
-           int columnIndex =  returnCursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
-            fileName=  returnCursor.getString(columnIndex);
-        }
-
-        return fileName;
     }
 
     public String getSize(Uri uri) {
