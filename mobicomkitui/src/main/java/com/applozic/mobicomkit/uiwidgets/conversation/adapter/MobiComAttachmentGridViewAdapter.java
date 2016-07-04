@@ -125,7 +125,7 @@ public class MobiComAttachmentGridViewAdapter extends BaseAdapter {
     private void setAttachmentView(Uri uri) {
         attachmentImageView.setVisibility(View.VISIBLE);
         fileName.setVisibility(View.VISIBLE);
-        fileName.setText(getFileName(uri));
+        fileName.setText(FileUtils.getFileName(context, uri));
         galleryImageView.setImageBitmap(null);
     }
 
@@ -144,46 +144,5 @@ public class MobiComAttachmentGridViewAdapter extends BaseAdapter {
     }
 
 
-
-    /**
-     *
-     * @param uri
-     * @return
-     */
-    public String getFileName(Uri uri) {
-
-        String fileName=null;
-        Cursor returnCursor =
-                context.getContentResolver().query(uri, null, null, null, null);
-        if (returnCursor != null &&  returnCursor.moveToFirst()) {
-           int columnIndex =  returnCursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
-            fileName=  returnCursor.getString(columnIndex);
-        }
-
-        return fileName;
-    }
-
-    public String getSize(Uri uri) {
-
-        String sizeInMB =null;
-        Cursor returnCursor =
-                context.getContentResolver().query(uri, null, null, null, null);
-
-        if (returnCursor != null &&  returnCursor.moveToFirst()) {
-
-            int columnIndex =  returnCursor.getColumnIndex(OpenableColumns.SIZE);
-            Long fileSize = returnCursor.getLong(columnIndex);
-            if( fileSize  < 1024 ) {
-                sizeInMB = (int)(fileSize / (1024 * 1024)) +" B";
-
-            }else if(fileSize < 1024 *1024){
-                sizeInMB = (int)(fileSize / (1024 )) +" KB";
-            }else {
-                sizeInMB = (int)(fileSize / (1024 * 1024)) +" MB";
-            }
-        }
-
-        return sizeInMB;
-    }
 
 }

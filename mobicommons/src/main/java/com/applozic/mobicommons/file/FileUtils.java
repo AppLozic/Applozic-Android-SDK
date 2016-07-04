@@ -25,28 +25,23 @@ import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Matrix;
-import android.graphics.Paint;
-import android.graphics.drawable.BitmapDrawable;
 import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
+import android.provider.OpenableColumns;
 import android.support.v4.BuildConfig;
 import android.text.TextUtils;
 import android.util.Log;
 import android.webkit.MimeTypeMap;
 
-import com.applozic.mobicommons.R;
 import com.applozic.mobicommons.commons.image.ImageUtils;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileFilter;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.DecimalFormat;
@@ -67,6 +62,9 @@ public class FileUtils {
     public static final String MIME_TYPE_VIDEO = "video/*";
     public static final String MIME_TYPE_APP = "application/*";
     public static final String HIDDEN_PREFIX = ".";
+    private static Context context;
+
+    public FileUtils(Context context) {this.context = context;}
 
 
     /**
@@ -167,6 +165,49 @@ public class FileUtils {
             return Uri.fromFile(file);
         }
         return null;
+    }
+
+    /**
+     *
+     * @param uri
+     * @param context
+     * @return
+     */
+    public static String getFileName(Context context, Uri uri) {
+
+        String fileName=null;
+        Cursor returnCursor =
+                context.getContentResolver().query(uri, null, null, null, null);
+        if (returnCursor != null &&  returnCursor.moveToFirst()) {
+            int columnIndex =  returnCursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
+            fileName=  returnCursor.getString(columnIndex);
+        }
+
+        return fileName;
+    }
+
+    /**
+     *
+     * @param directory
+     * @return
+     */
+
+    public static File getLastModifiedFile(String directory) {
+        File dir = new File(directory);
+        File[] allFiles = dir.listFiles();
+
+        if (allFiles == null || allFiles.length == 0) {
+            return null;
+        }
+
+        File lastModifiedFile = allFiles[0];
+
+        for (int i = 1; i < allFiles.length; i++) {
+            if (lastModifiedFile.lastModified() < allFiles[i].lastModified()) {
+                lastModifiedFile = allFiles[i];
+            }
+        }
+        return lastModifiedFile;
     }
 
     /**
@@ -696,5 +737,29 @@ public class FileUtils {
             e.printStackTrace();
         }
     return new File(newFileName);
+    }
+
+    //Moved from conversation/adapter/MobiComAttachmentGridViewAdapter
+    public String getSize(Uri uri) {
+
+        String sizeInMB =null;
+        Cursor returnCursor =
+                context.getContentResolver().query(uri, null, null, null, null);
+
+        if (returnCursor != null &&  returnCursor.moveToFirst()) {
+
+            int columnIndex =  returnCursor.getColumnIndex(OpenableColumns.SIZE);
+            Long fileSize = returnCursor.getLong(columnIndex);
+            if( fileSize  < 1024 ) {
+                sizeInMB = (int)(fileSize / (1024 * 1024)) +" B";
+
+            }else if(fileSize < 1024 *1024){
+                sizeInMB = (int)(fileSize / (1024 )) +" KB";
+            }else {
+                sizeInMB = (int)(fileSize / (1024 * 1024)) +" MB";
+            }
+        }
+
+        return sizeInMB;
     }
 }
