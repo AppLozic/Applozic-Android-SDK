@@ -3,10 +3,8 @@ package com.applozic.mobicomkit.uiwidgets.conversation.adapter;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
-import android.provider.OpenableColumns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -112,7 +110,7 @@ public class MobiComAttachmentGridViewAdapter extends BaseAdapter {
              } else {
                  setAttachmentView(uri);
              }
-             fileSize.setText(getSize(uri));
+             fileSize.setText(FileUtils.getSize(context,uri));
 
          }catch (Exception e){
              e.printStackTrace();
@@ -143,27 +141,6 @@ public class MobiComAttachmentGridViewAdapter extends BaseAdapter {
         fileSize.setText("New Attachment");
     }
 
-    public String getSize(Uri uri) {
 
-        String sizeInMB =null;
-        Cursor returnCursor =
-                context.getContentResolver().query(uri, null, null, null, null);
-
-        if (returnCursor != null &&  returnCursor.moveToFirst()) {
-
-            int columnIndex =  returnCursor.getColumnIndex(OpenableColumns.SIZE);
-            Long fileSize = returnCursor.getLong(columnIndex);
-            if( fileSize  < 1024 ) {
-                sizeInMB = (int)(fileSize / (1024 * 1024)) +" B";
-
-            }else if(fileSize < 1024 *1024){
-                sizeInMB = (int)(fileSize / (1024 )) +" KB";
-            }else {
-                sizeInMB = (int)(fileSize / (1024 * 1024)) +" MB";
-            }
-        }
-
-        return sizeInMB;
-    }
 
 }
