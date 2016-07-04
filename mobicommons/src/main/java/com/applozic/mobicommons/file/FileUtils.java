@@ -62,10 +62,6 @@ public class FileUtils {
     public static final String MIME_TYPE_VIDEO = "video/*";
     public static final String MIME_TYPE_APP = "application/*";
     public static final String HIDDEN_PREFIX = ".";
-    private static Context context;
-
-    public FileUtils(Context context) {this.context = context;}
-
 
     /**
      * TAG for log messages.
