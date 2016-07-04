@@ -734,28 +734,4 @@ public class FileUtils {
         }
     return new File(newFileName);
     }
-
-    //Moved from conversation/adapter/MobiComAttachmentGridViewAdapter
-    public String getSize(Uri uri) {
-
-        String sizeInMB =null;
-        Cursor returnCursor =
-                context.getContentResolver().query(uri, null, null, null, null);
-
-        if (returnCursor != null &&  returnCursor.moveToFirst()) {
-
-            int columnIndex =  returnCursor.getColumnIndex(OpenableColumns.SIZE);
-            Long fileSize = returnCursor.getLong(columnIndex);
-            if( fileSize  < 1024 ) {
-                sizeInMB = (int)(fileSize / (1024 * 1024)) +" B";
-
-            }else if(fileSize < 1024 *1024){
-                sizeInMB = (int)(fileSize / (1024 )) +" KB";
-            }else {
-                sizeInMB = (int)(fileSize / (1024 * 1024)) +" MB";
-            }
-        }
-
-        return sizeInMB;
-    }
 }
