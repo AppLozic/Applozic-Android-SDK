@@ -53,6 +53,7 @@ import com.applozic.mobicommons.commons.core.utils.Support;
 import com.applozic.mobicommons.commons.core.utils.Utils;
 import com.applozic.mobicommons.commons.image.ImageUtils;
 import com.applozic.mobicommons.file.FilePathFinder;
+import com.applozic.mobicommons.file.FileUtils;
 import com.applozic.mobicommons.json.GsonUtils;
 import com.applozic.mobicommons.people.channel.Channel;
 import com.applozic.mobicommons.people.channel.ChannelUtils;
@@ -192,7 +193,7 @@ public class ConversationUIService {
                 String file = Pattern.compile("//").split(selectedFilePath.toString())[1];
 
                 if (!(new File(file).exists())) {
-                    getLastModifiedFile(Environment.getExternalStorageDirectory().getAbsolutePath() + "/DCIM/Camera/").renameTo(new File(file));
+                    FileUtils.getLastModifiedFile(Environment.getExternalStorageDirectory().getAbsolutePath() + "/DCIM/Camera/").renameTo(new File(file));
                 }
 
                 if (selectedFilePath != null) {
@@ -787,23 +788,5 @@ public class ConversationUIService {
             }
 
         }
-    }
-
-    public File getLastModifiedFile(String directory) {
-        File dir = new File(directory);
-        File[] allFiles = dir.listFiles();
-
-        if (allFiles == null || allFiles.length == 0) {
-            return null;
-        }
-
-        File lastModifiedFile = allFiles[0];
-
-        for (int i = 1; i < allFiles.length; i++) {
-            if (lastModifiedFile.lastModified() < allFiles[i].lastModified()) {
-                lastModifiedFile = allFiles[i];
-            }
-        }
-        return lastModifiedFile;
     }
 }
