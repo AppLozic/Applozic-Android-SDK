@@ -59,7 +59,7 @@ android {
 **Note**: Add meta-data, Activities, Services and Receivers within application Tag ``` <application> </application> ```
 
 **Note**: Add Permissions outside the application Tag ``` <application>  ```
-```
+```xml
 
 <meta-data android:name="com.applozic.application.key"
            android:value="YOUR_APPLOZIC_APPLICATION_KEY" /> <!-- Applozic Application Key -->
@@ -87,7 +87,7 @@ To disable the location sharing via map add this line ApplozicSetting.getInstanc
   
   Define Attachment Folder Name in your string.xml.          
      
-```
+```xml
 <string name="default_media_location_folder">YOUR_APP_NAME</string> 
 ```
 
@@ -100,7 +100,7 @@ Permissions:
 
 
 
-```
+```xml
 <uses-permission android:name="<APP_PKG_NAME>.permission.MAPS_RECEIVE" />
 <permission android:name="<APP_PKG_NAME>.permission.MAPS_RECEIVE" android:protectionLevel="signature" />
 <uses-permission android:name="android.permission.INTERNET" />
@@ -122,7 +122,7 @@ Broadcast Registration For PushNotification:
 
 
    
-```
+```xml
 <receiver android:name="com.applozic.mobicomkit.uiwidgets.notification.MTNotificationBroadcastReceiver">
    <intent-filter>            
        <action android:name="${applicationId}.send.notification"/>                    
@@ -140,7 +140,7 @@ Paste the following in your androidmanifest.xml:
 
 
    
-```
+```xml
 <activity android:name="com.applozic.mobicomkit.uiwidgets.conversation.activity.ConversationActivity"
            android:configChanges="keyboardHidden|orientation|screenSize"
            android:label="@string/app_name"
@@ -287,7 +287,7 @@ Replace APP_PARENT_ACTIVITY with your app's parent activity.
 
 
      
-```
+```java
 UserLoginTask.TaskListener listener = new UserLoginTask.TaskListener() {                  
 
 @Override          
@@ -324,7 +324,7 @@ Under Module section, update the GCM Server Key.***
  **1.** In UserLoginTask "onSuccess" (refer Step 3)
   
 
-```
+```java
 if(MobiComUserPreference.getInstance(context).isRegistered()) {
 
 PushNotificationTask pushNotificationTask = null;         
@@ -357,7 +357,7 @@ pushNotificationTask.execute((Void) null);
 
 Add the following in your FcmListenerService  in onMessageReceived(RemoteMessage remoteMessage) 
 
-```
+```java
  if (MobiComPushReceiver.isMobiComPushNotification(remoteMessage.getData())) {
            MobiComPushReceiver.processMessageAsync(this, remoteMessage.getData());
            return;
@@ -370,7 +370,7 @@ Add the following in your FcmListenerService  in onMessageReceived(RemoteMessage
 
 If you already have GCM enabled in your app, then paste PushNotificationTask code at the place where you are getting the GCM registration id in your app.       
      
-```
+```java
 PushNotificationTask pushNotificationTask = null;         
 PushNotificationTask.TaskListener listener = new PushNotificationTask.TaskListener() {                  
 @Override           
@@ -394,7 +394,7 @@ pushNotificationTask.execute((Void) null);
 
 Add the following in your GcmListenerService  in onMessageReceived 
 
-```
+```java
 if(MobiComPushReceiver.isMobiComPushNotification(data)) {            
         MobiComPushReceiver.processMessageAsync(this, data);               
         return;          
@@ -418,7 +418,7 @@ In case, if you don't have the existing FCM related code, then copy the push not
 
 And add below code in your androidmanifest.xml file
 
-``` 
+```xml 
 <service android:name="<CLASS_PACKAGE>.FcmListenerService">
         <intent-filter>
             <action android:name="com.google.firebase.MESSAGING_EVENT" />
@@ -434,7 +434,7 @@ And add below code in your androidmanifest.xml file
   ``` 
 ####Setup PushNotificationTask in UserLoginTask "onSuccess" (refer Step 4).
 
-```
+```java
  PushNotificationTask pushNotificationTask = null;
  PushNotificationTask.TaskListener listener=  new PushNotificationTask.TaskListener() {
  @Override
@@ -455,7 +455,7 @@ And add below code in your androidmanifest.xml file
 **Step 6: For starting the messaging activity**:        
 
       
-```
+```java
 Intent intent = new Intent(this, ConversationActivity.class);            
 startActivity(intent);                               
 ``` 
@@ -464,7 +464,7 @@ startActivity(intent);
  For starting individual conversation thread, set "userId" in intent:        
  
            
-```
+```java
 Intent intent = new Intent(this, ConversationActivity.class);            
 intent.putExtra(ConversationUIService.USER_ID, "devashish@applozic.com");             
 intent.putExtra(ConversationUIService.DISPLAY_NAME, "Devashish Mamgain"); //put it for displaying the title.             
@@ -475,9 +475,9 @@ startActivity(intent);
 
 
 
-
+```java
  new UserClientService(this).logout();      
- 
+```
  
  
  Note: If you are running ProGuard, please add following lines:        
