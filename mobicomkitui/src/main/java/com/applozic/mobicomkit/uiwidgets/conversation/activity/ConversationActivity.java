@@ -44,6 +44,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -697,6 +698,18 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
             }
+        } else if (id == android.R.id.home) {
+
+            if (getSupportFragmentManager().getBackStackEntryCount() > 1) {
+
+                getSupportFragmentManager().popBackStack();
+                return true;
+            }
+            View view = this.getCurrentFocus();
+            if (view != null) {
+                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+            }
         }
         return false;
     }
@@ -733,6 +746,10 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
                 e.printStackTrace();
             }
             this.finish();
+            return;
+        } else if (getSupportFragmentManager().getBackStackEntryCount() > 1) {
+
+            getSupportFragmentManager().popBackStack();
             return;
         }
         Boolean takeOrder = getIntent().getBooleanExtra(TAKE_ORDER, false);
