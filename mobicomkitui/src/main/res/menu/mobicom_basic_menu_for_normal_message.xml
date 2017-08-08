@@ -1,51 +1,65 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:mobitexter="http://schemas.android.com/apk/res-auto">
+    xmlns:mobicomkit="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/menu_search"
+        android:actionViewClass="android.support.v7.widget.SearchView"
+        android:icon="@drawable/applozic_ic_action_search"
+        android:iconifiedByDefault="true"
+        android:orderInCategory="1"
+        android:showAsAction="always"
+        android:title="@string/menu_search"
+        android:visible="false"
+        mobicomkit:actionViewClass="android.support.v7.widget.SearchView"
+        mobicomkit:iconifiedByDefault="true"
+        mobicomkit:showAsAction="always" />
 
 
     <item
         android:id="@+id/conversations"
         android:icon="@drawable/applozic_ic_action_chat"
-        android:orderInCategory="1"
+        android:orderInCategory="2"
         android:showAsAction="ifRoom"
+        android:title="@string/conversation"
         android:visible="false"
-        android:title="Conversations"
-        mobitexter:showAsAction="ifRoom" />
+        mobicomkit:showAsAction="ifRoom" />
+
     <item
         android:id="@+id/start_new"
         android:icon="@drawable/applozic_ic_action_add"
-        android:orderInCategory="2"
-        android:visible="false"
+        android:orderInCategory="3"
         android:showAsAction="ifRoom|collapseActionView"
-        android:title="Start New"
-        mobitexter:showAsAction="ifRoom|collapseActionView" />
+        android:title="@string/start_New"
+        android:visible="false"
+        mobicomkit:showAsAction="ifRoom|collapseActionView" />
 
     <item
         android:id="@+id/dial"
         android:icon="@drawable/applozic_ic_action_call"
-        android:orderInCategory="3"
-        android:visible="false"
+        android:orderInCategory="4"
         android:showAsAction="ifRoom|collapseActionView"
-        android:title="Dial"
-        mobitexter:showAsAction="ifRoom|collapseActionView" />
+        android:title="@string/dial"
+        android:visible="false"
+        mobicomkit:showAsAction="ifRoom|collapseActionView" />
 
     <item
         android:id="@+id/refresh"
         android:icon="@drawable/applozic_ic_action_time"
-        android:orderInCategory="4"
-        android:visible="false"
+        android:orderInCategory="5"
         android:showAsAction="collapseActionView"
-        android:title="Refresh"
-        mobitexter:showAsAction="collapseActionView" />
+        android:title="@string/refresh"
+        android:visible="false"
+        mobicomkit:showAsAction="collapseActionView" />
 
     <item
         android:id="@+id/deleteConversation"
         android:icon="@drawable/applozic_ic_action_edit"
-        android:orderInCategory="5"
-        android:visible="false"
+        android:orderInCategory="6"
         android:showAsAction="collapseActionView"
         android:title="@string/delete_conversation"
-        mobitexter:showAsAction="collapseActionView" />
+        android:visible="false"
+        mobicomkit:showAsAction="collapseActionView" />
 
     <item
         android:id="@+id/shareOptions"
@@ -55,29 +69,67 @@
         android:showAsAction="collapseActionView"
         android:title="@string/shareOptions"
         android:visible="false"
-        mobitexter:showAsAction="collapseActionView" />
+        mobicomkit:showAsAction="collapseActionView" />
+
+    <item
+        android:id="@+id/video_call"
+        android:icon="@drawable/ic_videocam_white_24px"
+        android:orderInCategory="3"
+        android:padding="8dp"
+        android:title="@string/video_string"
+        android:visible="false"
+        mobicomkit:showAsAction="ifRoom|collapseActionView" />
 
     <item
         android:id="@+id/userBlock"
+        android:orderInCategory="7"
         android:showAsAction="collapseActionView"
         android:title="@string/user_block"
-        android:orderInCategory="6"
         android:visible="false"
-        mobitexter:showAsAction="collapseActionView" />
+        mobicomkit:showAsAction="collapseActionView" />
     <item
         android:id="@+id/userUnBlock"
+        android:orderInCategory="7"
         android:showAsAction="collapseActionView"
         android:title="@string/user_un_block"
         android:visible="false"
-        android:orderInCategory="6"
-        mobitexter:showAsAction="collapseActionView" />
+        mobicomkit:showAsAction="collapseActionView" />
     <item
         android:id="@+id/applozicUserProfile"
         android:orderInCategory="2"
+        android:showAsAction="collapseActionView"
         android:title="@string/applozic_my_profile_option_info"
         android:visible="false"
-        mobitexter:showAsAction="collapseActionView"
-        android:showAsAction="collapseActionView"/>
+        mobicomkit:showAsAction="collapseActionView" />
 
+    <item
+        android:id="@+id/broadcast"
+        android:orderInCategory="8"
+        android:showAsAction="ifRoom"
+        android:title="@string/new_broadcast_name_info"
+        android:visible="false"
+        mobicomkit:showAsAction="collapseActionView" />
 
+    <item
+        android:id="@+id/muteGroup"
+        android:orderInCategory="9"
+        android:showAsAction="collapseActionView"
+        android:title="@string/mute_Group"
+        android:visible="false"
+        mobicomkit:showAsAction="collapseActionView" />
+    <item
+        android:id="@+id/unmuteGroup"
+        android:orderInCategory="9"
+        android:showAsAction="collapseActionView"
+        android:title="@string/unmute_Group"
+        android:visible="false"
+        mobicomkit:showAsAction="collapseActionView" />
+
+    <item
+        android:id="@+id/logout"
+        android:icon="@drawable/applozic_ic_action_time"
+        android:orderInCategory="11"
+        android:showAsAction="collapseActionView"
+        android:title="@string/logout"
+        android:visible="false" />
 </menu>

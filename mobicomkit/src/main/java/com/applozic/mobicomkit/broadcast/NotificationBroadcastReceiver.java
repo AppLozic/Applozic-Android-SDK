@@ -33,8 +33,7 @@ public class NotificationBroadcastReceiver extends BroadcastReceiver {
         String actionName = intent.getAction();
 
         String messageJson = intent.getStringExtra(MobiComKitConstants.MESSAGE_JSON_INTENT);
-        String activityToOpen = Utils.getMetaDataValueForReceiver(context, NotificationBroadcastReceiver.class.getName(),  "activity.open.on.notification");
-        Log.i(TAG, "got broadcast receiver.." + messageJson + " , " + activityToOpen + " class name : " + NotificationBroadcastReceiver.class.getName());
+        String activityToOpen = Utils.getMetaDataValueForReceiver(context, NotificationBroadcastReceiver.class.getName(), "activity.open.on.notification");
         Intent newIntent;
         if (actionName.equals(LAUNCH_APP)) {
             String messageText = getMessageText(intent) == null ? null : getMessageText(intent).toString();
@@ -60,7 +59,6 @@ public class NotificationBroadcastReceiver extends BroadcastReceiver {
                 activity = Class.forName(activityToOpen);
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
-                Log.i(TAG, "not able to load class. Please,  ");
             }
             if (activity == null) {
 
@@ -70,7 +68,7 @@ public class NotificationBroadcastReceiver extends BroadcastReceiver {
             newIntent.putExtra("sms_body", "text");
             newIntent.setType("vnd.android-dir/mms-sms");
             newIntent.setAction(NotificationBroadcastReceiver.LAUNCH_APP);
-            newIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            newIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
             context.startActivity(newIntent);
         }
     }

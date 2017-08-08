@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+    android:id="@+id/conversation_scheduler"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/conversation_scheduler">
+    android:orientation="vertical">
 
     <RelativeLayout
         android:layout_width="fill_parent"
@@ -12,83 +12,90 @@
         android:padding="10dp">
 
         <TextView
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/scheduleDialogHeader"
             android:id="@+id/schedule_header"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentTop="true"
-            android:paddingBottom="10dp"
-            android:textStyle="bold"
-            android:textSize="18dp"
-            android:layout_centerHorizontal="true"
-            android:gravity="center_horizontal"
-            android:layout_alignParentRight="true"
-            android:paddingTop="10dp"
-            android:background="@color/mobitexter_main_color"
-            android:layout_marginBottom="15dp"
-            android:textColor="@color/white" />
-
-        <TextView
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:text="@string/selectionRequestText"
-            android:id="@+id/selectionRequest"
-            android:layout_below="@+id/schedule_header"
-            android:textSize="15dp" />
-
-        <TextView
-            android:text="@string/scheduledDateText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="15dp"
-            android:layout_gravity="left|top"
-            android:id="@+id/scheduledDateText"
-            android:paddingBottom="20dp"
-            android:paddingRight="20dp"
-            android:layout_below="@+id/selectionRequest"
-            android:paddingTop="20px"
-            android:focusableInTouchMode="false" />
-
-        <TextView
-            android:id="@+id/scheduledDate"
-            android:text="@string/defaultDate"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="15dp"
-            android:layout_gravity="center_horizontal|top"
-            android:textColor="@color/holo_blue"
-            android:paddingBottom="20dp"
-            android:paddingTop="20dp"
-            android:layout_toRightOf="@+id/scheduledDateText"
-            android:layout_alignBottom="@+id/scheduledDateText"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="15dp"
+            android:background="@color/mobitexter_main_color"
+            android:gravity="center_horizontal"
+            android:paddingBottom="10dp"
+            android:paddingTop="10dp"
+            android:text="@string/scheduleDialogHeader"
+            android:textColor="@color/white"
+            android:textSize="18dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="true"
             android:textStyle="bold" />
 
         <TextView
-            android:text="@string/scheduledTimeText"
+            android:id="@+id/selectionRequest"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/schedule_header"
+            android:text="@string/selectionRequestText"
+            android:textSize="15dp" />
+
+        <TextView
+            android:id="@+id/scheduledDateText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_below="@+id/selectionRequest"
+            android:layout_gravity="start|top"
+            android:focusableInTouchMode="false"
+            android:paddingBottom="20dp"
+            android:paddingRight="20dp"
+            android:paddingTop="20px"
+            android:paddingEnd="20dp"
+            android:text="@string/scheduledDateText"
+            android:textSize="15dp" />
+
+        <TextView
+            android:id="@+id/scheduledDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/scheduledDateText"
+            android:layout_gravity="center_horizontal|top"
+            android:layout_toRightOf="@+id/scheduledDateText"
+            android:paddingBottom="20dp"
+            android:paddingTop="20dp"
+            android:text="@string/defaultDate"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textColor="@color/holo_blue"
+            android:layout_toEndOf="@+id/scheduledDateText"
             android:textSize="15dp"
-            android:layout_gravity="left|center_vertical"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/scheduledTimeText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_alignLeft="@+id/scheduledDateText"
             android:layout_below="@+id/scheduledDateText"
+            android:layout_gravity="start|center_vertical"
             android:paddingBottom="15dp"
+            android:layout_alignStart="@+id/scheduledDateText"
+            android:paddingEnd="20dp"
             android:paddingRight="20dp"
-            android:id="@+id/scheduledTimeText" />
+            android:text="@string/scheduledTimeText"
+            android:textSize="15dp" />
 
         <TextView
             android:id="@+id/scheduledTime"
-            android:text="@string/defaultTime"
-            android:textAppearance="?android:attr/textAppearanceLarge"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="15dp"
-            android:layout_gravity="center"
-            android:textColor="@color/holo_blue"
-            android:layout_toRightOf="@+id/scheduledDateText"
             android:layout_below="@+id/scheduledDateText"
+            android:layout_gravity="center"
+            android:layout_toRightOf="@+id/scheduledDateText"
             android:paddingBottom="15dp"
+            android:text="@string/defaultTime"
+            android:layout_toEndOf="@+id/scheduledDateText"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textColor="@color/holo_blue"
+            android:textSize="15dp"
             android:textStyle="bold" />
     </RelativeLayout>
 </LinearLayout>

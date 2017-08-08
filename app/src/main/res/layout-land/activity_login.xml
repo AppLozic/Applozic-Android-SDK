@@ -9,6 +9,8 @@
     android:orientation="vertical"
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingLeft="@dimen/mobicom_activity_horizontal_margin"
+    android:paddingStart="@dimen/mobicom_activity_horizontal_margin"
+    android:paddingEnd="@dimen/mobicom_activity_horizontal_margin"
     android:paddingRight="@dimen/mobicom_activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.applozic.mobicomkit.sample.LoginActivity">
@@ -50,7 +52,7 @@
         android:layout_gravity="center"
         android:background="#FFFFFF"
         android:entries="@array/select_url"
-        android:textAlignment="center"/>
+        android:textAlignment="center" />
 
     <ScrollView
         android:id="@+id/login_form"
@@ -71,8 +73,8 @@
                 style="@style/EditText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="2dp"
                 android:layout_marginBottom="5dp"
+                android:layout_marginTop="2dp"
                 android:background="#FFF"
                 android:hint="@string/prompt_user_id"
                 android:imeOptions="actionNext"
@@ -136,7 +138,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="5dp"
                 android:background="#FFF"
-                android:hint="Display Name"
+                android:hint="@string/prompt_display_name"
                 android:imeOptions="actionNext"
                 android:inputType="text"
                 android:maxLines="2"
@@ -164,10 +166,9 @@
         android:id="@+id/footerSnack"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_gravity="top"
         android:orientation="vertical"
-        android:visibility="gone"
-        android:layout_gravity="top">
-    </LinearLayout>
+        android:visibility="gone"></LinearLayout>
 
     <!--
     <com.facebook.login.widget.LoginButton

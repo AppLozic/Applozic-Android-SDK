@@ -14,8 +14,9 @@
         android:background="?attr/colorPrimary"
         android:elevation="4dp"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-        android:titleTextAppearance="@color/white"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        app:subtitleTextAppearance="@style/ToolbarSubtitle"
+        app:titleTextAppearance="@style/ToolbarTitle" />
 
     <fragment
         android:id="@+id/map"
@@ -26,42 +27,53 @@
     <RelativeLayout
         android:id="@+id/sendLocation"
         android:layout_width="match_parent"
-        android:paddingTop="5dp"
-        android:background="?attr/selectableItemBackground"
-        android:paddingBottom="5dp"
         android:layout_height="wrap_content"
+        android:background="?attr/selectableItemBackground"
         android:clickable="true"
-        android:elevation="4dp">
+        android:elevation="4dp"
+        android:paddingBottom="5dp"
+        android:paddingTop="5dp">
 
         <ImageView
+            android:id="@+id/locationIcon"
             android:layout_width="48dp"
             android:layout_height="48dp"
-            android:background="@drawable/button_circle"
-            android:scaleType="center"
-            android:src="@drawable/applozic_ic_my_location_white_18dp"
-            android:layout_gravity="bottom"
-            android:id="@+id/locationIcon"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
+            android:layout_gravity="bottom"
             android:layout_marginLeft="35dp"
-            android:layout_marginStart="35dp" />
+            android:layout_marginStart="35dp"
+            android:background="@drawable/button_circle"
+            android:scaleType="center"
+            android:src="@drawable/applozic_ic_my_location_white_18dp" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="14sp"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
             android:layout_marginLeft="8dp"
             android:layout_toRightOf="@+id/locationIcon"
-            android:text="Send your current location"
+            android:text="@string/send_your_current_location"
             android:textColor="@color/black"
-            android:layout_centerVertical="true"
-            android:layout_centerHorizontal="true" />
+            android:layout_marginStart="8dp"
+            android:layout_toEndOf="@+id/locationIcon"
+            android:textSize="14sp" />
     </RelativeLayout>
 
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="@color/applozic_location_view_divider_color" />
+
+    <LinearLayout
+        android:id="@+id/footerAd"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="gone"
+        android:layout_gravity="top">
+    </LinearLayout>
 
 </LinearLayout>
 

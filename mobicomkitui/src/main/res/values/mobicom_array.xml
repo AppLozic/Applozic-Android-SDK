@@ -29,12 +29,20 @@
         <item>Resend</item>
         <item>Delete</item>
         <item>Info</item>
+        <item>Share</item>
+        <item>Reply</item>
     </string-array>
 
     <string-array name="conversation_options_menu">
         <item>Delete conversation</item>
         <item>Delete group</item>
         <item>Exit group</item>
+    </string-array>
+
+    <!--Group member list menu -->
+    <string-array name="channel_users_menu_option">
+        <item>Message</item>
+        <item>Remove</item>
     </string-array>
 
     <!--Multimedia options -->
@@ -79,6 +87,15 @@
         <item>Audio</item>
         <item>Video</item>
         <item>Contact</item>
+    </string-array>
+
+    <string-array name="multimediaOptions_without_price_key">
+        <item>:location</item>
+        <item>:camera</item>
+        <item>:file</item>
+        <item>:audio</item>
+        <item>:video</item>
+        <item>:contact</item>
     </string-array>
 
     <string-array name="multimediaOptionIcons_without_price">

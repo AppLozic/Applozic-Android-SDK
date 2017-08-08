@@ -17,17 +17,17 @@ public interface MobiComKitActivityInterface {
     int REQUEST_CODE_FULL_SCREEN_ACTION = 301;
     int INSTRUCTION_DELAY = 5000;
 
-    void onQuickConversationFragmentItemClick(View view, Contact contact,Channel channel,Integer conversationId);
+    void onQuickConversationFragmentItemClick(View view, Contact contact, Channel channel, Integer conversationId, String searchString);
 
     void startContactActivityForResult();
 
     void addFragment(ConversationFragment conversationFragment);
 
-    void updateLatestMessage(Message message,String number);
+    void updateLatestMessage(Message message, String number);
 
-    void removeConversation(Message message,String number);
+    void removeConversation(Message message, String number);
 
-    void startActivityForResult(Intent intent,int code);
+    void startActivityForResult(Intent intent, int code);
 
     void showErrorMessageView(String errorMessage);
 

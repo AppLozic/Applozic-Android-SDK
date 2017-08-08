@@ -11,36 +11,41 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
         android:layout_marginRight="0dp"
+        android:layout_marginEnd="0dp"
+        android:layout_alignParentStart="true"
         android:visibility="gone" />
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="left"
         android:layout_toRightOf="@id/imgIcon"
-        android:background="@color/mobitexter_main_color">
+        android:layout_toEndOf="@id/imgIcon"
+        android:background="@color/mobitexter_main_color"
+        android:gravity="start">
 
         <TextView
             android:id="@+id/txtName"
-            android:text="name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:singleLine="false"
-            android:textColor="@color/white"
             android:layout_marginRight="4dp"
+            android:layout_marginEnd="4dp"
+            android:singleLine="false"
+            android:text="@string/name"
+            android:textColor="@color/white"
             android:textSize="14dp" />
 
         <TextView
             android:id="@+id/txtTitle"
-            android:text="mobile number"
-            android:paddingLeft="8dp"
-            android:singleLine="false"
-            android:textColor="@color/whitesmoke"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="12dp"
+            android:paddingBottom="10dp"
+            android:paddingLeft="8dp"
+            android:paddingStart="8dp"
             android:paddingTop="10dp"
-            android:paddingBottom="10dp" />
+            android:singleLine="false"
+            android:text="@string/mobile_number"
+            android:textColor="@color/whitesmoke"
+            android:textSize="12dp" />
     </LinearLayout>
 
 

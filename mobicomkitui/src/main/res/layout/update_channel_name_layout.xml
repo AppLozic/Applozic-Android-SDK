@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/my_toolbar"
@@ -11,70 +11,73 @@
         android:layout_height="?attr/actionBarSize"
         android:background="?attr/colorPrimary"
         android:elevation="4dp"
-        android:titleTextAppearance="@color/white"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        app:subtitleTextAppearance="@style/ToolbarSubtitle"
+        app:titleTextAppearance="@style/ToolbarTitle" />
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        >
+        android:layout_marginTop="10dp">
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/applozic_group_profile"
             android:layout_width="150dp"
             android:layout_height="150dp"
-            android:src="@drawable/applozic_ic_contact_picture_180_holo_light"
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="42dp" />
+            android:layout_marginTop="42dp"
+            android:src="@drawable/applozic_ic_contact_picture_180_holo_light" />
 
         <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/applozic_group_profile_camera"
             android:layout_width="60dp"
             android:layout_height="60dp"
-            android:clickable="true"
-            android:id="@+id/applozic_group_profile_camera"
-            android:background="@color/apploizc_transparent_color"
-            android:src="@drawable/applozic_ic_action_camera_new"
             android:layout_alignBottom="@+id/applozic_group_profile"
+            android:layout_alignEnd="@+id/applozic_group_profile"
             android:layout_alignRight="@+id/applozic_group_profile"
-            android:layout_alignEnd="@+id/applozic_group_profile" />
+            android:background="@color/apploizc_transparent_color"
+            android:clickable="true" />
     </RelativeLayout>
 
     <EditText
         android:id="@+id/newChannelName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_weight="8"
-        android:hint="@string/new_channel_name_hint"
-        android:inputType="textAutoCorrect"
-        android:lines="1"
-        android:maxLength="255"
         android:layout_above="@+id/linearLayout"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="156dp" />
+        android:layout_marginBottom="156dp"
+        android:layout_weight="8"
+        android:hint="@string/new_channel_name_hint"
+        android:textAlignment="viewStart"
+        android:layout_gravity="start"
+        android:inputType="textAutoCorrect"
+        android:lines="1"
+        android:maxLength="255" />
+
     <LinearLayout
+        android:id="@+id/linearLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
         android:layout_alignParentBottom="true"
+        android:layout_gravity="center_horizontal"
         android:gravity="center"
-        android:orientation="horizontal"
-        android:id="@+id/linearLayout">
+        android:orientation="horizontal">
+
         <Button
-            android:layout_width="200dp"
             android:id="@+id/channelNameCancel"
-            android:background="@color/white"
-            android:layout_height="wrap_content"
-            android:text="Cancel"/>
-        <Button
             android:layout_width="200dp"
-            android:id="@+id/channelNameOk"
-            android:background="@color/white"
             android:layout_height="wrap_content"
-            android:text="Ok" />
+            android:background="@color/white"
+            android:text="@string/cancel" />
+
+        <Button
+            android:id="@+id/channelNameOk"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:text="@string/ok_alert" />
 
     </LinearLayout>
 
@@ -82,9 +85,8 @@
         android:id="@+id/footerAd"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_gravity="top"
         android:orientation="vertical"
-        android:visibility="gone"
-        android:layout_gravity="top">
-    </LinearLayout>
+        android:visibility="gone"></LinearLayout>
 
 </RelativeLayout>

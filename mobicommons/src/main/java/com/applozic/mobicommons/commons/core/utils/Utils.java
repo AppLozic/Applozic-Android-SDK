@@ -129,8 +129,13 @@ public class Utils {
         return Build.VERSION.SDK_INT >= Build.VERSION_CODES.M;
     }
 
+    public static boolean hasNougat() {
+        return Build.VERSION.SDK_INT >= 24;
+    }
+
+
     public static boolean isBetweenGingerBreadAndKitKat() {
-        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD &&  Build.VERSION.SDK_INT<Build.VERSION_CODES.KITKAT;
+        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD && Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT;
     }
 
     public static int getAppVersion(Context context) {
@@ -240,6 +245,15 @@ public class Utils {
         return null;
     }
 
+    public static int getLauncherIcon(Context context) {
+        try {
+            ApplicationInfo ai = context.getPackageManager().getApplicationInfo(context.getPackageName(), PackageManager.GET_META_DATA);
+            return ai.icon;
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+            return 0;
+        }
+    }
 
     public static Integer getMetaDataValueForResources(Context context, String metaDataName) {
         try {
@@ -280,26 +294,59 @@ public class Utils {
         }
     }
 
-    public static CharSequence getStyleString(String name){
+
+    public static CharSequence getStyleString(String name) {
         SpannableStringBuilder builder = new SpannableStringBuilder();
         builder.append(name);
         return builder;
     }
 
-    public static CharSequence getStyledStringForContact(String displayName,String message){
+    public static CharSequence getStyledStringForContact(String displayName, String message) {
         SpannableStringBuilder builder = new SpannableStringBuilder();
         builder.append(displayName).append(": ").append(message);
         return builder;
     }
-    public static CharSequence getStyledStringForChannel(String name,String channelName,String message){
+
+    public static CharSequence getStyledStringForChannel(String name, String channelName, String message) {
         SpannableStringBuilder builder = new SpannableStringBuilder();
         builder.append(name).append(" @ ").append(channelName).append(": ").append(message);
         return builder;
     }
 
-    public static CharSequence getStyleStringForMessage(String message){
+    public static CharSequence getStyleStringForMessage(String message) {
         SpannableStringBuilder builder = new SpannableStringBuilder();
         builder.append(message);
         return builder;
     }
+
+    public static String getTimeDurationInFormat(Long timeInMillis) {
+
+        long timeInSecond = timeInMillis / 1000;
+        String formattedDuration;
+
+        if (timeInSecond < 60) {
+            return (timeInSecond + " Sec");
+        } else {
+            formattedDuration = timeInSecond / 60 + " Min";
+            if (timeInSecond % 60 > 0) {
+                formattedDuration = formattedDuration + " " + timeInSecond % 60 + " Sec";
+            }
+        }
+
+        return formattedDuration;
+    }
+
+    public static void printLog(Context context, String tag, String message) {
+        try{
+            if(context != null) {
+                boolean isDebuggable = (0 != (context.getApplicationInfo().flags & ApplicationInfo.FLAG_DEBUGGABLE));
+                if (isDebuggable) {
+                    Log.i(tag, message);
+                }
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
 }

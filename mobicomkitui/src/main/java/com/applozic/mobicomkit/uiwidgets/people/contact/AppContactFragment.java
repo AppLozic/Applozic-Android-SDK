@@ -4,17 +4,20 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.app.SearchManager;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.ResolveInfo;
 import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.os.AsyncTask;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v4.app.ListFragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.CursorAdapter;
 import android.text.SpannableString;
 import android.text.TextUtils;
@@ -29,19 +32,22 @@ import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.AlphabetIndexer;
 import android.widget.Button;
+import android.widget.RelativeLayout;
 import android.widget.SectionIndexer;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.applozic.mobicomkit.api.account.user.MobiComUserPreference;
-import com.applozic.mobicomkit.api.account.user.UserService;
-import com.applozic.mobicomkit.api.conversation.Message;
+import com.applozic.mobicomkit.api.account.user.RegisteredUsersAsyncTask;
+import com.applozic.mobicomkit.broadcast.BroadcastService;
 import com.applozic.mobicomkit.contact.AppContactService;
 import com.applozic.mobicomkit.contact.BaseContactService;
 import com.applozic.mobicomkit.contact.database.ContactDatabase;
 import com.applozic.mobicomkit.feed.RegisteredUsersApiResponse;
 import com.applozic.mobicomkit.uiwidgets.ApplozicSetting;
+import com.applozic.mobicomkit.uiwidgets.AlCustomizationSettings;
 import com.applozic.mobicomkit.uiwidgets.R;
+import com.applozic.mobicomkit.uiwidgets.alphanumbericcolor.AlphaNumberColorUtil;
 import com.applozic.mobicomkit.uiwidgets.people.activity.MobiComKitPeopleActivity;
 import com.applozic.mobicommons.commons.core.utils.Utils;
 import com.applozic.mobicommons.commons.image.ImageLoader;
@@ -66,6 +72,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class AppContactFragment extends ListFragment implements SearchListFragment,
         AdapterView.OnItemClickListener, LoaderManager.LoaderCallbacks<Cursor> {
 
+    static final String AL_CUSTOMIZATION_SETTINGS = "alCustomizationSettings";
     // Defines a tag for identifying log entries
     private static final String TAG = "AppContactFragment";
     private static final String SHARE_TEXT = "share_text";
@@ -73,23 +80,20 @@ public class AppContactFragment extends ListFragment implements SearchListFragme
     private static final String STATE_PREVIOUSLY_SELECTED_KEY =
             "net.mobitexter.mobiframework.contact.ui.SELECTED_ITEM";
     private static String inviteMessage;
+    AlCustomizationSettings alCustomizationSettings;
+    RefreshContactsScreenBroadcast refreshContactsScreenBroadcast;
     private ContactsAdapter mAdapter; // The main query adapter
     private ImageLoader mImageLoader; // Handles loading the contact image in a background thread
     private String mSearchTerm; // Stores the current search query term
-
     // Contact selected listener that allows the activity holding this fragment to be notified of
 // a contact being selected
     private OnContactsInteractionListener mOnContactSelectedListener;
-
     // Stores the previously selected search item so that on a configuration change the same item
 // can be reselected again
     private int mPreviouslySelectedSearchItem = 0;
     private BaseContactService contactService;
-
-
     private Button shareButton;
     private TextView resultTextView;
-
     private List<Contact> contactList;
     private boolean syncStatus = true;
     private String[] userIdArray;
@@ -100,7 +104,6 @@ public class AppContactFragment extends ListFragment implements SearchListFragme
     private int previousTotalItemCount = 0;
     private boolean loading = true;
     private int startingPageIndex = 0;
-    private ApplozicSetting applozicSetting;
     private ContactDatabase contactDatabase;
 
     /**
@@ -114,22 +117,27 @@ public class AppContactFragment extends ListFragment implements SearchListFragme
         this.userIdArray = userIdArray;
     }
 
+
+    public void setAlCustomizationSettings(AlCustomizationSettings alCustomizationSettings) {
+        this.alCustomizationSettings = alCustomizationSettings;
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         contactDatabase = new ContactDatabase(getContext());
         contactService = new AppContactService(getActivity());
         mAdapter = new ContactsAdapter(getActivity().getApplicationContext());
-        applozicSetting = ApplozicSetting.getInstance(getContext());
         userPreference = MobiComUserPreference.getInstance(getContext());
         inviteMessage = Utils.getMetaDataValue(getActivity().getApplicationContext(), SHARE_TEXT);
         if (savedInstanceState != null) {
-
             mSearchTerm = savedInstanceState.getString(SearchManager.QUERY);
             mPreviouslySelectedSearchItem =
                     savedInstanceState.getInt(STATE_PREVIOUSLY_SELECTED_KEY, 0);
+            alCustomizationSettings = (AlCustomizationSettings) savedInstanceState.getSerializable(AL_CUSTOMIZATION_SETTINGS);
         }
-        final Context context = getActivity();
+        refreshContactsScreenBroadcast = new RefreshContactsScreenBroadcast();
+        final Context context = getActivity().getApplicationContext();
         mImageLoader = new ImageLoader(context, getListPreferredItemHeight()) {
             @Override
             protected Bitmap processBitmap(Object data) {
@@ -150,7 +158,7 @@ public class AppContactFragment extends ListFragment implements SearchListFragme
         // Inflate the list fragment layout
         View view = inflater.inflate(R.layout.contact_list_fragment, container, false);
         shareButton = (Button) view.findViewById(R.id.actionButton);
-        shareButton.setVisibility(ApplozicSetting.getInstance(getActivity()).isInviteFriendsButtonVisible() ? View.VISIBLE : View.GONE);
+        shareButton.setVisibility(alCustomizationSettings.isInviteFriendsInContactActivity() ? View.VISIBLE : View.GONE);
         resultTextView = (TextView) view.findViewById(R.id.result);
         return view;
     }
@@ -201,13 +209,15 @@ public class AppContactFragment extends ListFragment implements SearchListFragme
 
             @Override
             public void onScroll(AbsListView absListView, int firstVisibleItem, int visibleItemCount, int totalItemsCount) {
-                if (applozicSetting.isRegisteredUsersContactCall() && Utils.isInternetAvailable(getContext())) {
-
+                if ((alCustomizationSettings.isRegisteredUserContactListCall() || ApplozicSetting.getInstance(getActivity()).isRegisteredUsersContactCall()) && Utils.isInternetAvailable(getActivity().getApplicationContext())) {
                     if (totalItemsCount < previousTotalItemCount) {
                         currentPage = startingPageIndex;
                         previousTotalItemCount = totalItemsCount;
                         if (totalItemsCount == 0) {
                             loading = true;
+                        } else {
+                            loading = false;
+
                         }
                     }
 
@@ -217,15 +227,20 @@ public class AppContactFragment extends ListFragment implements SearchListFragme
                         currentPage++;
                     }
 
+                    if (totalItemsCount - visibleItemCount == 0) {
+                        return;
+                    }
+
+                    if (totalItemsCount <= 5) {
+                        return;
+                    }
+
                     if (!loading && (totalItemsCount - visibleItemCount) <= (firstVisibleItem + visibleThreshold)) {
                         if (!MobiComKitPeopleActivity.isSearching) {
                             loading = true;
-                            new DownloadNNumberOfUserAsync(applozicSetting.getTotalRegisteredUsers(), userPreference.getRegisteredUsersLastFetchTime(), null, null, true).execute((Void[]) null);
+                            processLoadRegisteredUsers();
                         }
                     }
-               /* if ((getListView().getLastVisiblePosition() >= totalItemsCount - 5) && (!MobiComKitPeopleActivity.isSearching)) {
-                    new DownloadNNumberOfUserAsync(ApplozicSetting.getInstance(getActivity()).getTotalRegisteredUsers(), userPreference.getRegisteredUsersLastFetchTime(), null, null, true).execute((Void[]) null);
-                }*/
                 }
             }
         });
@@ -295,6 +310,9 @@ public class AppContactFragment extends ListFragment implements SearchListFragme
         if (!TextUtils.isEmpty(mSearchTerm)) {
             // Saves the current search string
             outState.putString(SearchManager.QUERY, mSearchTerm);
+        }
+        if (alCustomizationSettings != null) {
+            outState.putSerializable(AL_CUSTOMIZATION_SETTINGS, alCustomizationSettings);
         }
     }
 
@@ -366,6 +384,66 @@ public class AppContactFragment extends ListFragment implements SearchListFragme
         }
     }
 
+    public void processLoadRegisteredUsers() {
+
+        final ProgressDialog progressDialog = ProgressDialog.show(getActivity(), "",
+                getActivity().getString(R.string.applozic_contacts_loading_info), true);
+
+        RegisteredUsersAsyncTask.TaskListener usersAsyncTaskTaskListener = new RegisteredUsersAsyncTask.TaskListener() {
+            @Override
+            public void onSuccess(RegisteredUsersApiResponse registeredUsersApiResponse, String[] userIdArray) {
+                if (progressDialog != null && progressDialog.isShowing()) {
+                    progressDialog.dismiss();
+                }
+                try {
+                    if (registeredUsersApiResponse != null) {
+                        getLoaderManager().restartLoader(
+                                AppContactFragment.ContactsQuery.QUERY_ID, null, AppContactFragment.this);
+                    }
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(RegisteredUsersApiResponse registeredUsersApiResponse, String[] userIdArray, Exception exception) {
+                if (progressDialog != null && progressDialog.isShowing()) {
+                    progressDialog.dismiss();
+                }
+                String error = getString(Utils.isInternetAvailable(getActivity()) ? R.string.applozic_server_error : R.string.you_need_network_access_for_block_or_unblock);
+                Toast toast = Toast.makeText(getActivity(), error, Toast.LENGTH_LONG);
+                toast.setGravity(Gravity.CENTER, 0, 0);
+                toast.show();
+            }
+
+            @Override
+            public void onCompletion() {
+
+            }
+        };
+        RegisteredUsersAsyncTask usersAsyncTask = new RegisteredUsersAsyncTask(getActivity(), usersAsyncTaskTaskListener, alCustomizationSettings.getTotalRegisteredUserToFetch(), userPreference.getRegisteredUsersLastFetchTime(), null, null, true);
+        usersAsyncTask.execute((Void) null);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (refreshContactsScreenBroadcast != null) {
+            LocalBroadcastManager.getInstance(getActivity()).registerReceiver(refreshContactsScreenBroadcast, new IntentFilter(BroadcastService.INTENT_ACTIONS.UPDATE_USER_DETAIL.toString()));
+        }
+
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (refreshContactsScreenBroadcast != null) {
+            LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(refreshContactsScreenBroadcast);
+        }
+    }
+
+
     /**
      * This interface defines constants for the Cursor and CursorLoader, based on constants defined
      * in the {@link android.provider.ContactsContract.Contacts} class.
@@ -375,7 +453,6 @@ public class AppContactFragment extends ListFragment implements SearchListFragme
         int QUERY_ID = 1;
 
     }
-
 
     /**
      * This is a subclass of CursorAdapter that supports binding Cursor columns to a view layout.
@@ -441,13 +518,18 @@ public class AppContactFragment extends ListFragment implements SearchListFragme
             final ViewHolder holder = new ViewHolder();
             holder.text1 = (TextView) itemLayout.findViewById(R.id.text1);
             holder.text2 = (TextView) itemLayout.findViewById(R.id.text2);
+            holder.contactNumberTextView = (TextView) itemLayout.findViewById(R.id.contactNumberTextView);
             holder.icon = (CircleImageView) itemLayout.findViewById(R.id.contactImage);
+            holder.contactIcon = (TextView) itemLayout.findViewById(R.id.contactIcon);
             itemLayout.setTag(holder);
             return itemLayout;
         }
 
         @Override
         public void bindView(View view, Context context, Cursor cursor) {
+            RelativeLayout.LayoutParams layoutParams;
+            String contactNumber;
+            char firstLetter = 0;
 
             // Gets handles to individual view resources
             final ViewHolder holder = (ViewHolder) view.getTag();
@@ -458,11 +540,41 @@ public class AppContactFragment extends ListFragment implements SearchListFragme
 
             holder.text1.setText(contact.getDisplayName() == null ? contact.getUserId() : contact.getDisplayName());
             holder.text2.setText(contact.getUserId());
-            if (contact.isDrawableResources()) {
-                int drawableResourceId = context.getResources().getIdentifier(contact.getrDrawableName(), "drawable", context.getPackageName());
-                holder.icon.setImageResource(drawableResourceId);
+            if (contact != null && !TextUtils.isEmpty(contact.getDisplayName())) {
+                contactNumber = contact.getDisplayName().toUpperCase();
+                firstLetter = contact.getDisplayName().toUpperCase().charAt(0);
+                if (firstLetter != '+') {
+                    holder.contactIcon.setText(String.valueOf(firstLetter));
+                } else if (contactNumber.length() >= 2) {
+                    holder.contactIcon.setText(String.valueOf(contactNumber.charAt(1)));
+                }
+                Character colorKey = AlphaNumberColorUtil.alphabetBackgroundColorMap.containsKey(firstLetter) ? firstLetter : null;
+                GradientDrawable bgShape = (GradientDrawable) holder.contactIcon.getBackground();
+                bgShape.setColor(context.getResources().getColor(AlphaNumberColorUtil.alphabetBackgroundColorMap.get(colorKey)));
+            }
+            holder.contactIcon.setVisibility(View.GONE);
+            holder.icon.setVisibility(View.VISIBLE);
+            if (contact != null) {
+                if (contact.isDrawableResources()) {
+                    int drawableResourceId = context.getResources().getIdentifier(contact.getrDrawableName(), "drawable", context.getPackageName());
+                    holder.icon.setImageResource(drawableResourceId);
+                } else {
+                    mImageLoader.loadImage(contact, holder.icon, holder.contactIcon);
+                }
+            }
+            if (!TextUtils.isEmpty(contact.getContactNumber())) {
+                layoutParams = (RelativeLayout.LayoutParams) holder.text1.getLayoutParams();
+                layoutParams.setMargins(0, 20, 0, 0);
+                holder.text1.setLayoutParams(layoutParams);
+                holder.contactNumberTextView.setVisibility(View.VISIBLE);
+                holder.contactNumberTextView.setText(contact.getContactNumber());
+
             } else {
-                mImageLoader.loadImage(contact, holder.icon);
+                holder.text2.setVisibility(View.GONE);
+                holder.contactNumberTextView.setVisibility(View.GONE);
+                layoutParams = (RelativeLayout.LayoutParams) holder.text1.getLayoutParams();
+                layoutParams.setMargins(0, 50, 0, 0);
+                holder.text1.setLayoutParams(layoutParams);
             }
             // Returns the item layout view
 
@@ -566,74 +678,26 @@ public class AppContactFragment extends ListFragment implements SearchListFragme
             TextView text1;
             TextView text2;
             CircleImageView icon;
+            TextView contactIcon;
+            TextView contactNumberTextView;
         }
     }
 
-    public class DownloadNNumberOfUserAsync extends AsyncTask<Void, Integer, Long> {
-
-        private Message message;
-        private UserService userService;
-        private ProgressDialog progressDialog;
-        private String messageContent;
-        private int nNumberOfUsers;
-        private String[] userIdArray;
-        private long timeToFetch;
-        boolean callForRegistered;
-        private RegisteredUsersApiResponse registeredUsersApiResponse;
-        private Context context = getContext();
-
-        public DownloadNNumberOfUserAsync(int nNumberOfUsers, Message message, String messageContent) {
-            this.message = message;
-            this.messageContent = messageContent;
-            this.nNumberOfUsers = nNumberOfUsers;
-            this.userService = UserService.getInstance(context);
-        }
-
-        public DownloadNNumberOfUserAsync(int numberOfUsersToFetch, long timeToFetch, Message message, String messageContent, boolean callForRegistered) {
-            this.callForRegistered = callForRegistered;
-            this.message = message;
-            this.messageContent = messageContent;
-            this.nNumberOfUsers = numberOfUsersToFetch;
-            this.timeToFetch = timeToFetch;
-            this.userService = UserService.getInstance(context);
-        }
-
+    private final class RefreshContactsScreenBroadcast extends BroadcastReceiver {
         @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            progressDialog = ProgressDialog.show(context, "",
-                    context.getString(R.string.applozic_contacts_loading_info), true);
-        }
+        public void onReceive(Context context, Intent intent) {
+            if (intent != null && BroadcastService.INTENT_ACTIONS.UPDATE_USER_DETAIL.toString().equals(intent.getAction())) {
+                try {
+                    if (getLoaderManager() != null && userIdArray == null) {
+                        getLoaderManager().restartLoader(
+                                AppContactFragment.ContactsQuery.QUERY_ID, null, AppContactFragment.this);
+                    }
+                } catch (Exception e) {
 
-        @Override
-        protected Long doInBackground(Void... params) {
-            if (callForRegistered) {
-                registeredUsersApiResponse = userService.getRegisteredUsersList(timeToFetch, nNumberOfUsers);
-            } else {
-                userIdArray = userService.getOnlineUsers(nNumberOfUsers);
+                }
             }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Long aLong) {
-            super.onPostExecute(aLong);
-            if (progressDialog != null && progressDialog.isShowing()) {
-                progressDialog.dismiss();
-            }
-
-            if (!Utils.isInternetAvailable(context)) {
-                Toast toast = Toast.makeText(context, context.getString(R.string.applozic_contacts_loading_error), Toast.LENGTH_SHORT);
-                toast.setGravity(Gravity.CENTER, 0, 0);
-                toast.show();
-            }
-
-            if (registeredUsersApiResponse != null) {
-                mAdapter.changeCursor(contactDatabase.loadContacts());
-                mAdapter.notifyDataSetChanged();
-            }
-
         }
     }
+
 }
 

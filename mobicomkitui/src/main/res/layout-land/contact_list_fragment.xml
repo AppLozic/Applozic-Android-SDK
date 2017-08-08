@@ -7,35 +7,35 @@
          consistency. -->
     <ListView
         android:id="@id/android:list"
+        style="@style/ContactListView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        style="@style/ContactListView" />
+        android:layout_height="match_parent" />
 
     <LinearLayout
         android:id="@id/android:empty"
-        android:gravity="center"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:gravity="center"
         android:orientation="vertical">
 
         <TextView
             android:id="@+id/result"
-            android:gravity="center"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/no_contacts"
             android:fontFamily="sans-serif-light"
+            android:gravity="center"
+            android:text="@string/no_contacts"
             android:textAppearance="?android:attr/textAppearanceLarge" />
 
         <Button
             android:id="@+id/actionButton"
-            android:gravity="center"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/invite"
-            android:visibility="gone"
             android:fontFamily="sans-serif-light"
-            android:textAppearance="?android:attr/textAppearanceLarge" />
+            android:gravity="center"
+            android:text="@string/invite"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:visibility="gone" />
 
     </LinearLayout>
 

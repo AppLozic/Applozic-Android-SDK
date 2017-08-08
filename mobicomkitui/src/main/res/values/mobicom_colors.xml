@@ -66,5 +66,10 @@
     <color name="apploizc_black_color">#000000</color>
     <color name="apploizc_dark_black_color">#ff000000</color>
     <color name="apploizc_darker_gray_color">#aaa</color>
+    <color name="apploizc_gray_color">#333333</color>
+    <color name="apploizc_lite_gray_color">#666666</color>
+    <color name="apploizc_custom_channel_message_text_color">#cccccc</color>
+    <color name="apploizc_reply_sent_message_bg_color">#C0C0C0</color>
+    <color name="apploizc_reply_received_message_bg_color">#F5F5F5</color>
 
 </resources>

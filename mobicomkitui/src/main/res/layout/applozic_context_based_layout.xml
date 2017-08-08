@@ -1,111 +1,125 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:paddingTop="3dp"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
     android:paddingBottom="3dp"
-    android:layout_height="match_parent">
+    android:paddingTop="3dp">
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="80dp"
-        android:minHeight="80dp"
         android:layout_gravity="center"
+        android:minHeight="80dp"
         android:orientation="horizontal">
 
         <ImageView
             android:id="@+id/productImage"
             android:layout_width="80dp"
-            android:paddingTop="2dp"
+            android:layout_height="match_parent"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:textDirection="locale"
+            android:textAlignment="gravity"
             android:layout_margin="4dp"
             android:adjustViewBounds="true"
             android:paddingBottom="2dp"
-            android:layout_height="match_parent"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentBottom="true" />
+            android:layout_alignParentStart="true"
+            android:paddingTop="2dp" />
 
         <TextView
             android:id="@+id/subTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="12sp"
+            android:layout_centerVertical="true"
+            android:textDirection="locale"
+            android:textAlignment="gravity"
+            android:layout_toEndOf="@+id/productImage"
+            android:layout_toRightOf="@+id/productImage"
             android:ellipsize="marquee"
-            android:singleLine="true"
             android:maxLength="25"
             android:maxLines="1"
-            android:layout_centerVertical="true"
-            android:layout_toRightOf="@+id/productImage"
-            android:layout_toEndOf="@+id/productImage" />
+            android:singleLine="true"
+            android:textSize="12sp" />
 
         <TextView
             android:id="@+id/title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="12sp"
-            android:maxLength="25"
-            android:singleLine="true"
-            android:ellipsize="marquee"
-            android:maxLines="1"
-            android:textStyle="bold"
-            android:layout_marginTop="3dp"
             android:layout_alignParentTop="true"
+            android:textDirection="locale"
+            android:textAlignment="gravity"
+            android:layout_marginTop="3dp"
+            android:layout_toEndOf="@+id/productImage"
             android:layout_toRightOf="@+id/productImage"
-            android:layout_toEndOf="@+id/productImage" />
+            android:ellipsize="marquee"
+            android:maxLength="25"
+            android:maxLines="1"
+            android:singleLine="true"
+            android:textSize="12sp"
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/qtyTitleTextView"
+            android:textDirection="locale"
+            android:textAlignment="gravity"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Qty:"
-            android:textSize="12sp"
-            android:padding="2dp"
-            android:textStyle="bold"
-            android:layout_gravity="center_horizontal"
-            android:layout_alignTop="@+id/qtyValueTextView"
             android:layout_alignLeft="@+id/priceTitleTextView"
-            android:layout_alignStart="@+id/priceTitleTextView" />
+            android:layout_alignStart="@+id/priceTitleTextView"
+            android:layout_alignTop="@+id/qtyValueTextView"
+            android:layout_gravity="center_horizontal"
+            android:padding="2dp"
+            android:textSize="12sp"
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/qtyValueTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="12sp"
-            android:padding="2dp"
-            android:maxLines="1"
-            android:text="20000"
-            android:layout_gravity="right"
-            android:layout_marginRight="39dp"
-            android:layout_marginEnd="39dp"
-            android:layout_alignTop="@+id/title"
+            android:textDirection="locale"
+            android:textAlignment="gravity"
+            android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true" />
+            android:layout_alignTop="@+id/title"
+            android:layout_gravity="end"
+            android:layout_marginEnd="39dp"
+            android:layout_marginRight="39dp"
+            android:maxLines="1"
+            android:padding="2dp"
+            android:textSize="12sp" />
 
         <TextView
             android:id="@+id/priceTitleTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="price:"
-            android:padding="2dp"
-            android:textStyle="bold"
-            android:layout_gravity="center_horizontal"
+            android:textDirection="locale"
+            android:textAlignment="gravity"
             android:layout_below="@+id/qtyTitleTextView"
+            android:layout_gravity="center_horizontal"
             android:layout_toLeftOf="@+id/priceValueTextview"
-            android:layout_toStartOf="@+id/priceValueTextview" />
+            android:layout_toStartOf="@+id/priceValueTextview"
+            android:padding="2dp"
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/priceValueTextview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="1000rs"
-            android:textSize="12sp"
-            android:maxLines="1"
-            android:padding="2dp"
+            android:textDirection="locale"
+            android:textAlignment="gravity"
             android:layout_alignBottom="@+id/priceTitleTextView"
             android:layout_alignLeft="@+id/qtyValueTextView"
-            android:layout_alignStart="@+id/qtyValueTextView" />
+            android:layout_alignStart="@+id/qtyValueTextView"
+            android:maxLines="1"
+            android:padding="2dp"
+            android:textSize="12sp" />
+
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_alignParentBottom="true"
-            android:background="#000"/>
+            android:background="#000" />
 
     </RelativeLayout>
 

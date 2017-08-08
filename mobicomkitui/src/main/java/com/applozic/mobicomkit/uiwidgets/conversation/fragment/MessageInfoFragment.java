@@ -8,6 +8,8 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
@@ -18,17 +20,14 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.applozic.mobicomkit.ApplozicClient;
 import com.applozic.mobicomkit.api.attachment.AttachmentView;
 import com.applozic.mobicomkit.api.attachment.FileClientService;
 import com.applozic.mobicomkit.api.attachment.FileMeta;
@@ -55,16 +54,16 @@ import java.util.List;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 
-public class MessageInfoFragment extends Fragment  {
+public class MessageInfoFragment extends Fragment {
 
-    public static final String MESSAGE_ARGUMENT_KEY= "MESSAGE";
-    Message message=null;
+    public static final String MESSAGE_ARGUMENT_KEY = "MESSAGE";
+    Message message = null;
     AttachmentView attachmentView;
     MessageInfoResponse messageInfoResponse;
-    private ImageLoader contactImageLoader,locationImageLoader;
-    private ListView readListView;
-    private  ListView deliveredListView;
-
+    MessageInfoAsyncTask messageInfoAsyncTask;
+    private ImageLoader contactImageLoader, locationImageLoader;
+    private RecyclerView readListView;
+    private RecyclerView deliveredListView;
 
     public MessageInfoFragment() {
     }
@@ -73,7 +72,6 @@ public class MessageInfoFragment extends Fragment  {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-
     }
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -82,8 +80,8 @@ public class MessageInfoFragment extends Fragment  {
         init();
 
         View view = inflater.inflate(R.layout.applozic_message_info, container, false);
-        Bundle bundle=getArguments();
-        String messageJson=bundle.getString(MESSAGE_ARGUMENT_KEY);
+        Bundle bundle = getArguments();
+        String messageJson = bundle.getString(MESSAGE_ARGUMENT_KEY);
         message = (Message) GsonUtils.getObjectFromJson(messageJson, Message.class);
 
         attachmentView = (AttachmentView) view.findViewById(R.id.applozic_message_info_attachmentview);
@@ -92,59 +90,70 @@ public class MessageInfoFragment extends Fragment  {
         attachmentView.setVisibility(message.hasAttachment() ? View.VISIBLE : View.GONE);
 
 
-        RelativeLayout defaultRelativeLayout  =(RelativeLayout) view.findViewById(R.id.applozic_message_info_default_layout);
+        RelativeLayout defaultRelativeLayout = (RelativeLayout) view.findViewById(R.id.applozic_message_info_default_layout);
         TextView textView = (TextView) view.findViewById(R.id.applozic_message_info_message_text);
-        readListView = (ListView)view.findViewById(R.id.applozic_message_info_read_list);
-        deliveredListView =  (ListView)view.findViewById(R.id.applozic_message_info_delivered_list_view);
-        ImageView locationImageView  = (ImageView)view.findViewById(R.id.static_mapview);
+        readListView = (RecyclerView) view.findViewById(R.id.applozic_message_info_read_list);
+        deliveredListView = (RecyclerView) view.findViewById(R.id.applozic_message_info_delivered_list_view);
+        readListView.setHasFixedSize(true);
+        deliveredListView.setHasFixedSize(true);
+
+        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
+        RecyclerView.LayoutManager mLayoutManagerForDev = new LinearLayoutManager(getActivity());
+        readListView.setLayoutManager(mLayoutManager);
+        readListView.setClickable(true);
+        deliveredListView.setLayoutManager(mLayoutManagerForDev);
+        deliveredListView.setClickable(true);
+
+
+        ImageView locationImageView = (ImageView) view.findViewById(R.id.static_mapview);
         final LinearLayout mainContactShareLayout = (LinearLayout) view.findViewById(R.id.contact_share_layout);
 
         RelativeLayout chatLocation = (RelativeLayout) view.findViewById(R.id.chat_location);
 
-        if( message.hasAttachment() && !message.isContactMessage() && !message.isLocationMessage()){
+        if (message.hasAttachment() && !message.isContactMessage() && !message.isLocationMessage()) {
             textView.setVisibility(View.GONE);
             attachmentView.setMessage(message);
             chatLocation.setVisibility(View.GONE);
             defaultRelativeLayout.setVisibility(View.GONE);
             defaultRelativeLayout.setVisibility(View.VISIBLE);
-            setupAttachmentView(message,defaultRelativeLayout);
+            setupAttachmentView(message, defaultRelativeLayout);
 
-        }else{
+        } else {
 
             defaultRelativeLayout.setVisibility(View.GONE);
             textView.setVisibility(View.VISIBLE);
             textView.setText(message.getMessage());
 
         }
-        if(message.isLocationMessage()){
+        if (message.isLocationMessage()) {
             defaultRelativeLayout.setVisibility(View.GONE);
             chatLocation.setVisibility(View.VISIBLE);
             locationImageLoader.setImageFadeIn(false);
             locationImageLoader.setLoadingImage(R.drawable.applozic_map_offline_thumbnail);
             locationImageLoader.loadImage(LocationUtils.loadStaticMap(message.getMessage()), locationImageView);
             textView.setVisibility(View.GONE);
-        }else{
+        } else {
             chatLocation.setVisibility(View.GONE);
 
         }
 
-        if( message.isContactMessage() ){
+        if (message.isContactMessage()) {
             chatLocation.setVisibility(View.GONE);
             defaultRelativeLayout.setVisibility(View.GONE);
             setupContactShareView(message, mainContactShareLayout);
             textView.setVisibility(View.GONE);
-        }else{
+        } else {
             mainContactShareLayout.setVisibility(View.GONE);
         }
 
-        new MessageInfoAsyncTask(message.getKeyString()).execute();
+        messageInfoAsyncTask = new MessageInfoAsyncTask(message.getKeyString(), getActivity());
+        messageInfoAsyncTask.execute();
         return view;
     }
 
 
-
     private void init() {
-        if(contactImageLoader==null){
+        if (contactImageLoader == null) {
             contactImageLoader = new ImageLoader(getContext(), getListPreferredItemHeight()) {
                 @Override
                 protected Bitmap processBitmap(Object data) {
@@ -156,11 +165,11 @@ public class MessageInfoFragment extends Fragment  {
             contactImageLoader.addImageCache(getActivity().getSupportFragmentManager(), 0.1f);
         }
 
-        if(locationImageLoader==null){
+        if (locationImageLoader == null) {
             locationImageLoader = new ImageLoader(getContext(), ImageUtils.getLargestScreenDimension((Activity) getContext())) {
                 @Override
                 protected Bitmap processBitmap(Object data) {
-                    FileClientService fileClientService =  new FileClientService(getContext());
+                    FileClientService fileClientService = new FileClientService(getContext());
                     return fileClientService.loadMessageImage(getContext(), (String) data);
                 }
             };
@@ -185,209 +194,6 @@ public class MessageInfoFragment extends Fragment  {
 
     }
 
-    public class MessageInfoAsyncTask extends AsyncTask<Void, Integer, Long> {
-
-        String messageKey;
-        public MessageInfoAsyncTask(String messageKey) {
-          this.messageKey = messageKey;
-        }
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-
-
-        }
-
-        @Override
-        protected Long doInBackground(Void... params) {
-            Context context = getActivity();
-            MobiComMessageService messageService =  new MobiComMessageService(context, MessageIntentService.class);
-            messageInfoResponse = messageService.getMessageInfoResponse(messageKey);
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Long aLong) {
-            super.onPostExecute(aLong);
-            //Populating view....
-
-            if(!MessageInfoFragment.this.isVisible()){
-                return;
-            }
-            if(messageInfoResponse==null){
-                Toast.makeText(getContext(), getString(R.string.applozic_message_info_no_network),Toast.LENGTH_SHORT).show();
-                return;
-            }
-            if (messageInfoResponse.getReadByUserList()!=null){
-                ContactsAdapter readAdapter = new ContactsAdapter(messageInfoResponse.getReadByUserList());
-                readListView.setAdapter(readAdapter);
-            }
-
-
-            if (messageInfoResponse.getDeliverdToUserList()!=null){
-                ContactsAdapter deliveredAdapter = new ContactsAdapter(messageInfoResponse.getDeliverdToUserList());
-                deliveredListView.setAdapter(deliveredAdapter);
-            }
-
-
-        }
-
-    }
-
-    //Contact Adapter
-    private class ContactsAdapter extends BaseAdapter {
-
-        List<MessageInfo> messageInfoList;
-        private LayoutInflater mInflater;
-        BaseContactService contactService;
-
-
-        public ContactsAdapter(){
-
-        }
-
-        public ContactsAdapter(List<MessageInfo> messageInfoList){
-
-            this.messageInfoList = messageInfoList;
-            this.contactService =  new AppContactService(getContext());
-            mInflater = LayoutInflater.from(getContext());
-
-
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            String contactNumber;
-            char firstLetter;
-            ContactViewHolder holder;
-
-            MessageInfo messageInfo =  messageInfoList.get(position);
-            Contact contact = contactService.getContactById(messageInfo.getUserId());
-            if (convertView == null) {
-                convertView =
-                        mInflater.inflate(R.layout.contact_users_layout, parent, false);
-                holder = new ContactViewHolder();
-                holder.displayName = (TextView) convertView.findViewById(R.id.displayName);
-                holder.alphabeticImage = (TextView) convertView.findViewById(R.id.alphabeticImage);
-                holder.circleImageView = (CircleImageView) convertView.findViewById(R.id.contactImage);
-                holder.adminTextView = (TextView) convertView.findViewById(R.id.adminTextView);
-                holder.lastSeenAtTextView = (TextView) convertView.findViewById(R.id.lastSeenAtTextView);
-                convertView.setTag(holder);
-            } else {
-                holder = (ContactViewHolder) convertView.getTag();
-            }
-
-            holder.displayName.setText(contact.getDisplayName());
-
-            long timeStamp = messageInfo.isRead() ? messageInfo.getReadAtTime() :
-                    ( messageInfo.getDeliveredAtTime()==null ? 0 : messageInfo.getDeliveredAtTime());
-            if (timeStamp !=0 ) {
-
-                holder.lastSeenAtTextView.setVisibility(View.VISIBLE);
-                holder.lastSeenAtTextView.setText(String.valueOf(DateUtils.getDateAndTimeInDefaultFormat(timeStamp)));
-
-            } else {
-                holder.lastSeenAtTextView.setVisibility(View.GONE);
-                holder.lastSeenAtTextView.setText("");
-            }
-
-            if (contact != null && !TextUtils.isEmpty(contact.getDisplayName())) {
-                contactNumber = contact.getDisplayName().toUpperCase();
-                firstLetter = contact.getDisplayName().toUpperCase().charAt(0);
-                if (firstLetter != '+') {
-                    holder.alphabeticImage.setText(String.valueOf(firstLetter));
-                } else if (contactNumber.length() >= 2) {
-                    holder.alphabeticImage.setText(String.valueOf(contactNumber.charAt(1)));
-                }
-                Character colorKey = AlphaNumberColorUtil.alphabetBackgroundColorMap.containsKey(firstLetter) ? firstLetter : null;
-                GradientDrawable bgShape = (GradientDrawable) holder.alphabeticImage.getBackground();
-                bgShape.setColor(getContext().getResources().getColor(AlphaNumberColorUtil.alphabetBackgroundColorMap.get(colorKey)));
-            }
-
-            if (contact.isDrawableResources()) {
-                int drawableResourceId = getContext().getResources().getIdentifier(contact.getrDrawableName(), "drawable", getContext().getPackageName());
-                holder.circleImageView.setImageResource(drawableResourceId);
-            } else {
-                contactImageLoader.loadImage(contact, holder.circleImageView, holder.alphabeticImage);
-            }
-
-            return convertView;
-        }
-
-        @Override
-        public int getCount() {
-            return messageInfoList.size();
-        }
-
-        @Override
-        public Object getItem(int position) {
-            return messageInfoList.get(position);
-        }
-
-        @Override
-        public long getItemId(int position) {
-            return 0;
-        }
-
-    }
-
-    private class ContactViewHolder {
-        public TextView displayName, alphabeticImage, adminTextView, lastSeenAtTextView;
-        public CircleImageView circleImageView;
-
-        public ContactViewHolder() {
-        }
-
-        public ContactViewHolder(TextView displayName, TextView alphabeticImage, TextView adminTextView, TextView lastSeenAtTextView, CircleImageView circleImageView) {
-            this.displayName = displayName;
-            this.alphabeticImage = alphabeticImage;
-            this.adminTextView = adminTextView;
-            this.lastSeenAtTextView = lastSeenAtTextView;
-            this.circleImageView = circleImageView;
-        }
-
-        public TextView getDisplayName() {
-            return displayName;
-        }
-
-        public void setDisplayName(TextView displayName) {
-            this.displayName = displayName;
-        }
-
-        public TextView getAlphabeticImage() {
-            return alphabeticImage;
-        }
-
-        public void setAlphabeticImage(TextView alphabeticImage) {
-            this.alphabeticImage = alphabeticImage;
-        }
-
-        public TextView getAdminTextView() {
-            return adminTextView;
-        }
-
-        public void setAdminTextView(TextView adminTextView) {
-            this.adminTextView = adminTextView;
-        }
-
-        public CircleImageView getCircleImageView() {
-            return circleImageView;
-        }
-
-        public void setCircleImageView(CircleImageView circleImageView) {
-            this.circleImageView = circleImageView;
-        }
-
-        public TextView getLastSeenAtTextView() {
-            return lastSeenAtTextView;
-        }
-
-        public void setLastSeenAtTextView(TextView lastSeenAtTextView) {
-            this.lastSeenAtTextView = lastSeenAtTextView;
-        }
-    }
-
     private int getListPreferredItemHeight() {
         final TypedValue typedValue = new TypedValue();
 
@@ -401,22 +207,24 @@ public class MessageInfoFragment extends Fragment  {
 
     private void setupAttachmentView(Message message, RelativeLayout defaultRelativeLayout) {
 
-        FileMeta fileMeta =  message.getFileMetas();
+        FileMeta fileMeta = message.getFileMetas();
         ImageView attachmentInconView = (ImageView) defaultRelativeLayout.findViewById(R.id.applozic_message_info_attachment_icon);
-        TextView  attachmentFilename =  (TextView) defaultRelativeLayout.findViewById(R.id.applozic_message_info_attachment_filename);
+        TextView attachmentFilename = (TextView) defaultRelativeLayout.findViewById(R.id.applozic_message_info_attachment_filename);
         TextView messageText = (TextView) defaultRelativeLayout.findViewById(R.id.messageText);
 
-        if(message.getMessage()!=null){
+        if (TextUtils.isEmpty(message.getMessage())) {
+            messageText.setVisibility(View.GONE);
+        }
+        if (message.getMessage() != null) {
             messageText.setText(message.getMessage());
         }
-
-        if (fileMeta.getContentType().contains("image") ) {
+        if (fileMeta.getContentType().contains("image")) {
 
             attachmentView.setVisibility(View.VISIBLE);
             attachmentInconView.setVisibility(View.GONE);
             attachmentFilename.setVisibility(View.GONE);
 
-        }else{
+        } else {
 
             attachmentView.setVisibility(View.GONE);
             attachmentInconView.setVisibility(View.VISIBLE);
@@ -429,6 +237,7 @@ public class MessageInfoFragment extends Fragment  {
 
     /**
      * Set up contectMessage
+     *
      * @param message
      * @param mainContactShareLayout
      */
@@ -465,4 +274,144 @@ public class MessageInfoFragment extends Fragment  {
         }
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (messageInfoAsyncTask != null) {
+            messageInfoAsyncTask.cancel(true);
+        }
+    }
+
+    public class MessageInfoAsyncTask extends AsyncTask<Void, Integer, Long> {
+
+        String messageKey;
+        MobiComMessageService messageService;
+
+        public MessageInfoAsyncTask(String messageKey, Context context) {
+            this.messageKey = messageKey;
+            this.messageService = new MobiComMessageService(context, MessageIntentService.class);
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+
+        }
+
+        @Override
+        protected Long doInBackground(Void... params) {
+            try {
+                messageInfoResponse = messageService.getMessageInfoResponse(messageKey);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Long aLong) {
+            super.onPostExecute(aLong);
+            //Populating view....
+
+            if (!MessageInfoFragment.this.isVisible()) {
+                return;
+            }
+            if (messageInfoResponse == null) {
+                Toast.makeText(getContext(), getString(R.string.applozic_message_info_no_network), Toast.LENGTH_SHORT).show();
+                return;
+            }
+            if (messageInfoResponse.getReadByUserList() != null) {
+                ContactsAdapter readAdapter = new ContactsAdapter(messageInfoResponse.getReadByUserList());
+                readListView.setAdapter(readAdapter);
+            }
+
+
+            if (messageInfoResponse.getDeliverdToUserList() != null) {
+                ContactsAdapter deliveredAdapter = new ContactsAdapter(messageInfoResponse.getDeliverdToUserList());
+                deliveredListView.setAdapter(deliveredAdapter);
+            }
+
+
+        }
+
+    }
+
+    public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.MyViewHolder> {
+
+        List<MessageInfo> messageInfoList;
+        BaseContactService contactService;
+
+        public ContactsAdapter(List<MessageInfo> messageInfoList) {
+            this.contactService = new AppContactService(getContext());
+            this.messageInfoList = messageInfoList;
+        }
+
+        @Override
+        public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            View itemView = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.contact_users_layout, parent, false);
+
+            return new MyViewHolder(itemView);
+        }
+
+        @Override
+        public void onBindViewHolder(MyViewHolder holder, int position) {
+            MessageInfo messageInfo = messageInfoList.get(position);
+            String contactNumber;
+            char firstLetter;
+            Contact contact = contactService.getContactById(messageInfo.getUserId());
+            holder.displayName.setText(contact.getDisplayName());
+            long timeStamp = messageInfo.isRead() ? messageInfo.getReadAtTime() :
+                    (messageInfo.getDeliveredAtTime() == null ? 0 : messageInfo.getDeliveredAtTime());
+            if (timeStamp != 0) {
+
+                holder.lastSeenAtTextView.setVisibility(View.VISIBLE);
+                holder.lastSeenAtTextView.setText(String.valueOf(DateUtils.getDateAndTimeInDefaultFormat(timeStamp)));
+
+            } else {
+                holder.lastSeenAtTextView.setVisibility(View.GONE);
+                holder.lastSeenAtTextView.setText("");
+            }
+
+            if (contact != null && !TextUtils.isEmpty(contact.getDisplayName())) {
+                contactNumber = contact.getDisplayName().toUpperCase();
+                firstLetter = contact.getDisplayName().toUpperCase().charAt(0);
+                if (firstLetter != '+') {
+                    holder.alphabeticImage.setText(String.valueOf(firstLetter));
+                } else if (contactNumber.length() >= 2) {
+                    holder.alphabeticImage.setText(String.valueOf(contactNumber.charAt(1)));
+                }
+                Character colorKey = AlphaNumberColorUtil.alphabetBackgroundColorMap.containsKey(firstLetter) ? firstLetter : null;
+                GradientDrawable bgShape = (GradientDrawable) holder.alphabeticImage.getBackground();
+                bgShape.setColor(getContext().getResources().getColor(AlphaNumberColorUtil.alphabetBackgroundColorMap.get(colorKey)));
+            }
+
+            if (contact.isDrawableResources()) {
+                int drawableResourceId = getContext().getResources().getIdentifier(contact.getrDrawableName(), "drawable", getContext().getPackageName());
+                holder.circleImageView.setImageResource(drawableResourceId);
+            } else {
+                contactImageLoader.loadImage(contact, holder.circleImageView, holder.alphabeticImage);
+            }
+        }
+
+        @Override
+        public int getItemCount() {
+            return messageInfoList.size();
+        }
+
+        public class MyViewHolder extends RecyclerView.ViewHolder {
+            public TextView displayName, alphabeticImage, adminTextView, lastSeenAtTextView;
+            CircleImageView circleImageView;
+
+            public MyViewHolder(View view) {
+                super(view);
+                displayName = (TextView) view.findViewById(R.id.displayName);
+                alphabeticImage = (TextView) view.findViewById(R.id.alphabeticImage);
+                circleImageView = (CircleImageView) view.findViewById(R.id.contactImage);
+                adminTextView = (TextView) view.findViewById(R.id.adminTextView);
+                lastSeenAtTextView = (TextView) view.findViewById(R.id.lastSeenAtTextView);
+            }
+        }
+    }
 }

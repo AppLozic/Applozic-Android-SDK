@@ -8,15 +8,6 @@ import com.applozic.mobicomkit.feed.ApiResponse;
 
 public class UserBlockTask extends AsyncTask<Void, Void, Boolean> {
 
-    public interface TaskListener {
-
-        void onSuccess(ApiResponse apiResponse);
-
-        void onFailure(ApiResponse apiResponse, Exception exception);
-
-        void onCompletion();
-    }
-
     private final TaskListener taskListener;
     private final Context context;
     private ApiResponse apiResponse;
@@ -35,12 +26,12 @@ public class UserBlockTask extends AsyncTask<Void, Void, Boolean> {
     protected Boolean doInBackground(Void... params) {
         try {
             apiResponse = UserService.getInstance(context).processUserBlock(userId, block);
+            return apiResponse != null && apiResponse.isSuccess();
         } catch (Exception e) {
             e.printStackTrace();
             mException = e;
             return false;
         }
-        return true;
     }
 
     @Override
@@ -51,6 +42,15 @@ public class UserBlockTask extends AsyncTask<Void, Void, Boolean> {
             this.taskListener.onFailure(apiResponse, mException);
         }
         this.taskListener.onCompletion();
+    }
+
+    public interface TaskListener {
+
+        void onSuccess(ApiResponse apiResponse);
+
+        void onFailure(ApiResponse apiResponse, Exception exception);
+
+        void onCompletion();
     }
 
 

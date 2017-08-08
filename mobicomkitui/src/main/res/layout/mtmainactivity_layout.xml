@@ -15,6 +15,6 @@
             android:id="@+id/layout_child_activity"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            android:layout_gravity="left|top" />
+            android:layout_gravity="start|top" />
     </FrameLayout>
 </android.support.v4.widget.DrawerLayout>

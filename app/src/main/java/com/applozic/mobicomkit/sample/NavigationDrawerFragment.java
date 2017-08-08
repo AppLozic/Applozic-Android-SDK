@@ -255,8 +255,8 @@ public class NavigationDrawerFragment extends Fragment {
 
         if (item.getItemId() == R.id.action_example) {
             Intent intent = new Intent(getActivity(), ConversationActivity.class);
-            if(ApplozicClient.getInstance(getActivity()).isContextBasedChat()){
-                intent.putExtra(ConversationUIService.CONTEXT_BASED_CHAT,true);
+            if (ApplozicClient.getInstance(getActivity()).isContextBasedChat()) {
+                intent.putExtra(ConversationUIService.CONTEXT_BASED_CHAT, true);
             }
             startActivity(intent);
             return true;

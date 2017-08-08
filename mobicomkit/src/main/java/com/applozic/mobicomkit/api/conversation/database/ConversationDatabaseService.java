@@ -5,9 +5,9 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.applozic.mobicomkit.database.MobiComDatabaseHelper;
+import com.applozic.mobicommons.commons.core.utils.Utils;
 import com.applozic.mobicommons.people.channel.Channel;
 import com.applozic.mobicommons.people.channel.Conversation;
 import com.applozic.mobicommons.people.contact.Contact;
@@ -32,7 +32,7 @@ public class ConversationDatabaseService {
 
     public static synchronized ConversationDatabaseService getInstance(Context context) {
         if (conversationDatabaseService == null) {
-            conversationDatabaseService = new ConversationDatabaseService(context);
+            conversationDatabaseService = new ConversationDatabaseService(context.getApplicationContext());
         }
         return conversationDatabaseService;
     }
@@ -60,11 +60,11 @@ public class ConversationDatabaseService {
         if (!TextUtils.isEmpty(topicDetail)) {
             conversation.setTopicDetail(topicDetail);
         }
-
         String userId = cursor.getString(cursor.getColumnIndex(MobiComDatabaseHelper.USERID));
         if (!TextUtils.isEmpty(userId)) {
             conversation.setUserId(userId);
         }
+        conversation.setTopicLocalImageUri(cursor.getString(cursor.getColumnIndex(MobiComDatabaseHelper.TOPIC_LOCAL_IMAGE_URL)));
         return conversation;
     }
 
@@ -97,6 +97,9 @@ public class ConversationDatabaseService {
             if (!TextUtils.isEmpty(conversation.getTopicDetail())) {
                 contentValues.put(MobiComDatabaseHelper.TOPIC_DETAIL, conversation.getTopicDetail());
             }
+            if (!TextUtils.isEmpty(conversation.getTopicLocalImageUri())) {
+                contentValues.put(MobiComDatabaseHelper.TOPIC_LOCAL_IMAGE_URL, conversation.getTopicLocalImageUri());
+            }
         }
         return contentValues;
     }
@@ -122,6 +125,33 @@ public class ConversationDatabaseService {
         return conversation;
     }
 
+
+    public Conversation getConversationByTopicId(final String topicId, Context context) {
+        if (TextUtils.isEmpty(topicId)) {
+            return null;
+        }
+        Conversation conversation = null;
+        SQLiteDatabase database = MobiComDatabaseHelper.getInstance(context).getReadableDatabase();
+        String conversationParameters = "";
+        List<String> structuredNameParamsList = new ArrayList<>();
+
+        conversationParameters += MobiComDatabaseHelper.TOPIC_ID + "= ? ";
+        structuredNameParamsList.add(topicId);
+
+        Cursor cursor = database.query(MobiComDatabaseHelper.CONVERSATION, null, conversationParameters, structuredNameParamsList.toArray(new String[structuredNameParamsList.size()]), null, null, null);
+
+        if (cursor.moveToFirst()) {
+            conversation = getConversation(cursor);
+        }
+        if (cursor != null) {
+            cursor.close();
+        }
+
+        dbHelper.close();
+        return conversation;
+    }
+
+
     public List<Conversation> getConversationList(final Channel channel, final Contact contact) {
         List<Conversation> conversation = null;
         SQLiteDatabase database = dbHelper.getReadableDatabase();
@@ -140,9 +170,10 @@ public class ConversationDatabaseService {
 
         if (cursor.moveToFirst()) {
             conversation = getConversationList(cursor);
+        }
+        if (cursor != null) {
             cursor.close();
         }
-
         return conversation;
     }
 
@@ -171,10 +202,10 @@ public class ConversationDatabaseService {
 
     public void deleteConversation(String userId) {
         int deletedRows = dbHelper.getWritableDatabase().delete(MobiComDatabaseHelper.CONVERSATION, MobiComDatabaseHelper.USERID + "=?", new String[]{userId});
-        Log.i(TAG, "Delete no of conversation:" + deletedRows);
+        Utils.printLog(context,TAG, "Delete no of conversation:" + deletedRows);
     }
 
-    public Integer isConversationExit(String userId,String topicId){
+    public Integer isConversationExit(String userId, String topicId) {
         Conversation conversation = null;
         SQLiteDatabase database = dbHelper.getReadableDatabase();
 
@@ -194,7 +225,16 @@ public class ConversationDatabaseService {
             cursor.close();
             return conversation.getId();
         }
+        if (cursor != null) {
+            cursor.close();
+        }
         return null;
+    }
+
+    public void updateTopicLocalImageUri(String imageUri, Integer conversationId) {
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(MobiComDatabaseHelper.TOPIC_LOCAL_IMAGE_URL, imageUri);
+        int updatedRow = dbHelper.getWritableDatabase().update(MobiComDatabaseHelper.CONVERSATION, contentValues, MobiComDatabaseHelper.KEY + "=?", new String[]{String.valueOf(conversationId)});
     }
 
 }

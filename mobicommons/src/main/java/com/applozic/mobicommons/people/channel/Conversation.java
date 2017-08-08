@@ -26,6 +26,7 @@ public class Conversation extends JsonMarker {
     private String applicationKey;
     private Integer groupId;
     private ArrayList fallBackTemplatesList;
+    private String topicLocalImageUri;
 
     public Conversation() {
 
@@ -112,24 +113,33 @@ public class Conversation extends JsonMarker {
         this.closed = closed;
     }
 
-    public void setSenderSmsFormat(String userId, String format){
-        setSmsFormat(userId,format);
+    public void setSenderSmsFormat(String userId, String format) {
+        setSmsFormat(userId, format);
     }
 
-    public void setReceiverSmsFormat(String userId, String format){
-        setSmsFormat(userId,format);
+    public void setReceiverSmsFormat(String userId, String format) {
+        setSmsFormat(userId, format);
+    }
+
+    public String getTopicLocalImageUri() {
+        return topicLocalImageUri;
+    }
+
+    public void setTopicLocalImageUri(String topicLocalImageUri) {
+        this.topicLocalImageUri = topicLocalImageUri;
     }
 
     public void setSmsFormat(String userId, String smsFormat) {
 
-        if(this.fallBackTemplatesList ==null) {
+        if (this.fallBackTemplatesList == null) {
             this.fallBackTemplatesList = new ArrayList();
         }
-        HashMap<String, String> map =  new HashMap<String,String>();
+        HashMap<String, String> map = new HashMap<String, String>();
         map.put(USER_ID_KEY, userId);
-        map.put(FALL_BACK_TEMPLATE_KEY, smsFormat );
+        map.put(FALL_BACK_TEMPLATE_KEY, smsFormat);
         fallBackTemplatesList.add(map);
     }
+
     @Override
     public String toString() {
         return "Conversation{" +

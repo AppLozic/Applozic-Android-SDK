@@ -62,6 +62,7 @@ public class AttachmentTask implements
      * ensures that the reference is more transitory in nature.
      */
     private WeakReference<AttachmentView> mImageWeakRef;
+    private WeakReference<AttachmentViewProperties> mImageWeakRefNew;
     // The image's URL
     private String mImageURL;
     // The width and height of the decoded image
@@ -118,12 +119,42 @@ public class AttachmentTask implements
         // Gets the width and height of the provided ImageView
         mTargetWidth = photoView.getWidth();
         mTargetHeight = photoView.getHeight();
-        context = photoView.getContext();
+        context = photoView.getContext().getApplicationContext();
 
+    }
+
+    void initializeDownloaderTask(
+            AttachmentManager photoManager,
+            AttachmentViewProperties photoView,
+            boolean cacheFlag) {
+        // Sets this object's ThreadPool field to be the input argument
+        sPhotoManager = photoManager;
+
+        // Gets the URL for the View
+        mImageURL = photoView.getImageUrl();
+        message = photoView.getMessage();
+        // Instantiates the weak reference to the incoming view
+        setAttachementViewNew(photoView);
+
+        // Sets the cache flag to the input argument
+        mCacheEnabled = cacheFlag;
+
+        // Gets the width and height of the provided ImageView
+        mTargetWidth = photoView.getWidth();
+        mTargetHeight = photoView.getHeight();
+        context = photoView.getContext();
     }
 
     public void setAttachementView(AttachmentView photoView) {
         mImageWeakRef = new WeakReference<AttachmentView>(photoView);
+        this.message = photoView.getMessage();
+        this.context = photoView.getContext();
+    }
+
+    public void setAttachementViewNew(AttachmentViewProperties photoView) {
+        mImageWeakRefNew = new WeakReference<AttachmentViewProperties>(photoView);
+        this.message = photoView.getMessage();
+        this.context = photoView.getContext();
     }
 
 
@@ -139,6 +170,10 @@ public class AttachmentTask implements
             mImageWeakRef = null;
         }
 
+        if (null != mImageWeakRefNew) {
+            mImageWeakRefNew.clear();
+            mImageWeakRefNew = null;
+        }
         // Releases references to the byte buffer and the BitMap
         mImageBuffer = null;
         mDecodedImage = null;
@@ -169,7 +204,7 @@ public class AttachmentTask implements
 
     @Override
     public Context getContext() {
-        return context;
+        return context.getApplicationContext();
     }
 
     @Override
@@ -183,7 +218,7 @@ public class AttachmentTask implements
             final String mimeType = FileUtils.getMimeType(filePath);
             return mimeType;
 
-        } else if (message.getFileMetas() != null ) {
+        } else if (message.getFileMetas() != null) {
             return message.getFileMetas().getContentType();
         }
         return null;
@@ -220,6 +255,13 @@ public class AttachmentTask implements
     public AttachmentView getPhotoView() {
         if (null != mImageWeakRef) {
             return mImageWeakRef.get();
+        }
+        return null;
+    }
+
+    public AttachmentViewProperties getAttachmentView() {
+        if (null != mImageWeakRefNew) {
+            return mImageWeakRefNew.get();
         }
         return null;
     }

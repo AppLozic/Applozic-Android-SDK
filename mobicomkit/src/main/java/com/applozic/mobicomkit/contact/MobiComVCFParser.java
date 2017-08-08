@@ -3,11 +3,11 @@ package com.applozic.mobicomkit.contact;
 /**
  * Created by devashish on 08/03/16.
  */
+
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
 import android.util.Base64;
-import android.util.Log;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -17,8 +17,7 @@ import java.io.FileReader;
 /**
  * Parser code for parsing the vCard file and creating a CSV file.
  */
-public class MobiComVCFParser
-{
+public class MobiComVCFParser {
 
     public static final String BEGIN_VCARD = "BEGIN:VCARD";
     public static final String END_VCARD = "END:VCARD";
@@ -27,22 +26,21 @@ public class MobiComVCFParser
     public VCFContactData vcfContactData;
 
     /**
-     *  This method will validate basic initial data exported from contact.
+     * This method will validate basic initial data exported from contact.
+     *
      * @param data
      * @return
      */
-    public static boolean validateData(String data){
-
-        return (data!=null && data.replaceAll("[\n\r]", "").startsWith(BEGIN_VCARD) && data.replaceAll("[\n\r]", "").endsWith(END_VCARD));
+    public static boolean validateData(String data) {
+        return (data != null && data.replaceAll("[\n\r]", "").trim().startsWith(BEGIN_VCARD) && data.replaceAll("[\n\r]", "").trim().endsWith(END_VCARD));
     }
 
     /**
-     *
      * @param filePath path of the vcf stored.
-     * @return  returns VCFContactData- data prased from vcf file.
+     * @return returns VCFContactData- data prased from vcf file.
      * @throws Exception
      */
-    public VCFContactData parseCVFContactData(String filePath) throws  Exception {
+    public VCFContactData parseCVFContactData(String filePath) throws Exception {
 
         File file = new File(filePath);
         FileReader fin = new FileReader(file);
@@ -59,7 +57,7 @@ public class MobiComVCFParser
 
                 //END
                 vcfContactData.setTelephoneNumber(contactBuffer.toString());
-                if(imageByteCode!=null){
+                if (imageByteCode != null) {
                     vcfContactData.setProfilePic(stringToBitMap(imageByteCode.toString()));
                 }
                 return vcfContactData;
@@ -82,13 +80,13 @@ public class MobiComVCFParser
                 if (tokens.length >= 2) {
                     imageByteCode = new StringBuffer().append(tokens[1]);
                 }
-            }else if(sLine.startsWith("EMAIL")){
+            } else if (sLine.startsWith("EMAIL")) {
                 String[] tokens = sLine.split(":");
                 if (tokens.length >= 2) {
                     vcfContactData.setEmail(tokens[1]);
                 }
             } else {
-                if(imageByteCode!=null){
+                if (imageByteCode != null) {
                     imageByteCode.append(sLine);
                 }
             }
@@ -100,13 +98,12 @@ public class MobiComVCFParser
      * @param encodedString
      * @return bitmap (from given string)
      */
-    public Bitmap stringToBitMap(String encodedString){
-        try{
-            byte [] encodeByte= Base64.decode(encodedString, Base64.DEFAULT);
-            Bitmap bitmap= BitmapFactory.decodeByteArray(encodeByte, 0, encodeByte.length);
+    public Bitmap stringToBitMap(String encodedString) {
+        try {
+            byte[] encodeByte = Base64.decode(encodedString, Base64.DEFAULT);
+            Bitmap bitmap = BitmapFactory.decodeByteArray(encodeByte, 0, encodeByte.length);
             return bitmap;
-        }catch(Exception e){
-            Log.e("MobiComVCFParser", encodedString , e);
+        } catch (Exception e) {
             return null;
         }
     }

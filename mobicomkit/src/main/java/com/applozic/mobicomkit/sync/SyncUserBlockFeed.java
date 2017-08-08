@@ -6,7 +6,7 @@ import com.applozic.mobicommons.json.JsonMarker;
 /**
  * Created by sunil on 3/3/16.
  */
-public class SyncUserBlockFeed extends JsonMarker{
+public class SyncUserBlockFeed extends JsonMarker {
 
     private String blockedTo;
     private String blockedBy;

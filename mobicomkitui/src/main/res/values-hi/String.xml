@@ -1,0 +1,403 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources  xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="MissingTranslation">
+    <string name="internet_connection_not_available">कोई इंटरनेट कनेक्शन नहीं</string>
+    <string name="you_need_network_access_for_delete">वार्तालाप हटाने के लिए आपको नेटवर्क एक्सेस की आवश्यकता है </string>
+    <string name="applozic_server_error">ऊप्स! आपको एक त्रुटि मिली, बाद में फिर से प्रयास करें</string>
+    <string name="you_need_network_access_for_block_or_unblock">ब्लॉक / अनब्लॉक उपयोगकर्ता के लिए आपको नेटवर्क एक्सेस की आवश्यकता है</string>
+    <string name="internet_connection_for_group_name_info">समूह नाम बदलने के लिए आपके फ़ोन को इंटरनेट कनेक्शन की आवश्यकता है</string>
+    <string name="you_dont_have_any_network_access_info">आपके पास अभी तक कोई नेटवर्क पहुंच नहीं है</string>
+    <string name="failed_to_leave_group">समूह को छोड़ने में विफल रहा</string>
+    <string name="user_is_already_exists">उपयोगकर्ता पहले से ही समूह में मौजूद है</string>
+    <string name="delete_conversation_failed">हटाएं विफल</string>
+    <string name="menu_search">खोज</string>
+    <string name="menu_add_contact">एक नया संपर्क बनाएं</string>
+    <string name="no_contacts">कोई संपर्क नहीं मिला</string>
+    <string name="search_hint">खोज...</string>
+    <string name="phone_number_not_present">फोन नंबर मौजूद नहीं है</string>
+    <string name="zero_friends_on_phone">फोन संपर्कों पर कोई मिलान संपर्क नहीं मिला लेकिन आप अभी भी ईमेल, यूजर आईडी या फोन नंबर दर्ज करके संदेश भेज सकते हैं</string>
+    <string name="delete_thread_text">हटाया जा रहा है ....</string>
+    <string name="search_title">खोज</string>
+    <string name ="applozic_user_already_in_a_group">समूह प्रकार में पहले से ही जोड़ा गया है</string>
+    <string name ="applozic_contacts_loading_info">लोड हो रहा है, कृपया प्रतीक्षा करें...</string>
+    <string name ="applozic_contacts_loading_error">संपर्कों को लोड करने के लिए आपको नेटवर्क एक्सेस की आवश्यकता है</string>
+    <string name="alphabet">ABCDEFGHIJKLMNOPQRSTUVWXYZ</string>
+    <string name="contact_permission">संपर्क की अनुमति के उपयोग के लिए आवश्यक हैं</string>
+    <string name="storage_permission">उपयोग करने के लिए संग्रहण अनुमति आवश्यक है</string>
+    <string name="location_permission">उपयोग करने के लिए स्थान अनुमति आवश्यक है</string>
+    <string name="phone_call_permission">प्रवेश करने के लिए फोन कॉल की अनुमति आवश्यक है</string>
+    <string name="phone_camera_permission">एक्सेस करने के लिए कैमरा अनुमति आवश्यक है</string>
+    <string name="record_audio">ऑडियो रिकॉर्डिंग अनुमति की आवश्यकता है</string>
+    <string name="contact_permission_not_granted">संपर्क के लिए अनुमति नहीं दी गई थी</string>
+    <string name="storage_permission_not_granted">संग्रहण के लिए अनुमतियाँ नहीं दी गईं</string>
+    <string name="location_permission_not_granted">स्थान के लिए अनुमतियाँ नहीं दी गईं</string>
+    <string name="phone_state_permission_not_granted">फ़ोन स्टेट के लिए अनुमतियां प्रदान नहीं की गईं</string>
+    <string name="phone_call_permission_not_granted">फोन कॉल के लिए अनुमति नहीं दी गई थी</string>
+    <string name="phone_camera_permission_not_granted">कैमरे के लिए अनुमति नहीं दी गई थी</string>
+    <string name="record_audio_permission_not_granted">ऑडियो रिकॉर्डिंग के लिए अनुमतियां प्रदान नहीं की गईं</string>
+    <string name="contact_permission_granted">संपर्क अनुमति दी गई है</string>
+    <string name="storage_permission_granted">संग्रहण अनुमतियां दी गई हैं</string>
+    <string name="location_permission_granted">स्थान अनुमतियां दी गई हैं</string>
+    <string name="phone_state_permission_granted">फोन स्थिति अनुमति दी गई है</string>
+    <string name="phone_call_permission_granted">फोन कॉल की अनुमति दी गई है</string>
+    <string name="phone_camera_permission_granted">कैमरा अनुमति दी गई है</string>
+    <string name="record_audio_permission_granted">ऑडियो रिकार्ड अनुमति दी गई है</string>
+    <string name="mobicom_max_attachment_warning">अधिकतम लगाव सीमा तक पहुंची</string>
+    <string name="mobicom_select_attachment_text">कम से कम एक अटैचमेंट चुनें</string>
+    <string name="audio_recording_send_text">ऑडियो रिकॉर्ड करने के लिए प्रारंभ पर टैप करें</string>
+    <string name="applozic_audio_permission_missing">ऑडियो रिकॉर्डर लॉन्च करने में असमर्थ</string>
+    <string name="applozic_message_info">संदेश जानकारी</string>
+    <string name="applozic_message_info_no_network">संदेश जानकारी लाने में सक्षम नहीं</string>
+    <string name="applozic_user_profile_heading">प्रोफाइल</string>
+    <string name="send_message_to">भेजना..</string>
+    <string name="info_attachment_max_allowed_file_size_exceeded">अधिकतम अपलोड फ़ाइल आकार सीमा नहीं पार कर सकते हैं</string>
+    <string name="please_wait_creating_group_of_two">कृपया प्रतीक्षा करें...</string>
+    <string name="sort_contacts_by_lastSeenAt">पिछले द्वारा देखा द्वारा क्रमबद्ध</string>
+    <string name="sort_contacts_by_recent_chats">हाल ही की चैट के आधार पर क्रमबद्ध करें</string>
+    <string name="app_name">Applozic</string>
+    <string name="conversations">बातचीत</string>
+    <string name="channel_create_title">नया समूह</string>
+    <string name="channel_members_title">सदस्य जोड़ें</string>
+    <string name="select_at_least">कम से कम एक संपर्क का चयन होना चाहिए</string>
+    <string name="group_name_hint">समूह का नाम</string>
+    <string name="empty_conversations">कोई वार्तालाप नहीं!!!</string>
+    <string name="enter_message_hint">एक सन्देश लिखिए...</string>
+    <string name="send_text">भेजें</string>
+    <string name="cancel_text">रद्द करना</string>
+    <string name="start_text">प्रारंभ</string>
+    <string name="no_conversation">आपके पास कोई बातचीत नहीं है</string>
+    <string name="search_not_found_for_messages">कोई बातचीत नहीं मिली</string>
+    <string name="info_broadcast_message">कोई भी संदेश नहीं मिलेगा प्रत्येक प्राप्तकर्ता को अलग-अलग पाया जाएगा</string>
+    <string name="shareOptions">शेयर</string>
+    <string name="email">ईमेल आईडी मान</string>
+    <string name="info_sample_contact_list">नमूना के रूप में डिवाइस संपर्क दिखाते हुए यहां अपने ऐप संपर्कों को पॉप्युलेट करें</string>
+    <string name="info_message_sync">सर्वर के साथ संदेश सिंक करना, इसमें कुछ मिनट लग सकते हैं!</string>
+    <string name="instruction_open_conversation_thread">पूरी तरह से देखने के लिए किसी भी बातचीत पर टैप करें</string>
+    <string name="instruction_go_back_to_recent_conversation_list">पिछली स्क्रीन पर वापस जाने के लिए, बाएं से दाएं स्लाइड करें</string>
+    <string name="action_settings">सेटिंग्स</string>
+    <string name="user_block">ब्लॉक</string>
+    <string name="user_un_block">अनब्लॉक</string>
+    <string name="applozic_my_profile_option_info">प्रोफाइल</string>
+    <string name="location_services_disabled_message">स्थान भेजने के लिए आपके स्थान तक पहुंच की आवश्यकता है। स्थान पहुंच चालू करें</string>
+    <string name="location_services_disabled_title">स्थान सेवाएं अक्षम</string>
+    <string name="location_service_settings">सेटिंग्स</string>
+    <string name="location_sending_cancelled">स्थान भेजना रद्द</string>
+    <string name="unable_to_fetch_location">स्थान प्राप्त करने में असमर्थ</string>
+    <string name="waiting_for_current_location">वर्तमान स्थान की प्रतीक्षा कर रहा है</string>
+    <string name="select_file">किसी फाइल का चयन करें</string>
+    <string name="attachment_retry">पुन: प्रयास करें</string>
+    <string name="delete_conversation">मिटाना</string>
+    <string name="info_app_not_found_to_open_file">इस फ़ाइल को खोलने के लिए कोई एप्लिकेशन नहीं मिला</string>
+    <string name="unable_to_play_requested_audio_file">इस फ़ाइल को खोलने के लिए कोई एप्लिकेशन नहीं मिला</string>
+    <string name="file_not_selected">क्या आप फ़ाइल का चयन करना भूल गए?</string>
+    <string name="info_attachment_max_allowed_file_size">अधिकतम अपलोड फ़ाइल आकार की सीमा 10 Mb से अधिक नहीं हो सकती</string>
+    <string name="info_file_attachment_error">नहीं भेज सकते हैं! फ़ाइल पढ़ने के दौरान कुछ अनपेक्षित त्रुटि हुई</string>
+    <string name="select_file_count_limit">एक से अधिक फाइल का चयन नहीं कर सकता</string>
+    <string name="ScheduleText">अनुसूची</string>
+    <string name="enter_mt_message_hint">एक सन्देश लिखिए..</string>
+    <string name="messageOptions">संदेश विकल्प</string>
+    <string name="conversation">बातचीत</string>
+    <string name="conversation_options">विकल्प</string>
+    <string name="info_message_scheduled">संदेश सफलतापूर्वक शेड्यूल किया गया है</string>
+    <string name="sync_older_messages">क्या आप पुराने संदेशों को समन्वयित करना चाहते हैं?</string>
+    <string name="dialog_delete_conversation_title">बातचीत मिटा दो</string>
+    <string name="dialog_delete_conversation_confir">नाम के सभी संदेश हटाएं?</string>
+    <string name="negetiveButtonText">साफ़</string>
+    <string name="scheduleDialogHeader">अनुसूची संदेश</string>
+    <string name="scheduledDateText">निर्धारित तिथि :</string>
+    <string name="scheduledTimeText">निर्धारित समय</string>
+    <string name="defaultDate">dd-mm-yyyy</string>
+    <string name="defaultTime">HH:MM:SS</string>
+    <string name="selectionRequestText">अपना संदेश शेड्यूल करने के लिए दिनांक और समय चुनें।</string>
+    <string name="wearable_action_title">जवाब दें</string>
+    <string name="wearable_action_label"> को जवाब दें</string>
+
+    <string name ="you_string">आप</string>
+    <string name="applozic_account_closed">अपने ऐप में चैट को सक्रिय करने के लिए कृपया एप्लीकोज से संपर्क करें</string>
+    <string name="applozic_free_version_not_allowed_on_release_build">अपने ऐप में चैट को सक्रिय करने के लिए कृपया एप्लीकोज से संपर्क करें</string>
+    <string name ="ok_alert">ठीक</string>
+    <string name ="subtitle_last_seen_at_time">अंतिम बार देखा गया</string>
+    <string name="is_typing">टाइप कर रहा है...</string>
+    <string name="user_online">ऑनलाइन</string>
+    <string name="removing_channel_user">निकाला जा रहा है</string>
+    <string name="adding_channel_user">जोड़ा जा रहा है ....</string>
+    <string name="deleting_channel_user">हटा रहा है ...</string>
+    <string name="channel_member_exit">बाहर निकल रहा है ....</string>
+    <string name="channel_update">समूह जानकारी अपडेट कर रहा है ....</string>
+    <string name="dialog_remove_group_user">[समूह] से [नाम] निकालें?</string>
+    <string name="dialog_add_group_user">[नाम] को [समूह] में जोड़ें?</string>
+    <string name="group_name_info">[समूह]</string>
+    <string name="groupType_info">[समूह प्रकार]</string>
+    <string name="group_string">समूह</string>
+    <string name="broadcast_string">प्रसारण</string>
+    <string name="new_broadcast_name_info">नया प्रसारण</string>
+    <string name="mute_Group">म्यूट </string>
+    <string name="unmute_Group">अनम्यूट</string>
+    <string name="user_name_info">[नाम]</string>
+    <string name="channel_member_title">संपर्क का चयन करें</string>
+    <string name="channel_delete_group_button">समूह हटाएं</string>
+    <string name="broadcast_exit_button">ब्रॉडकास्ट से बाहर निकलें</string>
+    <string name="broadcast_delete_button">प्रसारण हटायें</string>
+    <string name="channel_created_by">द्वारा बनाया गया</string>
+    <string name="remove_member">हटाना</string>
+    <string name="add">जोड़ना</string>
+    <string name="group_creating_info">समूह बनाना कृपया प्रतीक्षा करें</string>
+    <string name="broadcast_creating_info">प्रसारण बनाना कृपया प्रतीक्षा करें</string>
+    <string name="channel_exit">बाहर जाएं</string>
+    <string name="channel_deleting">हटाना</string>
+    <string name="leave_channel">क्या आप वाकई इस [समूह प्रकार] से बाहर निकलना चाहते हैं?</string>
+    <string name="exit_channel_message_info">क्या आप वाकई [समूह] [समूह प्रकार] से बाहर निकलना चाहते हैं?</string>
+    <string name="delete_channel_messages_and_channel_info">क्या आप वाकई [समूह] [समूह प्रकार] को हटाना चाहते हैं?</string>
+    <string name="channel_name_empty">समूह का नाम रिक्त नहीं हो सकता</string>
+    <string name="channel_add_alert">समूह में प्रतिभागी को जोड़ने में असमर्थ क्योंकि आप प्रतिभागी नहीं हैं</string>
+    <string name="channel_edit_alert">समूह का नाम बदलने में असमर्थ क्योंकि आप प्रतिभागी नहीं हैं</string>
+    <string name="admin_text">समूह प्रशासन</string>
+    <string name="user_not_in_this_group_text">आप अब इस समूह के प्रतिभागी नहीं हैं</string>
+    <string name="update_channel_title_name">समूह नाम दर्ज करें</string>
+    <string name="new_channel_name_hint">समूह का नाम..</string>
+    <string name="user_block_info">ब्लॉक [नाम]? अवरुद्ध उपयोगकर्ता अब आपको संदेश भेजने में सक्षम नहीं होगा</string>
+    <string name="user_un_block_info">एक संदेश भेजने के लिए [नाम] को अनवरोधित करें</string>
+    <string name="please_wait_info">एक क्षण प्रतीक्षा करें...</string>
+    <string name="applozic_userId_error_info_in_logs">कृपया आईडी रिक्त नहीं हो सकती और चैनल कुंजी को रिक्त नहीं होना चाहिए</string>
+    <string name="applozic_add_user_to_multiple_channel_error_info_in_logs">यूज़र आईडी रिक्त या रिक्त नहीं हो सकती और चैनल की सूची रिक्त नहीं होनी चाहिए</string>
+    <string name="unable_share_message">साझा करने में असमर्थ आप इस समूह के प्रतिभागी नहीं हैं</string>
+    <string name="user_is_blocked">भेजने में असमर्थ, उपयोगकर्ता ब्लॉक है</string>
+    <string name="when_on_wifi">जब वाईफाई चालू है</string>
+    <string name="when_on_cellular_network">जब सेलुलर नेटवर्क चालू है</string>
+    <string name="media_auto_download">मीडिया ऑटो डाउनलोड</string>
+    <string name="applozic_network_usage">नेटवर्क उपयोग</string>
+    <string name="enable_vibration_notification">सूचना पर कंपन सक्षम करें</string>
+    <string name="group_members_limit_exceeds">सीमा तक पहुंचे, किसी व्यक्ति को पहले समूह से निकालें</string>
+    <string name="user_has_been_deleted_text">भेजने हटा दिया गया है</string>
+    <string name="make_admin_text_info">समूह व्यवस्थापक बनाना</string>
+    <string name="attachment_string">अनुलग्नक </string>
+    <string name="photo_string">फ़ोटो</string>
+    <string name="contact_string">संपर्क </string>
+    <string name="video_string">वीडियो</string>
+    <string name="audio_string">ऑडियो</string>
+    <string name="al_location_string">स्थान</string>
+    <string name="user_logout_info">लॉगआउट सफल</string>
+    <string name="participants">प्रतिभागियों</string>
+    <string name="channel_exit_button">ग्रुप से बाहर निकलें</string>
+    <string name="chats">चैट</string>
+    <string name="refresh">रीफ्रेश</string>
+    <string name="start_New">नया शुरू करें</string>
+    <string name="dial">डायल</string>
+    <string name="logout">लोग आउट</string>
+    <string name="next">बाद</string>
+    <string name="done">समाप्त</string>
+    <string name="gallery">गेलरी</string>
+    <string name="Contact">संपर्क </string>
+    <string name="Group">समूह</string>
+    <string name="today">आज</string>
+    <string name="status">स्थिति</string>
+    <string name="name">नाम</string>
+    <string name="phone">फ़ोन</string>
+    <string name="copy">कॉपी</string>
+    <string name="forward">आगे</string>
+    <string name="resend">पुन: भेजें</string>
+    <string name="delete">मिटाना</string>
+    <string name="info">जानकारी</string>
+    <string name="share">शेयर</string>
+    <string name="reply">जवाब दें</string>
+    <string name="self_destruct">आत्म विनाश</string>
+    <string name="off">ऑफ </string>
+    <string name="one_min">1 मिनट</string>
+    <string name="two_min">2 मिनट</string>
+    <string name="five_min">5 मिनट</string>
+    <string name="ten_min">10 मिनट</string>
+    <string name="sms">एसएमएस</string>
+    <string name="mt">मीट्रिक टन</string>
+    <string name="Delete_conversation">चैट हटाएं</string>
+    <string name="delete_group">समूह हटाएं</string>
+    <string name="exit_group">समूह से बाहर निकलें</string>
+    <string name="message">संदेश </string>
+    <string name="remove">हटाना</string>
+    <string name="make_group_admin">समूह व्यवस्थापक को बनाएं</string>
+    <string name="take_photo">फोटो लो</string>
+    <string name="attach_file">फ़ाइल जोड़ें</string>
+    <string name="audio_message">ऑडियो संदेश</string>
+    <string name="video_message">वीडियो संदेश</string>
+    <string name="share_contact">संपर्क साझा करें</string>
+    <string name="location">:स्थान</string>
+    <string name="file">:फ़ाइल</string>
+    <string name="audio">:ऑडियो</string>
+    <string name="video">:वीडियो</string>
+    <string name="camera">:कैमरा</string>
+    <string name="contact">:संपर्क</string>
+    <string name="current_location">वर्तमान स्थान</string>
+    <string name="Add_caption">शीर्षक दें...</string>
+    <string name="New_Attachment">नई अनुलग्नक</string>
+    <string name="send_location">स्थान भेजें</string>
+    <string name="send_your_current_location">अपना वर्तमान स्थान भेजें</string>
+    <string name="stop">स्टाँप</string>
+    <string name="profile_status">प्रोफ़ाइल स्थिति</string>
+    <string name="no_status">स्टेटस</string>
+    <string name="online">ऑनलाइन</string>
+    <string name="notifications">सूचनाएं</string>
+    <string name="sales_manager">सेल्स प्रबंधक</string>
+    <string name="display_name">प्रदर्शित होने वाला नाम</string>
+    <string name="kb45">45 केबी</string>
+    <string name="message_text">संदेश  टेक्स्ट</string>
+    <string name="read">रीड</string>
+    <string name="delivered">पहुंचा दिया</string>
+    <string name="remove_image">छवि निकालें</string>
+    <string name="file_name_will_come_here_for_attachment">फ़ाइल नाम अटैचमेंट के लिए यहां आएगा</string>
+    <string name="mb_10">10 एमबी</string>
+    <string name="mobile_number">मोबाइल नंबर</string>
+    <string name="schedule">शिड्यूल</string>
+    <string name="delivery_status">वितरण की स्थिति</string>
+    <string name="testTime">टेस्ट समय</string>
+    <string name="created_at_time">समय पर बनाया गया</string>
+    <string name="edit_group_name">समूह का नाम संपादित करें</string>
+    <string name="add_member">सदस्य जोड़ें</string>
+    <string name="push_notifications">सूचनाएं भेजना</string>
+    <string name="group_not_exist">समूह मौजूद नहीं है</string>
+    <string name="Add_Contacts">संपर्क जोड़ें</string>
+    <string name="no_groups">कोई समूह नहीं</string>
+    <string name="search_match_other">अन्य फ़ील्ड से मेल खाता है</string>
+    <string name="invite">अपने दोस्तों को आमंत्रित करें</string>
+    <string name="contacts_not_found">कोई संपर्क नहीं मिला</string>
+    <string name="Location">स्थान</string>
+    <string name="applozic_failed_to_load_contact">संपर्क लोड करने में विफल</string>
+    <string name="applozic_Cropping_failed">क्रॉपिंग असफल</string>
+    <string name="applozic_resending_attachment">एटचमेंट पुनः भेजें....</string>
+    <string name="processing_please_wait">प्रसंस्करण किया जा रहा है .. कृपया प्रतीक्षा करें</string>
+    <string name="success">सफलता</string>
+    <string name="error">एरर</string>
+    <string name="camera_option">कैमरा</string>
+    <string name="attach_price">Attach price</string>
+    <string name="mute_group_for">समय के लिए म्यूट समूह ..</string>
+    <string name="eight_Hours">आठ घंटे</string>
+    <string name="one_week"> एक हफ्ता</string>
+    <string name="one_year"> एक साल</string>
+    <string name="file_does_not_exist">दस्तावेज मौजूद नहीं है</string>
+    <string name="copied_message">कॉपी किए गए संदेश</string>
+    <string name="cancel">रद्द करना</string>
+    <string name="data_usage">डेटा का उपयोग</string>
+    <string name="missed">मिस्ड </string>>
+    <string name="hold_to_record_release_to_send">रिकॉर्ड करने के लिए पकड़ो, भेजने के लिए जारी</string>
+    <string name="slide_to_cancel">रद्द करने के लिए स्लाइड करें</string>
+    <string name="tap_on_mic_button_to_record_audio">ऑडियो रिकॉर्डिंग प्रारंभ करने के लिए माइक बटन पर टैप करें</string>
+    <string name="profile_contact">No Contact number</string>
+    <string name="profile_contact_number">Contact Number</string>
+    <string name="user_name">User Name</string>
+
+
+    <string-array name="secret_message_timer_array">
+        <item>आत्म विनाश</item>
+        <item>ऑफ</item>
+        <item>1 मिनट</item>
+        <item>2 मिनट</item>
+        <item>5 मिनट</item>
+        <item>10 मिनट</item>
+    </string-array>
+
+    <string-array name="send_type_options">
+        <item>एसएमएस</item>
+        <item>MT</item>
+    </string-array>
+
+    <!-- Scheduled Message strings -->
+
+    <string-array name="schedule_menu">
+        <item>कॉपी</item>
+        <item>रद्द</item>
+    </string-array>
+
+    <string-array name="menu">
+        <item>कॉपी</item>
+        <item>आगे भेजना</item>
+        <item>पुन: भेजें</item>
+        <item>मिटाना</item>
+        <item>जानकारी</item>
+        <item>शेयर</item>
+        <item>जवाब दें</item>
+    </string-array>
+
+    <string-array name="conversation_options_menu">
+        <item>चैट हटाएं</item>
+        <item>समूह हटाएं</item>
+        <item>समूह से बाहर निकलें</item>
+    </string-array>
+
+    <!--Group member list menu -->
+    <string-array name="channel_users_menu_option">
+        <item>संदेश</item>
+        <item>हटाना</item>
+    </string-array>
+
+    <!--Multimedia options -->
+    <string-array name="multimediaOptions_sms">
+        <item>वर्तमान स्थान</item>
+    </string-array>
+
+    <string-array name="multimediaOptions_mt">
+        <item>वर्तमान स्थान</item>
+        <item>फोटो लो</item>
+        <item>फ़ाइल जोड़ें</item>
+        <item>ऑडियो संदेश</item>
+        <item>वीडियो संदेश</item>
+        <item>संपर्क साझा करें</item>
+    </string-array>
+
+    <string-array name="multimediaOptions_with_price">
+        <item>वर्तमान स्थान</item>
+        <item>फोटो लो</item>
+        <item>फ़ाइल जोड़ें</item>
+        <item>ऑडियो संदेश</item>
+        <item>वीडियो संदेश</item>
+        <item>संपर्क साझा करें</item>
+        <item>कीमत संलग्न करें</item>
+
+    </string-array>
+
+    <string-array name="multimediaOptions_with_price_text">
+        <item>स्थान</item>
+        <item>कैमरा</item>
+        <item>फ़ाइल</item>
+        <item>ऑडियो</item>
+        <item>वीडियो</item>
+        <item>संपर्क</item>
+        <item>मूल्य</item>
+    </string-array>
+
+    <string-array name="multimediaOptions_without_price_text">
+        <item>स्थान</item>
+        <item>कैमरा</item>
+        <item>फ़ाइल</item>
+        <item>ऑडियो</item>
+        <item>वीडियो</item>
+        <item>संपर्क</item>
+    </string-array>
+
+    <string-array name="multimediaOptions_without_price_key">
+        <item>:स्थान</item>
+        <item>:कैमरा</item>
+        <item>:फ़ाइल</item>
+        <item>:ऑडियो</item>
+        <item>:वीडियो</item>
+        <item>:संपर्क</item>
+    </string-array>
+
+    <string-array name="multimediaOptionIcons_without_price">
+        <item>&#xf041;</item>
+        <item>&#xf030;</item>
+        <item>&#xf0c6;</item>
+        <item>&#xf130;</item>
+        <item>&#xf03d;</item>
+        <item>&#xf007;</item>
+    </string-array>
+
+    <array name="alphabet_color">
+        <item>#f16364</item>
+        <item>#f58559</item>
+        <item>#f9a43e</item>
+        <item>#e4c62e</item>
+        <item>#67bf74</item>
+        <item>#59a2be</item>
+        <item>#2093cd</item>
+        <item>#ad62a7</item>
+    </array>
+
+</resources>

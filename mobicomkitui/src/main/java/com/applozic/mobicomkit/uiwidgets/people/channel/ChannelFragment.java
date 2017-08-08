@@ -49,23 +49,21 @@ import de.hdodenhof.circleimageview.CircleImageView;
  * Created by sunil on 28/1/16.
  */
 public class ChannelFragment extends ListFragment implements
-        AdapterView.OnItemClickListener,SearchListFragment,LoaderManager.LoaderCallbacks<Cursor> {
+        AdapterView.OnItemClickListener, SearchListFragment, LoaderManager.LoaderCallbacks<Cursor> {
 
     private static final String SHARE_TEXT = "share_text";
+    static int QUERY_ID = 1;
     private static String inviteMessage;
+    String mSearchTerm;
+    ImageLoader mChannelImageLoader;
+    BaseContactService baseContactService;
     private ChannelAdapter mAdapter; // The main query adapter
     // Contact selected listener that allows the activity holding this fragment to be notified of
 // a contact being selected
     private OnContactsInteractionListener mOnChannelSelectedListener;
-
     private Button shareButton;
     private TextView resultTextView;
-
     private boolean syncStatus = true;
-    String mSearchTerm;
-    ImageLoader mChannelImageLoader;
-    BaseContactService baseContactService;
-    static  int QUERY_ID = 1;
     private int mPreviouslySelectedSearchItem = 0;
 
     public ChannelFragment() {
@@ -76,13 +74,13 @@ public class ChannelFragment extends ListFragment implements
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         inviteMessage = Utils.getMetaDataValue(getActivity().getApplicationContext(), SHARE_TEXT);
-        baseContactService =  new AppContactService(getActivity());
+        baseContactService = new AppContactService(getActivity());
         mAdapter = new ChannelAdapter(getActivity().getApplicationContext());
 
         if (savedInstanceState != null) {
             mSearchTerm = savedInstanceState.getString(SearchManager.QUERY);
         }
-        final Context context = getActivity();
+        final Context context = getActivity().getApplicationContext();
         mChannelImageLoader = new ImageLoader(context, getListPreferredItemHeight()) {
             @Override
             protected Bitmap processBitmap(Object data) {
@@ -103,7 +101,7 @@ public class ChannelFragment extends ListFragment implements
 
         // Moves to the Cursor row corresponding to the ListView item that was clicked
         cursor.moveToPosition(position);
-        Channel channel =  ChannelDatabaseService.getInstance(getContext()).getChannel(cursor);
+        Channel channel = ChannelDatabaseService.getInstance(getContext()).getChannel(cursor);
         mOnChannelSelectedListener.onGroupSelected(channel);
     }
 
@@ -115,7 +113,7 @@ public class ChannelFragment extends ListFragment implements
         shareButton = (Button) view.findViewById(R.id.actionButton);
         shareButton.setVisibility(View.GONE);
         resultTextView = (TextView) view.findViewById(R.id.result);
-        resultTextView.setText("No Groups");
+        resultTextView.setText(getString(R.string.no_groups));
         return view;
     }
 
@@ -208,7 +206,6 @@ public class ChannelFragment extends ListFragment implements
     }
 
 
-
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
@@ -227,15 +224,39 @@ public class ChannelFragment extends ListFragment implements
 
         // Updates current filter to new filter
         mSearchTerm = newFilter;
-        mAdapter.indexOfSearchQuery(newFilter);
-
+        if(mAdapter != null){
+            mAdapter.indexOfSearchQuery(newFilter);
+        }
         getLoaderManager().restartLoader(
                 QUERY_ID, null, ChannelFragment.this);
 
         return true;
     }
 
+    private int getListPreferredItemHeight() {
+        final TypedValue typedValue = new TypedValue();
 
+        // Resolve list item preferred height theme attribute into typedValue
+        getActivity().getTheme().resolveAttribute(
+                android.R.attr.listPreferredItemHeight, typedValue, true);
+
+// Create a new DisplayMetrics object
+        final DisplayMetrics metrics = new DisplayMetrics();
+
+        // Populate the DisplayMetrics
+        getActivity().getWindowManager().getDefaultDisplay().getMetrics(metrics);
+
+        // Return theme value based on DisplayMetrics
+        return (int) typedValue.getDimension(metrics);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (mChannelImageLoader != null) {
+            mChannelImageLoader.setPauseWork(false);
+        }
+    }
 
     private class ChannelAdapter extends CursorAdapter implements SectionIndexer {
         Context context;
@@ -307,11 +328,11 @@ public class ChannelFragment extends ListFragment implements
             ///////////////////
 
 
-            if(!TextUtils.isEmpty(channel.getImageUrl())){
+            if (!TextUtils.isEmpty(channel.getImageUrl())) {
                 mChannelImageLoader.loadImage(channel, holder.groupIcon);
-            } else if(channel.isBroadcastMessage()){
+            } else if (channel.isBroadcastMessage()) {
                 holder.groupIcon.setImageResource(R.drawable.applozic_ic_applozic_broadcast);
-            }else {
+            } else {
                 holder.groupIcon.setImageResource(R.drawable.applozic_group_icon);
             }
 
@@ -415,33 +436,6 @@ public class ChannelFragment extends ListFragment implements
             TextView groupName;
             TextView totalmembers;
             CircleImageView groupIcon;
-        }
-    }
-
-
-    private int getListPreferredItemHeight() {
-        final TypedValue typedValue = new TypedValue();
-
-        // Resolve list item preferred height theme attribute into typedValue
-        getActivity().getTheme().resolveAttribute(
-                android.R.attr.listPreferredItemHeight, typedValue, true);
-
-// Create a new DisplayMetrics object
-        final DisplayMetrics metrics = new DisplayMetrics();
-
-        // Populate the DisplayMetrics
-        getActivity().getWindowManager().getDefaultDisplay().getMetrics(metrics);
-
-        // Return theme value based on DisplayMetrics
-        return (int) typedValue.getDimension(metrics);
-    }
-
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        if(mChannelImageLoader != null){
-            mChannelImageLoader.setPauseWork(false);
         }
     }
 

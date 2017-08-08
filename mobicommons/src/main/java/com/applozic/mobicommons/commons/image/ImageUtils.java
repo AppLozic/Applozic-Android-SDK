@@ -13,20 +13,22 @@ import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
 
-import com.applozic.mobicommons.file.FileUtils;
+import com.applozic.mobicommons.commons.core.utils.Utils;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileDescriptor;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 
 /**
  * Created by devashish on 21/12/14.
  */
 public class ImageUtils {
 
-    private static Context context;
-
     private static final String TAG = "ImageUtils";
+    private static Context context;
 
     public ImageUtils(Context context) {
         this.context = context;
@@ -79,13 +81,14 @@ public class ImageUtils {
     }
 
     /**
-     *
      * @param uri
      * @return
      */
     public static Bitmap getPreview(Context context, Uri uri) {
-        String filePath  = FileUtils.getPath(context, uri);
-
+        if (uri == null) {
+            return null;
+        }
+        String filePath = uri.toString();
         BitmapFactory.Options bounds = new BitmapFactory.Options();
         bounds.inJustDecodeBounds = true;
         BitmapFactory.decodeFile(filePath, bounds);
@@ -99,7 +102,6 @@ public class ImageUtils {
         opts.inSampleSize = originalSize / 200;
         return BitmapFactory.decodeFile(filePath, opts);
     }
-
 
 
     public static Bitmap getImageRotatedBitmap(Bitmap bitmap, String filePath, int reqWidth, int reqHeight) {
@@ -146,7 +148,7 @@ public class ImageUtils {
                 options.inJustDecodeBounds = false;
                 return BitmapFactory.decodeFile(imageLocalPath, options);
             } catch (Exception ex) {
-                Log.e(TAG, "Image not found on local storage: " + ex.getMessage());
+                Utils.printLog(context,TAG, "Image not found on local storage: " + ex.getMessage());
             }
         }
         return null;
@@ -163,6 +165,28 @@ public class ImageUtils {
             e.printStackTrace();
         }
         return file.getAbsolutePath();
+    }
+
+
+    public static Bitmap decodeSampledBitmapFromPath(String path) {
+        FileInputStream fileInputStream = null;
+        try {
+            fileInputStream = new FileInputStream(path);
+            FileDescriptor fd = fileInputStream.getFD();
+            return ImageLoader.decodeSampledBitmapFromDescriptor(fd, 612,
+                    816);
+        } catch (Exception e) {
+            Log.i(TAG, "File not found : " + e.getMessage());
+        } finally {
+            if (fileInputStream != null) {
+                try {
+                    fileInputStream.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return null;
     }
 
 }

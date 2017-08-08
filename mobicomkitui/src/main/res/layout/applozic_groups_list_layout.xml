@@ -1,29 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/listViewActivatedStyle"
     android:layout_width="match_parent"
-    android:layout_height="?android:attr/listPreferredItemHeight"
-    style="@style/listViewActivatedStyle">
+    android:layout_height="?android:attr/listPreferredItemHeight">
 
     <!-- Use standard android.R class icon id instead of app specific id. This is just useful for
          consistency. Use scaleType=centerCrop to give a nice full cropped image in the assigned
          space -->
 
     <RelativeLayout
-        android:layout_width="wrap_content"
         android:id="@+id/profile_image_relative_layout"
-        android:paddingLeft="@dimen/listview_item_padding"
-        android:paddingRight="0dp"
-        android:paddingTop="8dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:paddingBottom="6dp"
-        android:layout_height="wrap_content">
+        android:paddingStart="@dimen/listview_item_padding"
+        android:paddingLeft="@dimen/listview_item_padding"
+        android:paddingEnd="0dp"
+        android:paddingRight="0dp"
+        android:paddingTop="8dp">
 
         <TextView
             android:id="@+id/alphabeticImage"
             android:layout_width="48dp"
             android:layout_height="48dp"
+            android:layout_gravity="center"
             android:background="@drawable/mobiframework_circular_text_view"
             android:gravity="center"
-            android:layout_gravity="center"
             android:text=""
             android:textColor="#ffffff"
             android:textSize="20sp"
@@ -34,9 +36,10 @@
             android:id="@+id/contactImage"
             android:layout_width="48dp"
             android:layout_height="48dp"
+            android:layout_gravity="center"
             android:layout_toRightOf="@+id/alphabeticImage"
             android:src="@drawable/applozic_group_icon"
-            android:layout_gravity="center"
+            android:layout_toEndOf="@+id/alphabeticImage"
             android:visibility="visible" />
 
     </RelativeLayout>
@@ -45,18 +48,21 @@
          visibility set to gone -->
     <TextView
         android:id="@+id/applozic_group_members"
-        android:paddingLeft="@dimen/listview_item_padding"
         android:layout_width="match_parent"
         android:layout_height="26dp"
-        android:layout_toRightOf="@id/profile_image_relative_layout"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
-        android:textColor="@color/message_text_color"
-        android:singleLine="true"
+        android:paddingStart="@dimen/listview_item_padding"
+        android:layout_alignParentEnd="true"
+        android:layout_toEndOf="@id/profile_image_relative_layout"
+        android:layout_toRightOf="@id/profile_image_relative_layout"
         android:ellipsize="end"
-        android:visibility="gone"
+        android:paddingLeft="@dimen/listview_item_padding"
+        android:singleLine="true"
         android:text=""
-        android:textSize="14sp" />
+        android:textColor="@color/message_text_color"
+        android:textSize="14sp"
+        android:visibility="gone" />
 
     <!-- Use standard android.R class text1 id instead of app specific id. This is just useful for
          consistency. This view also sets layout_alignWithParentIfMissing=true which lets the view
@@ -64,18 +70,22 @@
          its initial state). -->
     <TextView
         android:id="@+id/applozic_group_name"
-        android:paddingLeft="@dimen/listview_item_padding"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_above="@id/applozic_group_members"
-        android:layout_toRightOf="@id/profile_image_relative_layout"
-        android:gravity="center_vertical"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
         android:layout_alignWithParentIfMissing="true"
-        android:textColor="@color/message_text_color"
-        android:singleLine="true"
+        android:paddingStart="@dimen/listview_item_padding"
+        android:layout_toEndOf="@id/profile_image_relative_layout"
+        android:layout_alignParentEnd="true"
+        android:layout_toRightOf="@id/profile_image_relative_layout"
         android:ellipsize="end"
+        android:gravity="center_vertical"
+        android:paddingLeft="@dimen/listview_item_padding"
+        android:singleLine="true"
+        android:textDirection="locale"
+        android:textColor="@color/message_text_color"
         android:textSize="18sp" />
 
 

@@ -25,6 +25,14 @@ public class ApplozicChannelLeaveMember extends AsyncTask<Void, Void, Boolean> {
     ProgressDialog progressDialog;
     boolean enableProgressDialog;
 
+    public ApplozicChannelLeaveMember(Context context, Integer channelKey, String userId, ChannelLeaveMemberListener channelLeaveMemberListener) {
+        this.channelKey = channelKey;
+        this.userId = userId;
+        this.channelLeaveMemberListener = channelLeaveMemberListener;
+        this.context = context;
+        this.channelService = ChannelService.getInstance(context);
+    }
+
     public boolean isEnableProgressDialog() {
         return enableProgressDialog;
     }
@@ -41,18 +49,10 @@ public class ApplozicChannelLeaveMember extends AsyncTask<Void, Void, Boolean> {
         this.clientGroupId = clientGroupId;
     }
 
-    public ApplozicChannelLeaveMember(Context context, Integer channelKey, String userId, ChannelLeaveMemberListener channelLeaveMemberListener) {
-        this.channelKey = channelKey;
-        this.userId = userId;
-        this.channelLeaveMemberListener = channelLeaveMemberListener;
-        this.context = context;
-        this.channelService = ChannelService.getInstance(context);
-    }
-
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
-        if(enableProgressDialog){
+        if (enableProgressDialog) {
             progressDialog = ProgressDialog.show(context, "",
                     context.getString(R.string.channel_member_exit), true);
         }
@@ -84,7 +84,7 @@ public class ApplozicChannelLeaveMember extends AsyncTask<Void, Void, Boolean> {
     @Override
     protected void onPostExecute(Boolean resultBoolean) {
         super.onPostExecute(resultBoolean);
-        if(progressDialog!=null && progressDialog.isShowing()){
+        if (progressDialog != null && progressDialog.isShowing()) {
             progressDialog.dismiss();
         }
 

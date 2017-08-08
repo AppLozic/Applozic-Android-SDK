@@ -14,15 +14,6 @@ import com.applozic.mobicommons.people.channel.Channel;
 public class ApplozicChannelDeleteTask extends AsyncTask<Void, Void, Boolean> {
 
 
-    public interface TaskListener {
-
-        void onSuccess(String response);
-
-        void onFailure(String response, Exception exception);
-
-        void onCompletion();
-    }
-
     private final TaskListener taskListener;
     private final Context context;
     private String response;
@@ -34,7 +25,6 @@ public class ApplozicChannelDeleteTask extends AsyncTask<Void, Void, Boolean> {
         this.channel = channel;
         this.taskListener = listener;
     }
-
 
     @Override
     protected Boolean doInBackground(Void... params) {
@@ -56,6 +46,15 @@ public class ApplozicChannelDeleteTask extends AsyncTask<Void, Void, Boolean> {
             this.taskListener.onFailure(response, mException);
         }
         this.taskListener.onCompletion();
+    }
+
+    public interface TaskListener {
+
+        void onSuccess(String response);
+
+        void onFailure(String response, Exception exception);
+
+        void onCompletion();
     }
 
 }

@@ -31,7 +31,7 @@ public class ConversationService {
 
     public synchronized static ConversationService getInstance(Context context) {
         if (conversationService == null) {
-            conversationService = new ConversationService(context);
+            conversationService = new ConversationService(context.getApplicationContext());
         }
         return conversationService;
     }
@@ -77,13 +77,14 @@ public class ConversationService {
 
     public synchronized Integer createConversation(Conversation conversation) {
         ChannelFeed channelFeed = conversationClientService.createConversation(conversation);
-        if(channelFeed != null){
+        if (channelFeed != null) {
             if (conversation.getSupportIds() != null) {
                 ChannelFeed[] channelFeeds = new ChannelFeed[1];
                 channelFeeds[0] = channelFeed;
-                ChannelService.getInstance(context).processChannelFeedList(channelFeeds, false);;
+                ChannelService.getInstance(context).processChannelFeedList(channelFeeds, false);
+                ;
             }
-            if(channelFeed.getConversationPxy()!= null){
+            if (channelFeed.getConversationPxy() != null) {
                 addConversation(channelFeed.getConversationPxy());
                 return channelFeed.getConversationPxy().getId();
             }
@@ -105,11 +106,14 @@ public class ConversationService {
         conversationDatabaseService.deleteConversation(userId);
     }
 
-    public synchronized Integer isConversationExist(String userId,String topicId){
-        if(TextUtils.isEmpty(userId) ||  TextUtils.isEmpty(topicId)){
+    public synchronized Integer isConversationExist(String userId, String topicId) {
+        if (TextUtils.isEmpty(userId) || TextUtils.isEmpty(topicId)) {
             return null;
         }
-        return  conversationDatabaseService.isConversationExit(userId,topicId);
+        return conversationDatabaseService.isConversationExit(userId, topicId);
     }
 
+    public void updateTopicLocalImageUri(String imageUri, Integer conversationId) {
+        conversationDatabaseService.updateTopicLocalImageUri(imageUri, conversationId);
+    }
 }

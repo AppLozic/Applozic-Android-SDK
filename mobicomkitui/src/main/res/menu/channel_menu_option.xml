@@ -4,16 +4,16 @@
 
     <item
         android:id="@+id/edit_channel_name"
-        android:orderInCategory="1"
         android:icon="@drawable/applozic_ic_mode_edit_white"
+        android:orderInCategory="1"
         android:showAsAction="ifRoom"
-        android:title="Edit group name"
+        android:title="@string/edit_group_name"
         mobitexter:showAsAction="ifRoom" />
     <item
         android:id="@+id/add_member_to_channel"
+        android:icon="@drawable/applozic_ic_person_add_white"
         android:orderInCategory="2"
         android:showAsAction="ifRoom"
-        mobitexter:showAsAction="ifRoom"
-        android:icon="@drawable/applozic_ic_person_add_white"
-        android:title="Add member" />
-    </menu>
+        android:title="@string/add_member"
+        mobitexter:showAsAction="ifRoom" />
+</menu>

@@ -8,8 +8,7 @@ import com.applozic.mobicommons.json.JsonParcelableMarker;
 /**
  * Created by sunil on 19/2/16.
  */
-public class TopicDetail  extends JsonParcelableMarker {
-
+public class TopicDetail extends JsonParcelableMarker {
 
 
     public static final Creator<TopicDetail> CREATOR = new Creator<TopicDetail>() {
@@ -41,6 +40,10 @@ public class TopicDetail  extends JsonParcelableMarker {
         value1 = in.readString();
         key2 = in.readString();
         value2 = in.readString();
+    }
+
+    public TopicDetail() {
+
     }
 
     public String getTitle() {
@@ -99,18 +102,10 @@ public class TopicDetail  extends JsonParcelableMarker {
         this.value2 = value2;
     }
 
-
     @Override
     public int describeContents() {
         return 0;
     }
-
-
-
-    public TopicDetail() {
-
-    }
-
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
@@ -124,8 +119,8 @@ public class TopicDetail  extends JsonParcelableMarker {
         dest.writeString(value2);
     }
 
-    public String getJson(){
-        return GsonUtils.getJsonFromObject(this,TopicDetail.class);
+    public String getJson() {
+        return GsonUtils.getJsonFromObject(this, TopicDetail.class);
     }
 
 }

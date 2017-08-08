@@ -7,7 +7,7 @@ package com.applozic.mobicomkit.api.conversation;
 import com.applozic.mobicommons.json.JsonMarker;
 
 
-public class MessageInfo extends JsonMarker{
+public class MessageInfo extends JsonMarker {
 
 
     String userId;
@@ -47,8 +47,8 @@ public class MessageInfo extends JsonMarker{
         this.status = status;
     }
 
-    public boolean isRead(){
-        return readAtTime!=null;
+    public boolean isRead() {
+        return readAtTime != null;
     }
 
 

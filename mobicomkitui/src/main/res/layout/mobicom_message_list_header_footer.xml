@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:gravity="center_vertical|center_horizontal">
+    android:gravity="center_vertical|center_horizontal"
+    android:orientation="vertical">
     <!-- simplified -->
     <!--<TextView
           android:id="@+id/no_conversation"
@@ -20,10 +20,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center_vertical|center_horizontal"
-        android:visibility="gone"
-        android:paddingTop="10dp"
         android:paddingBottom="4dp"
-        android:text="@string/info_broadcast_message" />
+        android:paddingTop="10dp"
+        android:text="@string/info_broadcast_message"
+        android:visibility="gone" />
 
     <!--<Button
         android:id="@+id/start_new_conversation"

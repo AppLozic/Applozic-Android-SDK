@@ -20,7 +20,7 @@ public class DeleteConversationAsyncTask extends AsyncTask<Void, Integer, Long> 
     private Message message;
     private Contact contact;
     private MobiComConversationService conversationService;
-    private boolean isThreaddelete=false;
+    private boolean isThreaddelete = false;
     private ProgressDialog progressDialog;
     private Context context;
     private Channel channel;
@@ -33,9 +33,9 @@ public class DeleteConversationAsyncTask extends AsyncTask<Void, Integer, Long> 
         this.conversationService = conversationService;
     }
 
-    public DeleteConversationAsyncTask( MobiComConversationService conversationService,Contact contact,Channel channel,Integer conversationId,Context context){
+    public DeleteConversationAsyncTask(MobiComConversationService conversationService, Contact contact, Channel channel, Integer conversationId, Context context) {
         this.contact = contact;
-        this.context= context;
+        this.context = context;
         this.channel = channel;
         this.conversationId = conversationId;
         this.conversationService = conversationService;
@@ -46,7 +46,7 @@ public class DeleteConversationAsyncTask extends AsyncTask<Void, Integer, Long> 
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
-        if( isThreaddelete ){
+        if (isThreaddelete) {
             progressDialog = ProgressDialog.show(context, "",
                     context.getString(R.string.delete_thread_text), true);
         }
@@ -54,9 +54,9 @@ public class DeleteConversationAsyncTask extends AsyncTask<Void, Integer, Long> 
 
     @Override
     protected Long doInBackground(Void... params) {
-        if(isThreaddelete){
-            conversationService.deleteSync(contact,channel,conversationId);
-        }else{
+        if (isThreaddelete) {
+            conversationService.deleteSync(contact, channel, conversationId);
+        } else {
             conversationService.deleteMessage(message, contact);
         }
 
@@ -66,7 +66,7 @@ public class DeleteConversationAsyncTask extends AsyncTask<Void, Integer, Long> 
     @Override
     protected void onPostExecute(Long aLong) {
         super.onPostExecute(aLong);
-        if(progressDialog!=null && progressDialog.isShowing()){
+        if (progressDialog != null && progressDialog.isShowing()) {
             progressDialog.dismiss();
         }
     }

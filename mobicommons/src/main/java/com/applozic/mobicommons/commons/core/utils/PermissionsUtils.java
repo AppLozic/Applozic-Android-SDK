@@ -24,9 +24,9 @@ public class PermissionsUtils {
     public static String[] PERMISSION_CALL = {Manifest.permission.CALL_PHONE};
     public static String[] PERMISSIONS_STORAGE = {Manifest.permission.WRITE_EXTERNAL_STORAGE,
             Manifest.permission.READ_EXTERNAL_STORAGE};
-    public static String [] PERMISSIONS_RECORD_AUDIO = {Manifest.permission.RECORD_AUDIO};
-    public static String [] PERMISSION_CAMERA = {Manifest.permission.CAMERA};
-    public static String [] PERMISSION_CONTACT = {Manifest.permission.READ_CONTACTS};
+    public static String[] PERMISSIONS_RECORD_AUDIO = {Manifest.permission.RECORD_AUDIO};
+    public static String[] PERMISSION_CAMERA = {Manifest.permission.CAMERA};
+    public static String[] PERMISSION_CONTACT = {Manifest.permission.READ_CONTACTS};
 
     public static boolean verifyPermissions(int[] grantResults) {
         if (grantResults.length < 1) {
@@ -75,6 +75,7 @@ public class PermissionsUtils {
         return (ActivityCompat.shouldShowRequestPermissionRationale(activity,
                 Manifest.permission.READ_CONTACTS));
     }
+
     public static boolean checkSelfForStoragePermission(Activity activity) {
         return (ActivityCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 != PackageManager.PERMISSION_GRANTED
@@ -124,6 +125,7 @@ public class PermissionsUtils {
         int res = context.checkCallingOrSelfPermission(Manifest.permission.CAMERA);
         return (res == PackageManager.PERMISSION_GRANTED);
     }
+
     public static boolean isCallPermissionGranted(Context context) {
         int res = context.checkCallingOrSelfPermission(Manifest.permission.CALL_PHONE);
         return (res == PackageManager.PERMISSION_GRANTED);

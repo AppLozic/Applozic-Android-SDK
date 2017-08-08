@@ -11,6 +11,7 @@ import com.applozic.mobicomkit.api.conversation.Message;
 import com.applozic.mobicomkit.api.conversation.MobiComConversationService;
 import com.applozic.mobicomkit.api.conversation.SyncCallService;
 import com.applozic.mobicomkit.broadcast.BroadcastService;
+import com.applozic.mobicomkit.feed.InstantMessageResponse;
 import com.applozic.mobicomkit.feed.GcmMessageResponse;
 import com.applozic.mobicomkit.feed.MqttMessageResponse;
 import com.applozic.mobicommons.json.GsonUtils;
@@ -60,18 +61,23 @@ public class MobiComPushReceiver {
         notificationKeyList.add("APPLOZIC_24");//23 APPLOZIC_TEST
         notificationKeyList.add("APPLOZIC_25");//24 USER_ONLINE_STATUS
         notificationKeyList.add("APPLOZIC_26");//25 CONTACT_SYNC
-
+        notificationKeyList.add("APPLOZIC_27");//26 CONVERSATION_DELETED_NEW
+        notificationKeyList.add("APPLOZIC_28");//27 CONVERSATION_DELIVERED_AND_READ_NEW
+        notificationKeyList.add("APPLOZIC_29");//28 CONVERSATION_READ_NEW
+        notificationKeyList.add("APPLOZIC_30");//29 for user detail changes
+        notificationKeyList.add("APPLOZIC_33");//30 for Meta data update changes
+        notificationKeyList.add("APPLOZIC_34");//31 for user delete notification
     }
 
     public static boolean isMobiComPushNotification(Intent intent) {
-        Log.i(TAG, "checking for Applozic notification.");
+        Log.d(TAG, "checking for Applozic notification.");
         return isMobiComPushNotification(intent.getExtras());
     }
 
     public static boolean isMobiComPushNotification(Bundle bundle) {
         //This is to identify collapse key sent in notification..
         String payLoad = bundle.getString("collapse_key");
-        Log.i(TAG, "Received notification: " + payLoad);
+        Log.d(TAG, "Received notification");
 
         if (payLoad != null && payLoad.contains(MTCOM_PREFIX) || notificationKeyList.contains(payLoad)) {
             return true;
@@ -86,17 +92,17 @@ public class MobiComPushReceiver {
         }
     }
 
-    public static boolean isMobiComPushNotification(Map<String,String> data) {
+    public static boolean isMobiComPushNotification(Map<String, String> data) {
 
         //This is to identify collapse key sent in notification..
         String payLoad = data.toString();
-        Log.i(TAG, "Received notification: " + payLoad);
+        Log.d(TAG, "Received notification");
 
         if (payLoad != null && payLoad.contains(MTCOM_PREFIX) || notificationKeyList.contains(payLoad)) {
             return true;
         } else {
             for (String key : notificationKeyList) {
-                if(data.containsKey(key)){
+                if (data.containsKey(key)) {
                     return true;
                 }
             }
@@ -138,9 +144,10 @@ public class MobiComPushReceiver {
         try {
             String payloadForDelivered = null, userConnected = null,
                     userDisconnected = null, payloadDeliveredAndRead = null, messageKey = null,
-                    messageSent = null, deleteConversationForContact = null,
+                    messageSent = null, deleteConversationForContact = null, deleteConversationForChannel = null,
                     deleteMessage = null, conversationReadResponse = null,
-                    userBlockedResponse = null, userUnBlockedResponse = null;
+                    userBlockedResponse = null, userUnBlockedResponse = null, conversationReadForContact = null, conversationReadForChannel = null, conversationReadForSingleMessage = null,
+                    userDetailChanged =null,userDeleteNotification =null;
             SyncCallService syncCallService = SyncCallService.getInstance(context);
 
             if (bundle != null) {
@@ -155,6 +162,11 @@ public class MobiComPushReceiver {
                 conversationReadResponse = bundle.getString(notificationKeyList.get(9));
                 userBlockedResponse = bundle.getString(notificationKeyList.get(15));
                 userUnBlockedResponse = bundle.getString(notificationKeyList.get(16));
+                conversationReadForContact = bundle.getString(notificationKeyList.get(8));
+                conversationReadForChannel = bundle.getString(notificationKeyList.get(20));
+                deleteConversationForChannel = bundle.getString(notificationKeyList.get(22));
+                userDetailChanged = bundle.getString(notificationKeyList.get(29));
+                userDeleteNotification = bundle.getString(notificationKeyList.get(31));
             } else if (data != null) {
                 deleteConversationForContact = data.get(notificationKeyList.get(5));
                 deleteMessage = data.get(notificationKeyList.get(4));
@@ -167,7 +179,11 @@ public class MobiComPushReceiver {
                 conversationReadResponse = data.get(notificationKeyList.get(9));
                 userBlockedResponse = data.get(notificationKeyList.get(15));
                 userUnBlockedResponse = data.get(notificationKeyList.get(16));
-
+                conversationReadForContact = data.get(notificationKeyList.get(8));
+                conversationReadForChannel = data.get(notificationKeyList.get(20));
+                deleteConversationForChannel = data.get(notificationKeyList.get(22));
+                userDetailChanged = data.get(notificationKeyList.get(29));
+                userDeleteNotification = data.get(notificationKeyList.get(31));
             }
 
             if (!TextUtils.isEmpty(payloadForDelivered)) {
@@ -203,6 +219,16 @@ public class MobiComPushReceiver {
                 MobiComConversationService conversationService = new MobiComConversationService(context);
                 conversationService.deleteConversationFromDevice(deleteConversationResponse.getMessage().toString());
                 BroadcastService.sendConversationDeleteBroadcast(context, BroadcastService.INTENT_ACTIONS.DELETE_CONVERSATION.toString(), deleteConversationResponse.getMessage().toString(), 0, "success");
+            }
+
+            if (!TextUtils.isEmpty(deleteConversationForChannel)) {
+                InstantMessageResponse instantMessageResponse = (InstantMessageResponse) GsonUtils.getObjectFromJson(deleteConversationForChannel, InstantMessageResponse.class);
+                if (processPushNotificationId(instantMessageResponse.getId())) {
+                    return;
+                }
+                addPushNotificationId(instantMessageResponse.getId());
+                syncCallService.deleteChannelConversationThread(instantMessageResponse.getMessage());
+                BroadcastService.sendConversationDeleteBroadcast(context, BroadcastService.INTENT_ACTIONS.DELETE_CONVERSATION.toString(), null, Integer.valueOf(instantMessageResponse.getMessage()), "success");
             }
 
             if (!TextUtils.isEmpty(userConnected)) {
@@ -292,6 +318,39 @@ public class MobiComPushReceiver {
                 }
                 addPushNotificationId(syncUserUnBlock.getId());
                 SyncCallService.getInstance(context).syncBlockUsers();
+            }
+
+            if (!TextUtils.isEmpty(conversationReadForContact)) {
+                MqttMessageResponse conversationReadForContactResponse = (MqttMessageResponse) GsonUtils.getObjectFromJson(conversationReadForContact, MqttMessageResponse.class);
+                if (processPushNotificationId(conversationReadForContactResponse.getId())) {
+                    return;
+                }
+                addPushNotificationId(conversationReadForContactResponse.getId());
+                syncCallService.updateConversationReadStatus(conversationReadForContactResponse.getMessage().toString(), false);
+            }
+
+            if (!TextUtils.isEmpty(conversationReadForChannel)) {
+                InstantMessageResponse conversationReadForChannelResponse = (InstantMessageResponse) GsonUtils.getObjectFromJson(conversationReadForChannel, InstantMessageResponse.class);
+                if (processPushNotificationId(conversationReadForChannelResponse.getId())) {
+                    return;
+                }
+                addPushNotificationId(conversationReadForChannelResponse.getId());
+                syncCallService.updateConversationReadStatus(conversationReadForChannelResponse.getMessage(), true);
+            }
+
+            if (!TextUtils.isEmpty(userDetailChanged) || !TextUtils.isEmpty(userDeleteNotification)) {
+                MqttMessageResponse response = null;
+                if(!TextUtils.isEmpty(userDetailChanged)) {
+                    response = (MqttMessageResponse) GsonUtils.getObjectFromJson(userDetailChanged, MqttMessageResponse.class);
+                }else if(!TextUtils.isEmpty(userDeleteNotification)){
+                    response =  (MqttMessageResponse) GsonUtils.getObjectFromJson(userDeleteNotification, MqttMessageResponse.class);
+                }
+                if (processPushNotificationId(response.getId())) {
+                    return;
+                }
+                addPushNotificationId(response.getId());
+                String userId = response.getMessage().toString();
+                syncCallService.syncUserDetail(userId);
             }
 
         } catch (Exception e) {

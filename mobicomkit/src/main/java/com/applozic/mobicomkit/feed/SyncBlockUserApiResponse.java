@@ -8,10 +8,10 @@ import com.applozic.mobicomkit.sync.SyncUserBlockListFeed;
  */
 public class SyncBlockUserApiResponse extends JsonMarker {
 
+    public static final String SUCCESS = "success";
     private String status;
     private String generatedAt;
     private SyncUserBlockListFeed response;
-    public static final String SUCCESS ="success";
 
     public String getStatus() {
         return status;
@@ -38,7 +38,7 @@ public class SyncBlockUserApiResponse extends JsonMarker {
     }
 
 
-    public boolean isSuccess(){
+    public boolean isSuccess() {
         return SUCCESS.equals(status);
     }
 

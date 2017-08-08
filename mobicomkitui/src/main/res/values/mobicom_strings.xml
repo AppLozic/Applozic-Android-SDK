@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources  xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="MissingTranslation">
 
     <string name="app_name">Applozic</string>
     <string name="conversations">Conversations</string>
@@ -11,8 +12,10 @@
     <string name="enter_message_hint">Write a Message...</string>
     <string name="send_text">SEND</string>
     <string name="cancel_text">CANCEL</string>
+    <string name="ok_text">OK</string>
     <string name="start_text">START</string>
     <string name="no_conversation">You have no conversations</string>
+    <string name="search_not_found_for_messages">No conversation found</string>
     <string name="info_broadcast_message">Messages will be broadcasted to each recipient individually</string>
     <string name="shareOptions">Share</string>
 
@@ -77,8 +80,9 @@
         \nFor any queries, get in touch with us at support@mobitexter.net</string>
 
     <string name="info_app_not_found_to_open_file">No application found to open this file</string>
+    <string name="unable_to_play_requested_audio_file">No application found to open this file</string>
     <string name="file_not_selected">Did you miss selecting the file?</string>
-    <string name="info_attachment_max_allowed_file_size">Can\'t send maximum uploading file size limit exceeded 10Mb </string>
+    <string name="info_attachment_max_allowed_file_size">Can\'t send maximum uploading file size limit exceeded! </string>
     <string name="info_file_attachment_error">Can\'t send! Some unexpected error occurred while reading file</string>
     <string name="select_file_count_limit">Can\'t select more than 1 file</string>
 
@@ -113,14 +117,17 @@
     <string name="edit">Edit</string>
     <string name="confirm">Confirm</string>
     <string name="skip">Skip</string>
-    <string name ="you_string">You</string>
+    <string name="you_string">You</string>
+
+    <string name="view_option_string">View</string>
+    <string name="message_option_string">Message</string>
 
     <string name="applozic_account_closed">Please contact Applozic to activate chat in your app</string>
     <string name="applozic_free_version_not_allowed_on_release_build">Please contact Applozic to activate chat in your app</string>
     <string name="quick_conversation_loading">loading conversation..</string>
     <string name="alert_for_empty_message">Do you want to send a message without text?</string>
-    <string name ="yes_alert">Yes</string>
-    <string name ="subtitle_last_seen_at_time">Last seen</string>
+    <string name="yes_alert">Yes</string>
+    <string name="subtitle_last_seen_at_time">Last seen</string>
     <string name="is_typing">is typing...</string>
     <string name="user_online">Online</string>
     <string name="removing_channel_user">Removing....</string>
@@ -131,23 +138,34 @@
     <string name="dialog_remove_group_user">Remove [name] from [group]?</string>
     <string name="dialog_add_group_user">Add [name] to [group]?</string>
     <string name="group_name_info">[group]</string>
+    <string name="groupType_info">[groupType]</string>
+    <string name="group_string">group</string>
+    <string name="broadcast_string">broadcast</string>
+    <string name="new_broadcast_name_info">New broadcast</string>
+    <string name="mute_Group">Mute</string>
+    <string name="unmute_Group">UnMute</string>
     <string name="user_name_info">[name]</string>
     <string name="channel_member_title">Select contact</string>
     <string name="channel_exit_button">EXIT GROUP</string>
     <string name="channel_delete_group_button">DELETE GROUP</string>
+    <string name="broadcast_exit_button">EXIT BROADCAST</string>
+    <string name="broadcast_delete_button">DELETE BROADCAST</string>
     <string name="channel_created_by">Created by</string>
     <string name="remove_member">Remove</string>
-    <string name="add_member">Add</string>
+    <string name="add">Add</string>
+    <string name="group_creating_info">Creating group please wait</string>
+    <string name="broadcast_creating_info">Creating broadcast please wait</string>
     <string name="channel_exit">Exit</string>
     <string name="channel_deleting">Delete</string>
-    <string name="leave_channel">Are you sure you want to exit from this group?</string>
-    <string name="exit_channel_message_info">Are you sure you want to exit [group] group?</string>
-    <string name="delete_channel_messages_and_channel_info">Are you sure you want to delete [group] group?</string>
+    <string name="leave_channel">Are you sure you want to exit from this [groupType]?</string>
+    <string name="exit_channel_message_info">Are you sure you want to exit [group] [groupType]?</string>
+    <string name="delete_channel_messages_and_channel_info">Are you sure you want to delete [group] [groupType]?</string>
     <string name="channel_name_empty">Group name can not be empty</string>
     <string name="channel_add_alert">Unable to add participant in group because you are not a participant</string>
     <string name="channel_edit_alert">Unable to change the group name because you are not a participant</string>
     <string name="admin_text">Group admin</string>
     <string name="user_not_in_this_group_text">You are no longer a participant of this group</string>
+    <string name="group_has_been_deleted_text">This Group has been deleted</string>
     <string name="update_channel_title_name">Enter Group Name</string>
     <string name="new_channel_name_hint">Group name..</string>
     <string name="user_block_info">Block [name]? Blocked user will no longer be able to send you messages</string>
@@ -156,6 +174,22 @@
     <string name="applozic_userId_error_info_in_logs">UserId can not be null or empty and Channel key should not be null</string>
     <string name="applozic_channel_error_info_in_logs">Please check group name is Null or Empty or it has at least one member to be added in group</string>
     <string name="applozic_add_user_to_multiple_channel_error_info_in_logs">UserId can not be null or empty and Channel key list should not be null</string>
-
-
+    <string name="user_logout_info">Logout successful</string>
+    <string name="unable_share_message">Unable to share you are not a participant of this group</string>
+    <string name="user_is_blocked">Unable to send user is blocked</string>
+    <string name="when_on_wifi">When on wifi</string>
+    <string name="when_on_cellular_network">When on cellular network</string>
+    <string name="media_auto_download">Media-auto download</string>
+    <string name="applozic_network_usage">Network Usage</string>
+    <string name="enable_vibration_notification">Enable vibration on notification</string>
+    <string name="user_has_been_deleted_text">User has been deleted</string>
+    <string name="make_admin_text_info">Make group admin</string>
+    <string name="attachment_string">Attachment</string>
+    <string name="photo_string">Photo</string>
+    <string name="contact_string">Contact</string>
+    <string name="video_string">Video</string>
+    <string name="audio_string">Audio</string>
+    <string name="al_location_string">Location</string>
+    <string name="restricted_words_are_not_allowed">Restricted words are not allowed</string>
+    <string name="ok_alert">Ok</string>
 </resources>

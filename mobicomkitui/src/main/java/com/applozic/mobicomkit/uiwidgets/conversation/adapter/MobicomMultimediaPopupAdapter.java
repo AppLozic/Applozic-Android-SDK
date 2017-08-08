@@ -1,34 +1,41 @@
 package com.applozic.mobicomkit.uiwidgets.conversation.adapter;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.graphics.Typeface;
-import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-import com.applozic.mobicomkit.uiwidgets.ApplozicSetting;
+import com.applozic.mobicomkit.uiwidgets.AlCustomizationSettings;
 import com.applozic.mobicomkit.uiwidgets.R;
+
+import java.util.List;
 
 /**
  * Created by reytum on 18/3/16.
  */
 public class MobicomMultimediaPopupAdapter extends BaseAdapter {
     Context context;
-    String[] multimediaIcons;
-    String[] multimediaText;
+    List<String> multimediaIcons;
+    List<String> multimediaText;
+    AlCustomizationSettings alCustomizationSettings;
 
-    public MobicomMultimediaPopupAdapter(Context context, String[] multimediaIcons, String[] multimediaText) {
+    public MobicomMultimediaPopupAdapter(Context context, List<String> multimediaIcons, List<String> multimediaText) {
         this.context = context;
         this.multimediaIcons = multimediaIcons;
         this.multimediaText = multimediaText;
     }
 
+    public void setAlCustomizationSettings(AlCustomizationSettings alCustomizationSettings) {
+        this.alCustomizationSettings = alCustomizationSettings;
+    }
+
     @Override
     public int getCount() {
-        return multimediaText.length;
+        return multimediaText.size();
     }
 
     @Override
@@ -50,9 +57,9 @@ public class MobicomMultimediaPopupAdapter extends BaseAdapter {
         Typeface iconTypeface = Typeface.createFromAsset(context.getAssets(), "fonts/fontawesome-webfont.ttf");
         icon.setTypeface(iconTypeface);
         TextView text = (TextView) convertView.findViewById(R.id.mobicom_multimedia_text);
-        icon.setTextColor(ContextCompat.getColor(context, ApplozicSetting.getInstance(context).getAttachmentIconsBackgroundColor()));
-        icon.setText(multimediaIcons[position]);
-        text.setText(multimediaText[position]);
+        icon.setTextColor(Color.parseColor(alCustomizationSettings.getAttachmentIconsBackgroundColor()));
+        icon.setText(multimediaIcons.get(position));
+        text.setText(multimediaText.get(position));
         return convertView;
     }
 

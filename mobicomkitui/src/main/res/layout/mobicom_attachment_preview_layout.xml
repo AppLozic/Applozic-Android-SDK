@@ -58,7 +58,8 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_marginLeft="5dp"
-            android:text="10 MB"
+            android:text="@string/mb_10"
+            android:layout_marginStart="5dp"
             android:textColor="@color/white"
             android:textSize="20sp" />
 
@@ -111,9 +112,13 @@
         <TextView
             android:id="@+id/attachment_retry_text"
             android:layout_width="wrap_content"
+            android:textDirection="locale"
+            android:textAlignment="gravity"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_marginBottom="10dp"
+            android:layout_marginStart="15dp"
+            android:layout_marginEnd="15dp"
             android:layout_marginLeft="15dp"
             android:layout_marginRight="15dp"
             android:layout_marginTop="10dp"

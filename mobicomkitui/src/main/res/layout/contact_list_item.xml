@@ -1,41 +1,104 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/listViewActivatedStyle"
     android:layout_width="match_parent"
-    android:layout_height="?android:attr/listPreferredItemHeight"
-    style="@style/listViewActivatedStyle">
+    android:layout_height="?android:attr/listPreferredItemHeight">
+
+    <RelativeLayout
+        android:id="@+id/profile_image_relative_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingBottom="6dp"
+        android:paddingLeft="@dimen/listview_item_padding"
+        android:paddingStart="@dimen/listview_item_padding"
+        android:paddingRight="0dp"
+        android:paddingEnd="0dp"
+        android:paddingTop="8dp">
+
+        <TextView
+            android:id="@+id/contactIcon"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_gravity="center"
+            android:background="@drawable/mobiframework_circular_text_view"
+            android:gravity="center"
+            android:text=""
+            android:textColor="#ffffff"
+            android:textSize="20sp"
+            android:visibility="gone" />
+
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/contactImage"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_gravity="center"
+            android:layout_toRightOf="@+id/contactIcon"
+            android:src="@drawable/applozic_ic_contact_picture_holo_light"
+            android:visibility="visible"
+            android:layout_toEndOf="@+id/contactIcon" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/displayNameLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="5dp"
+        android:layout_toRightOf="@+id/profile_image_relative_layout"
+        android:paddingLeft="@dimen/listview_item_padding"
+        android:paddingStart="@dimen/listview_item_padding"
+        android:paddingRight="@dimen/listview_item_padding"
+        android:paddingEnd="@dimen/listview_item_padding"
+        android:layout_marginEnd="5dp"
+        android:layout_toEndOf="@+id/profile_image_relative_layout"
+        android:layout_alignParentEnd="true">
+
+        <TextView
+            android:id="@+id/contactNumberTextView"
+            android:layout_width="match_parent"
+            android:layout_height="26dp"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="2dp"
+            android:ellipsize="end"
+            android:singleLine="true"
+            android:text=""
+            android:textColor="@color/message_details_text_color"
+            android:textSize="14sp"
+            android:visibility="gone" />
+
+    </RelativeLayout>
 
     <!-- Use standard android.R class icon id instead of app specific id. This is just useful for
          consistency. Use scaleType=centerCrop to give a nice full cropped image in the assigned
          space -->
-    <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/contactImage"
-        android:layout_width="52dp"
-        android:layout_height="52dp"
-        android:padding="5dp"
-        android:layout_margin="5dp"
-        android:src="@drawable/applozic_ic_contact_picture_180_holo_light"
-        android:layout_gravity="center"
-        android:visibility="visible" />
-
     <!-- Use standard android.R class text2 id instead of app specific id. This is just useful for
          consistency. This is secondary text and not always visible so by default is has its
          visibility set to gone -->
     <TextView
         android:id="@+id/text2"
-        android:paddingLeft="@dimen/listview_item_padding"
-        android:paddingRight="@dimen/listview_item_padding"
         android:layout_width="match_parent"
         android:layout_height="26dp"
-        android:layout_toRightOf="@id/contactImage"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
-        android:fontFamily="sans-serif"
-        android:textColor="@color/message_text_color"
-        android:singleLine="true"
+        android:layout_toRightOf="@+id/profile_image_relative_layout"
         android:ellipsize="marquee"
-        android:visibility="gone"
+        android:fontFamily="sans-serif"
+        android:paddingLeft="@dimen/listview_item_padding"
+        android:paddingStart="@dimen/listview_item_padding"
+        android:paddingRight="@dimen/listview_item_padding"
+        android:paddingEnd="@dimen/listview_item_padding"
+        android:singleLine="true"
         android:text="@string/search_match_other"
-        android:textAppearance="?android:attr/textAppearanceSmall" />
+        android:textColor="@color/message_text_color"
+        android:textSize="14dp"
+        android:visibility="gone"
+        android:layout_alignParentEnd="true"
+        android:layout_toEndOf="@+id/profile_image_relative_layout"
+        android:textDirection="locale"
+        android:textAlignment="gravity" />
 
     <!-- Use standard android.R class text1 id instead of app specific id. This is just useful for
          consistency. This view also sets layout_alignWithParentIfMissing=true which lets the view
@@ -43,20 +106,23 @@
          its initial state). -->
     <TextView
         android:id="@+id/text1"
-        android:paddingLeft="@dimen/listview_item_padding"
-        android:paddingRight="@dimen/listview_item_padding"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@id/text2"
-        android:layout_toRightOf="@id/contactImage"
-        android:gravity="center_vertical"
-        android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
         android:layout_alignWithParentIfMissing="true"
-        android:textColor="@color/message_text_color"
-        android:fontFamily="sans-serif-light"
+        android:layout_marginRight="30dp"
+        android:layout_marginEnd="30dp"
+        android:layout_marginTop="5dp"
+        android:layout_toRightOf="@id/profile_image_relative_layout"
+        android:ellipsize="end"
+        android:gravity="center_vertical"
+        android:paddingLeft="@dimen/listview_item_padding"
+        android:paddingStart="@dimen/listview_item_padding"
         android:singleLine="true"
-        android:ellipsize="marquee"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
+        android:textDirection="locale"
+        android:textColor="@color/message_details_text_color"
+        android:textSize="18sp"
+        android:layout_toEndOf="@id/profile_image_relative_layout" />
+
 
 </RelativeLayout>

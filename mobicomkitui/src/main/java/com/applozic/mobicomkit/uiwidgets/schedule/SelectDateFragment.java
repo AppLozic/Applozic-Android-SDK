@@ -20,10 +20,6 @@ public class SelectDateFragment extends DialogFragment implements DatePickerDial
 
     }
 
-    public SelectDateFragment(TextView selectedDate) {
-        this.selectedDate = selectedDate;
-    }
-
     public void setScheduledDateView(View scheduledDateView) {
         this.scheduledDateView = scheduledDateView;
     }

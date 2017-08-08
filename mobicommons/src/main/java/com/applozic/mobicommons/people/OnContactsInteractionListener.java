@@ -21,6 +21,7 @@ public interface OnContactsInteractionListener {
     void onGroupSelected(Channel channel);
 
     void onCustomContactSelected(Contact contact);
+
     /**
      * Called when the ListView selection is cleared like when
      * a contact search is taking place or is finishing.

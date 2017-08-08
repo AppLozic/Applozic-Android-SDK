@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.v4.app.DialogFragment;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +16,7 @@ import android.widget.Toast;
 import com.applozic.mobicomkit.api.attachment.FileClientService;
 import com.applozic.mobicomkit.uiwidgets.R;
 import com.applozic.mobicomkit.uiwidgets.conversation.ConversationUIService;
+import com.applozic.mobicommons.commons.core.utils.Utils;
 
 import java.io.File;
 import java.io.IOException;
@@ -31,9 +31,9 @@ public class AudioMessageFragment extends DialogFragment {
     Button cancel, send;
     TextView txtcount, audioRecordingText;
     ImageButton record;
+    CountDownTimer t;
     private MediaRecorder audioRecorder;
     private String outputFile = null;
-    CountDownTimer t;
     private int cnt;
     private boolean isRecordring;
 
@@ -52,6 +52,7 @@ public class AudioMessageFragment extends DialogFragment {
 
         this.getDialog().setTitle("Voice Message");
         this.getDialog().setCancelable(Boolean.TRUE);
+        this.getDialog().setCanceledOnTouchOutside(Boolean.FALSE);
 
         record = (ImageButton) v.findViewById(R.id.audio_mic_imageview);
         send = (Button) v.findViewById(R.id.audio_send);
@@ -62,7 +63,7 @@ public class AudioMessageFragment extends DialogFragment {
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         String audioFileName = "AUD_" + timeStamp + "_" + ".m4a";
 
-        outputFile = FileClientService.getFilePath(audioFileName, getContext(), "audio/m4a").getAbsolutePath();
+        outputFile = FileClientService.getFilePath(audioFileName, getActivity().getApplicationContext(), "audio/m4a").getAbsolutePath();
         prepareMediaRecorder();
 
         record.setOnClickListener(new View.OnClickListener() {
@@ -80,7 +81,7 @@ public class AudioMessageFragment extends DialogFragment {
                         if (audioRecorder == null) {
                             prepareMediaRecorder();
                         }
-                        audioRecordingText.setText("STOP");
+                        audioRecordingText.setText(getResources().getString(R.string.stop));
                         audioRecorder.prepare();
                         audioRecorder.start();
                         isRecordring = true;
@@ -109,7 +110,7 @@ public class AudioMessageFragment extends DialogFragment {
 
                 File file = new File(outputFile);
                 if (file != null) {
-                    Log.i("AudioFRG:", "File deleted...");
+                    Utils.printLog(getContext(),"AudioFRG:", "File deleted...");
                     file.delete();
                 }
                 AudioMessageFragment.this.dismiss();
@@ -126,8 +127,8 @@ public class AudioMessageFragment extends DialogFragment {
                     stopRecording();
                 }
                 //FILE CHECK ....
-                if(!(new File(outputFile).exists())){
-                    Toast.makeText(getContext(),R.string.audio_recording_send_text,Toast.LENGTH_SHORT).show();
+                if (!(new File(outputFile).exists())) {
+                    Toast.makeText(getContext(), R.string.audio_recording_send_text, Toast.LENGTH_SHORT).show();
                     return;
                 }
                 ConversationUIService conversationUIService = new ConversationUIService(getActivity());
@@ -165,7 +166,7 @@ public class AudioMessageFragment extends DialogFragment {
             try {
                 audioRecorder.stop();
             } catch (RuntimeException stopException) {
-                Log.i("AudioMsgFrag:", "Runtime exception.This is thrown intentionally if stop is called just after start");
+                Utils.printLog(getContext(),"AudioMsgFrag:", "Runtime exception.This is thrown intentionally if stop is called just after start");
             } finally {
                 audioRecorder.release();
                 audioRecorder = null;
@@ -193,6 +194,3 @@ public class AudioMessageFragment extends DialogFragment {
         return audioRecorder;
     }
 }
-
-
-

@@ -3,22 +3,29 @@ package com.applozic.mobicomkit.uiwidgets.conversation.adapter;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
+import android.os.Build;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.content.ContextCompat;
+import android.support.v4.content.FileProvider;
+import android.text.Html;
+import android.text.SpannableString;
 import android.text.TextUtils;
+import android.text.style.TextAppearanceSpan;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.AlphabetIndexer;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.Filter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -35,19 +42,24 @@ import com.applozic.mobicomkit.api.attachment.FileMeta;
 import com.applozic.mobicomkit.api.conversation.Message;
 import com.applozic.mobicomkit.api.conversation.MobiComConversationService;
 import com.applozic.mobicomkit.api.conversation.database.MessageDatabaseService;
+import com.applozic.mobicomkit.api.notification.VideoCallNotificationHelper;
 import com.applozic.mobicomkit.contact.AppContactService;
 import com.applozic.mobicomkit.contact.BaseContactService;
 import com.applozic.mobicomkit.contact.MobiComVCFParser;
 import com.applozic.mobicomkit.contact.VCFContactData;
-import com.applozic.mobicomkit.uiwidgets.ApplozicSetting;
+import com.applozic.mobicomkit.uiwidgets.AlCustomizationSettings;
 import com.applozic.mobicomkit.uiwidgets.R;
 import com.applozic.mobicomkit.uiwidgets.alphanumbericcolor.AlphaNumberColorUtil;
+import com.applozic.mobicomkit.uiwidgets.attachmentview.ApplozicDocumentView;
 import com.applozic.mobicomkit.uiwidgets.conversation.ConversationUIService;
+import com.applozic.mobicomkit.uiwidgets.conversation.activity.ConversationActivity;
 import com.applozic.mobicomkit.uiwidgets.conversation.activity.FullScreenImageActivity;
 import com.applozic.mobicomkit.uiwidgets.conversation.activity.MobiComKitActivityInterface;
+import com.applozic.mobicomkit.uiwidgets.conversation.activity.OnClickReplyInterface;
 import com.applozic.mobicommons.commons.core.utils.DateUtils;
 import com.applozic.mobicommons.commons.core.utils.LocationUtils;
 import com.applozic.mobicommons.commons.core.utils.Support;
+import com.applozic.mobicommons.commons.core.utils.Utils;
 import com.applozic.mobicommons.commons.image.ImageCache;
 import com.applozic.mobicommons.commons.image.ImageLoader;
 import com.applozic.mobicommons.commons.image.ImageUtils;
@@ -60,9 +72,9 @@ import com.applozic.mobicommons.people.contact.Contact;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -79,6 +91,8 @@ public class DetailedConversationAdapter extends ArrayAdapter<Message> {
     private static final int FILE_THRESOLD_SIZE = 400;
 
     public ImageLoader contactImageLoader, loadImage;
+    public String searchString;
+    AlCustomizationSettings alCustomizationSettings;
     private Context context;
     private Contact contact;
     private Channel channel;
@@ -96,9 +110,13 @@ public class DetailedConversationAdapter extends ArrayAdapter<Message> {
     private Contact senderContact;
     private long deviceTimeOffset = 0;
     private Class<?> messageIntentClass;
+    private List<Message> messageList;
+    private List<Message> originalList;
     private MobiComConversationService conversationService;
     private ImageCache imageCache;
-    ApplozicSetting applozicSetting;
+    private AlphabetIndexer mAlphabetIndexer; // Stores the AlphabetIndexer instance
+    private TextAppearanceSpan highlightTextSpan;
+
 
     public DetailedConversationAdapter(final Context context, int textViewResourceId, List<Message> messageList, Channel channel, Class messageIntentClass, EmojiconHandler emojiconHandler) {
         this(context, textViewResourceId, messageList, null, channel, messageIntentClass, emojiconHandler);
@@ -122,7 +140,7 @@ public class DetailedConversationAdapter extends ArrayAdapter<Message> {
         this.contactService = new AppContactService(context);
         this.imageCache = ImageCache.getInstance(((FragmentActivity) context).getSupportFragmentManager(), 0.1f);
         this.senderContact = contactService.getContactById(MobiComUserPreference.getInstance(context).getUserId());
-        applozicSetting = ApplozicSetting.getInstance(context);
+        this.messageList = messageList;
         contactImageLoader = new ImageLoader(getContext(), ImageUtils.getLargestScreenDimension((Activity) getContext())) {
             @Override
             protected Bitmap processBitmap(Object data) {
@@ -144,7 +162,7 @@ public class DetailedConversationAdapter extends ArrayAdapter<Message> {
         imageThumbnailLoader = new ImageLoader(getContext(), ImageUtils.getLargestScreenDimension((Activity) getContext())) {
             @Override
             protected Bitmap processBitmap(Object data) {
-                return fileClientService.loadThumbnailImage(getContext(), (FileMeta) data, getImageLayoutParam(false).width, getImageLayoutParam(false).height);
+                return fileClientService.loadThumbnailImage(getContext(), (Message) data, getImageLayoutParam(false).width, getImageLayoutParam(false).height);
             }
         };
         imageThumbnailLoader.setImageFadeIn(false);
@@ -154,6 +172,13 @@ public class DetailedConversationAdapter extends ArrayAdapter<Message> {
         deliveredIcon = getContext().getResources().getDrawable(R.drawable.applozic_ic_action_message_delivered);
         pendingIcon = getContext().getResources().getDrawable(R.drawable.applozic_ic_action_message_pending);
         scheduledIcon = getContext().getResources().getDrawable(R.drawable.applozic_ic_action_message_schedule);
+        final String alphabet = context.getString(R.string.alphabet);
+        mAlphabetIndexer = new AlphabetIndexer(null, 1, alphabet);
+        highlightTextSpan = new TextAppearanceSpan(context, R.style.searchTextHiglight);
+    }
+
+    public void setAlCustomizationSettings(AlCustomizationSettings alCustomizationSettings) {
+        this.alCustomizationSettings = alCustomizationSettings;
     }
 
     public View getView(int position, View convertView, ViewGroup parent) {
@@ -169,9 +194,12 @@ public class DetailedConversationAdapter extends ArrayAdapter<Message> {
             TextView dateView = (TextView) customView.findViewById(R.id.chat_screen_date);
             TextView dayTextView = (TextView) customView.findViewById(R.id.chat_screen_day);
             Date date = new Date(message.getCreatedAtTime());
+            dateView.setTextColor(Color.parseColor(alCustomizationSettings.getConversationDateTextColor().trim()));
+            dayTextView.setTextColor(Color.parseColor(alCustomizationSettings.getConversationDayTextColor().trim()));
+
             if (DateUtils.isSameDay(message.getCreatedAtTime())) {
                 dayTextView.setVisibility(View.VISIBLE);
-                dayTextView.setText("Today");
+                dayTextView.setText(R.string.today);
             } else {
                 dayTextView.setVisibility(View.VISIBLE);
                 dateView.setVisibility(View.VISIBLE);
@@ -187,9 +215,18 @@ public class DetailedConversationAdapter extends ArrayAdapter<Message> {
             return customView;
         } else if (type == 4) {
             customView = inflater.inflate(R.layout.applozic_channel_custom_message_layout, parent, false);
-            TextView channelMessageTextview = (TextView) customView.findViewById(R.id.channel_message);
-            channelMessageTextview.setText(message.getMessage());
+            TextView channelMessageTextView = (TextView) customView.findViewById(R.id.channel_message);
+            GradientDrawable bgGradientDrawable = (GradientDrawable) channelMessageTextView.getBackground();
+            bgGradientDrawable.setColor(Color.parseColor(alCustomizationSettings.getChannelCustomMessageBgColor()));
+            bgGradientDrawable.setStroke(3, Color.parseColor(alCustomizationSettings.getChannelCustomMessageBorderColor()));
+            channelMessageTextView.setTextColor(Color.parseColor(alCustomizationSettings.getChannelCustomMessageTextColor()));
+            channelMessageTextView.setText(message.getMessage());
             return customView;
+        } else if (type == 5) {
+            customView = inflater.inflate(R.layout.applozic_call_layout, parent, false);
+            populateVideoCall(customView, message);
+            return customView;
+
         } else if (type == 0) {
             customView = inflater.inflate(R.layout.mobicom_received_message_list_view, parent, false);
         } else {
@@ -220,16 +257,19 @@ public class DetailedConversationAdapter extends ArrayAdapter<Message> {
                 }
             }
 
+            Configuration config = context.getResources().getConfiguration();
             View messageTextLayout = customView.findViewById(R.id.messageTextLayout);
             //TextView smReceivers = (TextView) customView.findViewById(R.id.smReceivers);
             //TextView status = (TextView) customView.findViewById(R.id.status);
             TextView createdAtTime = (TextView) customView.findViewById(R.id.createdAtTime);
             TextView messageTextView = (TextView) customView.findViewById(R.id.message);
+            TextView onlineTextView = (TextView) customView.findViewById(R.id.onlineTextView);
             CircleImageView contactImage = (CircleImageView) customView.findViewById(R.id.contactImage);
             //ImageView contactImage = (ImageView) customView.findViewById(R.id.contactImage);
             TextView alphabeticTextView = (TextView) customView.findViewById(R.id.alphabeticImage);
             ImageView sentOrReceived = (ImageView) customView.findViewById(R.id.sentOrReceivedIcon);
             ImageView mapImageView = (ImageView) customView.findViewById(R.id.static_mapview);
+            LinearLayout nameTextLayout = (LinearLayout) customView.findViewById(R.id.nameTextLayout);
             RelativeLayout chatLocation = (RelativeLayout) customView.findViewById(R.id.chat_location);
             TextView deliveryStatus = (TextView) customView.findViewById(R.id.status);
             TextView selfDestruct = (TextView) customView.findViewById(R.id.selfDestruct);
@@ -242,29 +282,142 @@ public class DetailedConversationAdapter extends ArrayAdapter<Message> {
             final LinearLayout attachmentRetry = (LinearLayout) customView.findViewById(R.id.attachment_retry_layout);
             final RelativeLayout attachmentDownloadProgressLayout = (RelativeLayout) customView.findViewById(R.id.attachment_download_progress_layout);
             final RelativeLayout mainAttachmentLayout = (RelativeLayout) customView.findViewById(R.id.attachment_preview_layout);
-            final LinearLayout mainContactShareLayout = (LinearLayout) customView.findViewById(R.id.contact_share_layout);
+            LinearLayout mainContactShareLayout = (LinearLayout) customView.findViewById(R.id.contact_share_layout);
             final ImageView videoIcon = (ImageView) customView.findViewById(R.id.video_icon);
 
             final ProgressBar mediaDownloadProgressBar = (ProgressBar) customView.findViewById(R.id.media_download_progress_bar);
             final ProgressBar mediaUploadProgressBar = (ProgressBar) customView.findViewById(R.id.media_upload_progress_bar);
             TextView nameTextView = (TextView) customView.findViewById(R.id.name_textView);
+            RelativeLayout replyRelativeLayout = (RelativeLayout) customView.findViewById(R.id.reply_message_layout);
+            RelativeLayout imageViewRLayout = (RelativeLayout) customView.findViewById(R.id.imageViewRLayout);
+            TextView replyMessageTextView = (TextView) customView.findViewById(R.id.messageTextView);
+            ImageView imageViewPhoto = (ImageView) customView.findViewById(R.id.imageViewForPhoto);
+            TextView replyNameTextView = (TextView) customView.findViewById(R.id.replyNameTextView);
+            ImageView imageViewForAttachmentType = (ImageView) customView.findViewById(R.id.imageViewForAttachmentType);
+            createdAtTime.setTextColor(Color.parseColor(alCustomizationSettings.getMessageTimeTextColor()));
 
+            if (message.getMetadata() != null && !message.getMetadata().isEmpty() && message.getMetadata().containsKey(Message.MetaDataType.AL_REPLY.getValue())) {
+                final Message msg = messageDatabaseService.getMessage(message.getMetaDataValueForKey(Message.MetaDataType.AL_REPLY.getValue()));
+                if (msg != null) {
+                    String displayName;
 
-            final String messageTapActivityClassName = ApplozicSetting.getInstance(context).getActivityCallback(ApplozicSetting.RequestCode.MESSAGE_TAP);
+                    replyRelativeLayout.setBackgroundColor(message.isTypeOutbox() ?
+                            Color.parseColor(alCustomizationSettings.getReplyMessageLayoutSentMessageBackground()) : Color.parseColor(alCustomizationSettings.getReplyMessageLayoutReceivedMessageBackground()));
 
-            if (!TextUtils.isEmpty(messageTapActivityClassName) && message.getMetadata() != null && !message.getMetadata().isEmpty()) {
-                customView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        try {
-                            Intent intent = new Intent(context, Class.forName(messageTapActivityClassName));
-                            intent.putExtra(MobiComKitConstants.MESSAGE_JSON_INTENT, GsonUtils.getJsonFromObject(message, Message.class));
-                            context.startActivity(intent);
-                        } catch (ClassNotFoundException e) {
-                            e.printStackTrace();
+                    replyNameTextView.setTextColor(message.isTypeOutbox() ?
+                            Color.parseColor(alCustomizationSettings.getSentMessageTextColor()) : Color.parseColor(alCustomizationSettings.getReceivedMessageTextColor()));
+
+                    replyMessageTextView.setTextColor(message.isTypeOutbox() ?
+                            Color.parseColor(alCustomizationSettings.getSentMessageTextColor()) : Color.parseColor(alCustomizationSettings.getReceivedMessageTextColor()));
+
+                    if (msg.getGroupId() != null) {
+                        if (MobiComUserPreference.getInstance(context).getUserId().equals(msg.getContactIds()) || TextUtils.isEmpty(msg.getContactIds())) {
+                            displayName = context.getString(R.string.you_string);
+                        } else {
+                            displayName = contactService.getContactById(msg.getContactIds()).getDisplayName();
+                        }
+                    } else {
+                        if (msg.isTypeOutbox()) {
+                            displayName = context.getString(R.string.you_string);
+                        } else {
+                            displayName = contactService.getContactById(msg.getContactIds()).getDisplayName();
                         }
                     }
-                });
+
+                    replyNameTextView.setText(displayName);
+                    if (msg.hasAttachment()) {
+                        FileMeta fileMeta = msg.getFileMetas();
+                        imageViewForAttachmentType.setVisibility(View.VISIBLE);
+                        if (fileMeta.getContentType().contains("image")) {
+                            imageViewForAttachmentType.setImageResource(R.drawable.applozic_ic_image_camera_alt);
+                            if (TextUtils.isEmpty(msg.getMessage())) {
+                                replyMessageTextView.setText(context.getString(R.string.photo_string));
+                            } else {
+                                replyMessageTextView.setText(msg.getMessage());
+                            }
+                            imageViewPhoto.setVisibility(View.VISIBLE);
+                            imageViewRLayout.setVisibility(View.VISIBLE);
+                            imageThumbnailLoader.loadImage(msg, imageViewPhoto);
+                        } else if (fileMeta.getContentType().contains("video")) {
+                            imageViewForAttachmentType.setImageResource(R.drawable.applozic_ic_action_video);
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                                if (config.getLayoutDirection() == View.LAYOUT_DIRECTION_RTL) {
+                                    imageViewForAttachmentType.setScaleX(-1);
+                                }
+                            }
+                            if (TextUtils.isEmpty(msg.getMessage())) {
+                                replyMessageTextView.setText(context.getString(R.string.video_string));
+                            } else {
+                                replyMessageTextView.setText(msg.getMessage());
+                            }
+                            imageViewPhoto.setVisibility(View.VISIBLE);
+                            imageViewRLayout.setVisibility(View.VISIBLE);
+                            if (msg.getFilePaths() != null && msg.getFilePaths().size() > 0) {
+                                if (imageCache.getBitmapFromMemCache(msg.getKeyString()) != null) {
+                                    imageViewPhoto.setImageBitmap(imageCache.getBitmapFromMemCache(msg.getKeyString()));
+                                } else {
+                                    imageCache.addBitmapToCache(message.getKeyString(), fileClientService.createAndSaveVideoThumbnail(msg.getFilePaths().get(0)));
+                                    imageViewPhoto.setImageBitmap(fileClientService.createAndSaveVideoThumbnail(msg.getFilePaths().get(0)));
+                                }
+                            }
+                        } else if (fileMeta.getContentType().contains("audio")) {
+                            imageViewForAttachmentType.setImageResource(R.drawable.applozic_ic_music_note);
+                            if (TextUtils.isEmpty(msg.getMessage())) {
+                                replyMessageTextView.setText(context.getString(R.string.audio_string));
+                            } else {
+                                replyMessageTextView.setText(msg.getMessage());
+                            }
+                            imageViewPhoto.setVisibility(View.GONE);
+                            imageViewRLayout.setVisibility(View.GONE);
+                        } else if (msg.isContactMessage()) {
+                            MobiComVCFParser parser = new MobiComVCFParser();
+                            try {
+                                VCFContactData data = parser.parseCVFContactData(msg.getFilePaths().get(0));
+                                if (data != null) {
+                                    imageViewForAttachmentType.setImageResource(R.drawable.applozic_ic_person_white);
+                                    replyMessageTextView.setText(context.getString(R.string.contact_string));
+                                    replyMessageTextView.append(" " + data.getName());
+                                }
+                            } catch (Exception e) {
+                                imageViewForAttachmentType.setImageResource(R.drawable.applozic_ic_person_white);
+                                replyMessageTextView.setText(context.getString(R.string.contact_string));
+                            }
+                            imageViewPhoto.setVisibility(View.GONE);
+                            imageViewRLayout.setVisibility(View.GONE);
+                        } else {
+                            imageViewForAttachmentType.setImageResource(R.drawable.applozic_ic_action_attachment);
+                            if (TextUtils.isEmpty(msg.getMessage())) {
+                                replyMessageTextView.setText(context.getString(R.string.attachment_string));
+                            } else {
+                                replyMessageTextView.setText(msg.getMessage());
+                            }
+                            imageViewPhoto.setVisibility(View.GONE);
+                            imageViewRLayout.setVisibility(View.GONE);
+                        }
+                        imageViewForAttachmentType.setColorFilter(Color.parseColor(message.isTypeOutbox() ? alCustomizationSettings.getSentMessageTextColor() : alCustomizationSettings.getReceivedMessageTextColor()));
+                    } else if (msg.getContentType() == Message.ContentType.LOCATION.getValue()) {
+                        imageViewForAttachmentType.setVisibility(View.VISIBLE);
+                        imageViewPhoto.setVisibility(View.VISIBLE);
+                        imageViewRLayout.setVisibility(View.VISIBLE);
+                        replyMessageTextView.setText(context.getString(R.string.al_location_string));
+                        imageViewForAttachmentType.setColorFilter(Color.parseColor(message.isTypeOutbox() ? alCustomizationSettings.getSentMessageTextColor() : alCustomizationSettings.getReceivedMessageTextColor()));
+                        imageViewForAttachmentType.setImageResource(R.drawable.applozic_ic_location_on_white_24dp);
+                        loadImage.setLoadingImage(R.drawable.applozic_map_offline_thumbnail);
+                        loadImage.loadImage(LocationUtils.loadStaticMap(msg.getMessage()), imageViewPhoto);
+                    } else {
+                        imageViewForAttachmentType.setVisibility(View.GONE);
+                        imageViewRLayout.setVisibility(View.GONE);
+                        imageViewPhoto.setVisibility(View.GONE);
+                        replyMessageTextView.setText(msg.getMessage());
+                    }
+                    replyRelativeLayout.setVisibility(View.VISIBLE);
+                    replyRelativeLayout.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            ((OnClickReplyInterface) context).onClickOnMessageReply(msg);
+                        }
+                    });
+                }
             }
 
 
@@ -281,7 +434,20 @@ public class DetailedConversationAdapter extends ArrayAdapter<Message> {
             }
 
             if (channel != null && nameTextView != null && contactDisplayName != null) {
-                nameTextView.setVisibility(View.VISIBLE);
+                nameTextView.setVisibility(Channel.GroupType.GROUPOFTWO.getValue().equals(channel.getType()) ? View.GONE : View.VISIBLE);
+                if (alCustomizationSettings.isLaunchChatFromProfilePicOrName()) {
+                    nameTextView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            Intent intent = new Intent(context, ConversationActivity.class);
+                            intent.putExtra(ConversationUIService.USER_ID, message.getContactIds());
+                            if (message.getConversationId() != null) {
+                                intent.putExtra(ConversationUIService.CONVERSATION_ID, message.getConversationId());
+                            }
+                            context.startActivity(intent);
+                        }
+                    });
+                }
                 String userId = contactDisplayName.getDisplayName();
                 char firstLetter = contactDisplayName.getDisplayName().charAt(0);
                 if (userId.length() > 0) {
@@ -329,6 +495,10 @@ public class DetailedConversationAdapter extends ArrayAdapter<Message> {
                 }
             }
 
+            if (nameTextLayout != null && contact != null) {
+                nameTextLayout.setVisibility(View.GONE);
+            }
+
             if (message.isCall() || message.isDummyEmptyMessage()) {
                 createdAtTime.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null);
             } else if (!message.isSentToServer() && message.isTypeOutbox()) {
@@ -352,11 +522,41 @@ public class DetailedConversationAdapter extends ArrayAdapter<Message> {
                 deliveryStatus.setText("via Carrier");
             }*/
 
-            if (message.isTypeOutbox()) {
-                loadContactImage(senderContact, contactDisplayName, message, contactImage, alphabeticTextView);
-            } else {
-                loadContactImage(receiverContact, contactDisplayName, message, contactImage, alphabeticTextView);
+            if (contactDisplayName != null && contactImage != null && alCustomizationSettings.isLaunchChatFromProfilePicOrName()) {
+                contactImage.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent intent = new Intent(context, ConversationActivity.class);
+                        intent.putExtra(ConversationUIService.USER_ID, message.getContactIds());
+                        if (message.getConversationId() != null) {
+                            intent.putExtra(ConversationUIService.CONVERSATION_ID, message.getConversationId());
+                        }
+                        context.startActivity(intent);
+                    }
+                });
+
+                alphabeticTextView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent intent = new Intent(context, ConversationActivity.class);
+                        intent.putExtra(ConversationUIService.USER_ID, message.getContactIds());
+                        if (message.getConversationId() != null) {
+                            intent.putExtra(ConversationUIService.CONVERSATION_ID, message.getConversationId());
+                        }
+                        context.startActivity(intent);
+                    }
+                });
+
             }
+            if (message.isTypeOutbox()) {
+                loadContactImage(senderContact, contactDisplayName, message, contactImage, alphabeticTextView, onlineTextView);
+            } else {
+                loadContactImage(receiverContact, contactDisplayName, message, contactImage, alphabeticTextView, onlineTextView);
+            }
+
+            ApplozicDocumentView audioView =  new ApplozicDocumentView(this.context);
+            audioView.inflateViewWithMessage(customView,message);
+            audioView.hideView(true);
             if (message.hasAttachment() && attachedFile != null & !(message.getContentType() == Message.ContentType.TEXT_URL.getValue())) {
                 mainAttachmentLayout.setLayoutParams(getImageLayoutParam(false));
                 if (message.getFileMetas() != null && (message.getFileMetas().getContentType().contains("image") || message.getFileMetas().getContentType().contains("video"))) {
@@ -433,6 +633,15 @@ public class DetailedConversationAdapter extends ArrayAdapter<Message> {
                     //  }
 
                 }
+                if (isNormalAttachment(message)) {
+                    attachedFile.setVisibility(View.GONE);
+                    mainAttachmentLayout.setVisibility(View.GONE);
+                    mainContactShareLayout.setVisibility(View.GONE);
+                    chatLocation.setVisibility(View.GONE);
+                    audioView.hideView(false);
+                    createdAtTime.setText(DateUtils.getFormattedDate(message.getCreatedAtTime()));
+                    return customView;
+                }
             }
             if (message.isCanceled()) {
                 attachmentRetry.setVisibility(View.VISIBLE);
@@ -440,13 +649,25 @@ public class DetailedConversationAdapter extends ArrayAdapter<Message> {
             attachmentRetry.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Toast.makeText(context, "Resending attachment....", Toast.LENGTH_LONG).show();
-                    mediaUploadProgressBar.setVisibility(View.VISIBLE);
-                    attachmentRetry.setVisibility(View.GONE);
-                    //updating Cancel Flag to smListItem....
-                    message.setCanceled(false);
-                    messageDatabaseService.updateCanceledFlag(message.getMessageId(), 0);
-                    conversationService.sendMessage(message, messageIntentClass);
+                    if (Utils.isInternetAvailable(context)) {
+                        File file = null;
+                        if (message != null && message.getFilePaths() != null) {
+                            file = new File(message.getFilePaths().get(0));
+                        }
+                        if (file != null && !file.exists()) {
+                            Toast.makeText(context, context.getString(R.string.file_does_not_exist), Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+                        Toast.makeText(context, context.getString(R.string.applozic_resending_attachment), Toast.LENGTH_SHORT).show();
+                        mediaUploadProgressBar.setVisibility(View.VISIBLE);
+                        attachmentRetry.setVisibility(View.GONE);
+                        //updating Cancel Flag to smListItem....
+                        message.setCanceled(false);
+                        messageDatabaseService.updateCanceledFlag(message.getMessageId(), 0);
+                        conversationService.sendMessage(message, messageIntentClass);
+                    } else {
+                        Toast.makeText(context, context.getString(R.string.internet_connection_not_available), Toast.LENGTH_SHORT).show();
+                    }
                 }
             });
             attachmentDownloadProgressLayout.setOnClickListener(new View.OnClickListener() {
@@ -471,7 +692,8 @@ public class DetailedConversationAdapter extends ArrayAdapter<Message> {
                     }
                     if (message.isAttachmentDownloaded()) {
                         showFullView(message);
-                    } else {
+                        return;
+                    } if ((message.isTypeOutbox() && message.isSentToServer()) || (!message.isTypeOutbox())) {
                         attachmentDownloadLayout.setVisibility(View.GONE);
                         attachmentView.setProressBar(mediaDownloadProgressBar);
                         attachmentView.setDownloadProgressLayout(attachmentDownloadProgressLayout);
@@ -517,10 +739,10 @@ public class DetailedConversationAdapter extends ArrayAdapter<Message> {
             }
             String mimeType = "";
             if (messageTextView != null) {
-                messageTextView.setTextColor(ContextCompat.getColor(context, message.isTypeOutbox() ?
-                        applozicSetting.getSentMessageTextColor() : applozicSetting.getReceivedMessageTextColor()));
-                messageTextView.setLinkTextColor(ContextCompat.getColor(context, message.isTypeOutbox() ?
-                        applozicSetting.getSentMessageLinkTextColor() : applozicSetting.getReceivedMessageLinkTextColor()));
+                messageTextView.setTextColor(message.isTypeOutbox() ?
+                        Color.parseColor(alCustomizationSettings.getSentMessageTextColor()) : Color.parseColor(alCustomizationSettings.getReceivedMessageTextColor()));
+                messageTextView.setLinkTextColor(message.isTypeOutbox() ?
+                        Color.parseColor(alCustomizationSettings.getSentMessageLinkTextColor()) : Color.parseColor(alCustomizationSettings.getReceivedMessageLinkTextColor()));
 
                 if (message.getContentType() == Message.ContentType.TEXT_URL.getValue()) {
                     try {
@@ -562,6 +784,8 @@ public class DetailedConversationAdapter extends ArrayAdapter<Message> {
                 } else if ((message.getContentType() == Message.ContentType.VIDEO_MSG.getValue()) && !message.isAttachmentDownloaded()) {
                     preview.setVisibility(View.VISIBLE);
                     preview.setImageResource(R.drawable.applozic_video_default_thumbnail);
+                } else if (message.getContentType() == Message.ContentType.TEXT_HTML.getValue()) {
+                    messageTextView.setText(Html.fromHtml(message.getMessage()));
                 } else {
                     messageTextView.setText(EmoticonUtils.getSmiledText(context, message.getMessage(), emojiconHandler));
                     if (mimeType != null && attachmentIcon != null) {
@@ -574,13 +798,11 @@ public class DetailedConversationAdapter extends ArrayAdapter<Message> {
                 }
 
                 if (messageTextLayout != null) {
-                    int resId = message.isTypeOutbox() ?
-                            applozicSetting.getSentMessageBackgroundColor() : applozicSetting.getReceivedMessageBackgroundColor();
-                    int borderResId = message.isTypeOutbox() ?
-                            applozicSetting.getSentMessageBorderColor() : applozicSetting.getReceivedMessageBorderColor();
                     GradientDrawable bgShape = (GradientDrawable) messageTextLayout.getBackground();
-                    bgShape.setColor(ContextCompat.getColor(context, resId));
-                    bgShape.setStroke(3, ContextCompat.getColor(context, borderResId));
+                    bgShape.setColor(message.isTypeOutbox() ?
+                            Color.parseColor(alCustomizationSettings.getSentMessageBackgroundColor()) : Color.parseColor(alCustomizationSettings.getReceivedMessageBackgroundColor()));
+                    bgShape.setStroke(3, message.isTypeOutbox() ?
+                            Color.parseColor(alCustomizationSettings.getSentMessageBorderColor()) : Color.parseColor(alCustomizationSettings.getReceivedMessageBackgroundColor()));
                 }
                /* if (messageTextLayout != null) {
                     //messageTextLayout.setBackgroundResource(messageTypeColorMap.get(message.getType()));
@@ -613,6 +835,18 @@ public class DetailedConversationAdapter extends ArrayAdapter<Message> {
                 mainContactShareLayout.setVisibility(View.GONE);
 
             }
+
+            int startIndex = indexOfSearchQuery(message.getMessage());
+            if (startIndex != -1) {
+                final SpannableString highlightedName = new SpannableString(message.getMessage());
+
+                // Sets the span to start at the starting point of the match and end at "length"
+                // characters beyond the starting point
+                highlightedName.setSpan(highlightTextSpan, startIndex,
+                        startIndex + searchString.toString().length(), 0);
+
+                messageTextView.setText(highlightedName);
+            }
         }
         return customView;
     }
@@ -632,11 +866,11 @@ public class DetailedConversationAdapter extends ArrayAdapter<Message> {
             Button addContactButton = (Button) mainContactShareLayout.findViewById(R.id.contact_share_add_btn);
             shareContactName.setText(data.getName());
 
-            int resId = message.isTypeOutbox() ? applozicSetting.getSentContactMessageTextColor() : applozicSetting.getReceivedContactMessageTextColor();
-            shareContactName.setTextColor(ContextCompat.getColor(context, resId));
-            shareContactNo.setTextColor(ContextCompat.getColor(context, resId));
-            shareEmailContact.setTextColor(ContextCompat.getColor(context, resId));
-            addContactButton.setTextColor(ContextCompat.getColor(context, resId));
+            int resId = message.isTypeOutbox() ? Color.parseColor(alCustomizationSettings.getSentMessageTextColor()) : Color.parseColor(alCustomizationSettings.getReceivedMessageTextColor());
+            shareContactName.setTextColor(resId);
+            shareContactNo.setTextColor(resId);
+            shareEmailContact.setTextColor(resId);
+            addContactButton.setTextColor(resId);
 
             if (data.getProfilePic() != null) {
                 if (imageCache.getBitmapFromMemCache(message.getKeyString()) == null) {
@@ -656,13 +890,21 @@ public class DetailedConversationAdapter extends ArrayAdapter<Message> {
                 shareEmailContact.setVisibility(View.GONE);
             }
 
+
             addContactButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent();
                     intent.setAction(Intent.ACTION_VIEW);
-                    intent.setDataAndType(Uri.fromFile(new File(message.getFilePaths().get(0))), "text/x-vcard");
+                    Uri outputUri = null;
+                    intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                    if (Utils.hasNougat()) {
+                        outputUri = FileProvider.getUriForFile(context, Utils.getMetaDataValue(context, MobiComKitConstants.PACKAGE_NAME) + ".provider", new File(message.getFilePaths().get(0)));
+                    } else {
+                        outputUri = Uri.fromFile(new File(message.getFilePaths().get(0)));
+                    }
                     if (intent.resolveActivity(context.getPackageManager()) != null) {
+                        intent.setDataAndType(outputUri, "text/x-vcard");
                         context.startActivity(intent);
                     } else {
                         Toast.makeText(context, R.string.info_app_not_found_to_open_file, Toast.LENGTH_LONG).show();
@@ -671,14 +913,12 @@ public class DetailedConversationAdapter extends ArrayAdapter<Message> {
             });
 
         } catch (Exception e) {
-            Log.e("DetailedConvAdapter", "Exception in parsing", e);
+            Utils.printLog(context,"DetailedConvAdapter", "Exception in parsing");
         }
+
     }
 
-    private void loadContactImage(Contact contact, Contact contactDisplayName, Message messageObj, ImageView contactImage, TextView alphabeticTextView) {
-        if (!applozicSetting.isConversationContactImageVisible()) {
-            return;
-        }
+    private void loadContactImage(Contact contact, Contact contactDisplayName, Message messageObj, ImageView contactImage, TextView alphabeticTextView, TextView onlineTextView) {
 
         if (alphabeticTextView != null) {
             String contactNumber = "";
@@ -724,6 +964,13 @@ public class DetailedConversationAdapter extends ArrayAdapter<Message> {
             contactImage.setVisibility(View.VISIBLE);
             alphabeticTextView.setVisibility(View.GONE);
         } else if (contactDisplayName != null && contactImage != null) {
+            if (alCustomizationSettings.isGroupUsersOnlineStatus() && onlineTextView != null) {
+                if (contactDisplayName.isConnected()) {
+                    onlineTextView.setVisibility(View.VISIBLE);
+                } else {
+                    onlineTextView.setVisibility(View.GONE);
+                }
+            }
             if (TextUtils.isEmpty(contactDisplayName.getImageURL())) {
                 contactImage.setVisibility(View.GONE);
                 alphabeticTextView.setVisibility(View.VISIBLE);
@@ -742,62 +989,84 @@ public class DetailedConversationAdapter extends ArrayAdapter<Message> {
         } else if (message.getFileMetas() != null) {
             fileName = message.getFileMetas().getName();
         }
-        attachedFile.setTextColor(ContextCompat.getColor(context, message.isTypeOutbox() ?
-                applozicSetting.getSentMessageTextColor() : applozicSetting.getReceivedMessageTextColor()));
+        attachedFile.setTextColor(message.isTypeOutbox() ?
+                Color.parseColor(alCustomizationSettings.getSentMessageTextColor()) : Color.parseColor(alCustomizationSettings.getReceivedMessageTextColor()));
         attachedFile.setText(fileName);
         attachedFile.setVisibility(View.VISIBLE);
         attachedFile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (message.isAttachmentDownloaded()) {
-                    Intent intent = new Intent();
-                    intent.setAction(Intent.ACTION_VIEW);
-                    intent.setDataAndType(Uri.fromFile(new File(message.getFilePaths().get(0))), mimeType);
-                    if (intent.resolveActivity(context.getPackageManager()) != null) {
-                        context.startActivity(intent);
-                    } else {
-                        Toast.makeText(context, R.string.info_app_not_found_to_open_file, Toast.LENGTH_LONG).show();
+                try {
+                    if (message.isAttachmentDownloaded()) {
+                        Intent intent = new Intent();
+                        intent.setAction(Intent.ACTION_VIEW);
+                        Uri outputUri;
+                        if (Utils.hasNougat()) {
+                            outputUri = FileProvider.getUriForFile(context, Utils.getMetaDataValue(context, MobiComKitConstants.PACKAGE_NAME) + ".provider", new File(message.getFilePaths().get(0)));
+                        } else {
+                            outputUri = Uri.fromFile(new File(message.getFilePaths().get(0)));
+                        }
+                        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                        if (intent.resolveActivity(context.getPackageManager()) != null) {
+                            intent.setDataAndType(outputUri, mimeType);
+                            context.startActivity(intent);
+                        } else {
+                            Toast.makeText(context, R.string.info_app_not_found_to_open_file, Toast.LENGTH_LONG).show();
+                        }
                     }
+                } catch (Exception e) {
+                    Utils.printLog(context,TAG, "No application found to open this file");
                 }
             }
 
         });
     }
 
-    private void showPreview(Message smListItem, ImageView preview, LinearLayout attachmentDownloadLayout) {
-        FileMeta fileMeta = smListItem.getFileMetas();
+    private void showPreview(Message message, ImageView preview, LinearLayout attachmentDownloadLayout) {
         imageThumbnailLoader.setImageFadeIn(false);
         imageThumbnailLoader.setLoadingImage(R.id.media_upload_progress_bar);
-        imageThumbnailLoader.loadImage(fileMeta, preview);
+        imageThumbnailLoader.loadImage(message, preview);
         attachmentDownloadLayout.setVisibility(View.GONE);
     }
 
     private void showFullView(Message smListItem) {
-        final String mimeType = FileUtils.getMimeType(smListItem.getFilePaths().get(0));
-        if(mimeType != null){
-            if (mimeType.startsWith("image")) {
-                Intent intent = new Intent(context, FullScreenImageActivity.class);
-                intent.putExtra(MobiComKitConstants.MESSAGE_JSON_INTENT, GsonUtils.getJsonFromObject(smListItem, Message.class));
-                ((MobiComKitActivityInterface) context).startActivityForResult(intent, MobiComKitActivityInterface.REQUEST_CODE_FULL_SCREEN_ACTION);
-            }
-            if (mimeType.startsWith("video")) {
-                if (smListItem.isAttachmentDownloaded()) {
-                    Intent intentVideo = new Intent();
-                    intentVideo.setAction(Intent.ACTION_VIEW);
-                    intentVideo.setDataAndType(Uri.fromFile(new File(smListItem.getFilePaths().get(0))), "video/*");
-                    if (intentVideo.resolveActivity(context.getPackageManager()) != null) {
-                        context.startActivity(intentVideo);
-                    } else {
-                        Toast.makeText(context, R.string.info_app_not_found_to_open_file, Toast.LENGTH_LONG).show();
+        try {
+            final String mimeType = FileUtils.getMimeType(smListItem.getFilePaths().get(0));
+            if (mimeType != null) {
+                if (mimeType.startsWith("image")) {
+                    Intent intent = new Intent(context, FullScreenImageActivity.class);
+                    intent.putExtra(MobiComKitConstants.MESSAGE_JSON_INTENT, GsonUtils.getJsonFromObject(smListItem, Message.class));
+                    ((MobiComKitActivityInterface) context).startActivityForResult(intent, MobiComKitActivityInterface.REQUEST_CODE_FULL_SCREEN_ACTION);
+                }
+                if (mimeType.startsWith("video")) {
+                    if (smListItem.isAttachmentDownloaded()) {
+                        Intent intentVideo = new Intent();
+                        intentVideo.setAction(Intent.ACTION_VIEW);
+                        Uri outputUri;
+                        if (Utils.hasNougat()) {
+                            outputUri = FileProvider.getUriForFile(context, Utils.getMetaDataValue(context, MobiComKitConstants.PACKAGE_NAME) + ".provider", new File(smListItem.getFilePaths().get(0)));
+                        } else {
+                            outputUri = Uri.fromFile(new File(smListItem.getFilePaths().get(0)));
+                        }
+                        intentVideo.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                        if (intentVideo.resolveActivity(context.getPackageManager()) != null) {
+                            intentVideo.setDataAndType(outputUri, "video/*");
+                            context.startActivity(intentVideo);
+                        } else {
+                            Toast.makeText(context, R.string.info_app_not_found_to_open_file, Toast.LENGTH_LONG).show();
+                        }
                     }
                 }
             }
+        } catch (Exception e) {
+            Utils.printLog(context,TAG, "No application found to open this file");
         }
+
     }
 
     @Override
     public int getViewTypeCount() {
-        return 5;
+        return 6;
     }
 
     @Override
@@ -814,6 +1083,9 @@ public class DetailedConversationAdapter extends ArrayAdapter<Message> {
         }
         if (message.isChannelCustomMessage()) {
             return 4;
+        }
+        if (message.isVideoCallMessage()) {
+            return 5;
         }
         return message.isTypeOutbox() ? 1 : 0;
     }
@@ -834,5 +1106,111 @@ public class DetailedConversationAdapter extends ArrayAdapter<Message> {
 
         }
         return params;
+    }
+
+    @Override
+    public Filter getFilter() {
+        return new Filter() {
+            @Override
+            protected FilterResults performFiltering(CharSequence constraint) {
+
+                final FilterResults oReturn = new FilterResults();
+                final List<Message> results = new ArrayList<Message>();
+                if (originalList == null)
+                    originalList = messageList;
+                if (constraint != null) {
+                    searchString = constraint.toString();
+                    if (originalList != null && originalList.size() > 0) {
+                        for (final Message message : originalList) {
+                            if (message.getMessage().toLowerCase()
+                                    .contains(constraint.toString())) {
+                                results.add(message);
+
+
+                            }
+                        }
+                    }
+                    oReturn.values = results;
+                } else {
+                    oReturn.values = originalList;
+                }
+                return oReturn;
+            }
+
+            @SuppressWarnings("unchecked")
+            @Override
+            protected void publishResults(CharSequence constraint,
+                                          FilterResults results) {
+                messageList = (ArrayList<Message>) results.values;
+                notifyDataSetChanged();
+            }
+        };
+    }
+
+    private int indexOfSearchQuery(String message) {
+        if (!TextUtils.isEmpty(searchString)) {
+            return message.toLowerCase(Locale.getDefault()).indexOf(
+                    searchString.toString().toLowerCase(Locale.getDefault()));
+        }
+        return -1;
+    }
+
+
+    private void populateVideoCall(View customView, Message msg) {
+
+
+        Map<String, String> metaData = msg.getMetadata();
+
+        TextView statusTextView = (TextView) customView.findViewById(R.id.applozic_call_status);
+        TextView timeTextView = (TextView) customView.findViewById(R.id.applozic_call_timing);
+        TextView durationTextView = (TextView) customView.findViewById(R.id.applozic_call_duration);
+
+        ImageView imageView = (ImageView) customView.findViewById(R.id.applozic_call_image_type);
+
+        timeTextView.setText(DateUtils.getFormattedDate(msg.getCreatedAtTime()));
+        statusTextView.setText(VideoCallNotificationHelper.getStatus(metaData));
+
+        if (VideoCallNotificationHelper.isMissedCall(msg)) {
+            imageView.setImageResource(R.drawable.ic_communication_call_missed);
+        }
+
+        if (!VideoCallNotificationHelper.isAudioCall(msg)) {
+            imageView.setImageResource(R.drawable.ic_videocam_white_24px);
+        }
+
+        if (metaData.get(VideoCallNotificationHelper.MSG_TYPE).equals(VideoCallNotificationHelper.CALL_END)) {
+
+            String duration = metaData.get(VideoCallNotificationHelper.CALL_DURATION);
+
+            if (!TextUtils.isEmpty(duration)) {
+
+                durationTextView.setVisibility(View.VISIBLE);
+                duration = Utils.getTimeDurationInFormat(Long.parseLong(duration));
+                durationTextView.setText(duration);
+            }
+        } else {
+            durationTextView.setVisibility(View.GONE);
+        }
+
+    }
+
+    public void  refreshContactData(){
+        if(contact != null){
+            contact = contactService.getContactById(contact.getContactIds());
+        }
+    }
+
+    private boolean isNormalAttachment(Message message) {
+
+        if (message.getFileMetas() != null) {
+            return !(message.getFileMetas().getContentType().contains("image") || message.getFileMetas().getContentType().contains("video")|| message.isContactMessage());
+        }else if( message.getFilePaths() != null){
+            String filePath = message.getFilePaths().get(0);
+            final String mimeType = FileUtils.getMimeType(filePath);
+            if(mimeType!=null) {
+                return !(mimeType.contains("image") || mimeType.contains("video") || message.isContactMessage());
+            }
+        }
+        return false;
     }
 }

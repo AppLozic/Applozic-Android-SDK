@@ -2,11 +2,11 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
+    android:layout_centerInParent="true"
     android:layout_gravity="center"
     android:clickable="false"
-    android:layout_centerInParent="true"
-    android:longClickable="false"
     android:gravity="center"
+    android:longClickable="false"
     android:orientation="horizontal"
     android:paddingBottom="15dp"
     android:paddingTop="15dp">
@@ -14,12 +14,11 @@
     <TextView
         android:id="@+id/channel_message"
         android:layout_width="wrap_content"
-        android:background="@drawable/applozic_channel_custom_message"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
+        android:background="@drawable/applozic_channel_custom_message"
         android:gravity="center_horizontal"
         android:padding="8dp"
-        android:textColor="#666666"
         android:textSize="14sp" />
 
 </LinearLayout>

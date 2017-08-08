@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import com.applozic.mobicomkit.uiwidgets.R;
 import com.applozic.mobicomkit.api.attachment.FileClientService;
 import com.applozic.mobicomkit.feed.TopicDetail;
@@ -26,65 +27,66 @@ import java.util.List;
  */
 public class ApplozicContextSpinnerAdapter extends BaseAdapter {
 
-        private LayoutInflater mInflater;
-        private List<Conversation> conversationList;
-        private ImageLoader productImageLoader;
-        private FileClientService fileClientService;
-        private Context context;
+    private LayoutInflater mInflater;
+    private List<Conversation> conversationList;
+    private ImageLoader productImageLoader;
+    private FileClientService fileClientService;
+    private Context context;
 
-        public ApplozicContextSpinnerAdapter(final Context context, List<Conversation> conversations) {
-            if(context == null){
-                return;
+    public ApplozicContextSpinnerAdapter(final Context context, List<Conversation> conversations) {
+        if (context == null) {
+            return;
+        }
+        mInflater = LayoutInflater.from(context);
+        this.conversationList = conversations;
+        this.fileClientService = new FileClientService(context);
+        this.context = context;
+        productImageLoader = new ImageLoader(context, ImageUtils.getLargestScreenDimension((Activity) context)) {
+            @Override
+            protected Bitmap processBitmap(Object data) {
+                return fileClientService.loadMessageImage(context, (Conversation) data);
             }
-            mInflater = LayoutInflater.from(context);
-            this.conversationList = conversations;
-            this.fileClientService = new FileClientService(context);
-            this.context = context;
-            productImageLoader = new ImageLoader(context, ImageUtils.getLargestScreenDimension((Activity) context)) {
-                @Override
-                protected Bitmap processBitmap(Object data) {
-                    return fileClientService.loadMessageImage(context, (String) data);
-                }
-            };
-            productImageLoader.addImageCache(((FragmentActivity) context).getSupportFragmentManager(), 0.1f);
-            productImageLoader.setImageFadeIn(false);
+        };
+        productImageLoader.addImageCache(((FragmentActivity) context).getSupportFragmentManager(), 0.1f);
+        productImageLoader.setImageFadeIn(false);
+    }
+
+
+    @Override
+    public View getDropDownView(int position, View convertView, ViewGroup parent) {
+        return getCustomView(position, convertView, parent);
+    }
+
+
+    public View getCustomView(int position, View convertView, ViewGroup parent) {
+
+        Conversation conversation = (Conversation) getItem(position);
+        ApplozicProductViewHolder viewHolder;
+
+        if (convertView == null) {
+            convertView = mInflater.inflate(R.layout.applozic_context_based_layout, parent, false);
+            viewHolder = new ApplozicProductViewHolder();
+            viewHolder.productImage = (ImageView) convertView.findViewById(R.id.productImage);
+            viewHolder.titleTextView = (TextView) convertView.findViewById(R.id.title);
+            viewHolder.subTitleTextView = (TextView) convertView.findViewById(R.id.subTitle);
+            viewHolder.key1TextView = (TextView) convertView.findViewById(R.id.qtyTitleTextView);
+            viewHolder.value1TextView = (TextView) convertView.findViewById(R.id.qtyValueTextView);
+            viewHolder.key2TextView = (TextView) convertView.findViewById(R.id.priceTitleTextView);
+            viewHolder.value2TextView = (TextView) convertView.findViewById(R.id.priceValueTextview);
+            convertView.setTag(viewHolder);
+        } else {
+            viewHolder = (ApplozicProductViewHolder) convertView
+                    .getTag();
         }
 
-
-        @Override
-        public View getDropDownView(int position, View convertView, ViewGroup parent) {
-            return getCustomView(position, convertView, parent);
-        }
-
-
-        public View getCustomView(int position, View convertView, ViewGroup parent) {
-
-            Conversation conversation = (Conversation) getItem(position);
-            ApplozicProductViewHolder viewHolder;
-
-            if (convertView == null) {
-                convertView = mInflater.inflate(R.layout.applozic_context_based_layout, parent, false);
-                viewHolder = new ApplozicProductViewHolder();
-                viewHolder.productImage = (ImageView) convertView.findViewById(R.id.productImage);
-                viewHolder.titleTextView = (TextView) convertView.findViewById(R.id.title);
-                viewHolder.subTitleTextView = (TextView) convertView.findViewById(R.id.subTitle);
-                viewHolder.key1TextView = (TextView) convertView.findViewById(R.id.qtyTitleTextView);
-                viewHolder.value1TextView = (TextView) convertView.findViewById(R.id.qtyValueTextView);
-                viewHolder.key2TextView = (TextView) convertView.findViewById(R.id.priceTitleTextView);
-                viewHolder.value2TextView = (TextView) convertView.findViewById(R.id.priceValueTextview);
-                convertView.setTag(viewHolder);
-            } else {
-                viewHolder = (ApplozicProductViewHolder) convertView
-                        .getTag();
-            }
-
+        try {
             if (conversation != null) {
                 String topicId = conversation.getTopicId();
                 String topicDetailJson = conversation.getTopicDetail();
                 if (!TextUtils.isEmpty(topicDetailJson)) {
                     TopicDetail topicDetail = (TopicDetail) GsonUtils.getObjectFromJson(topicDetailJson, TopicDetail.class);
                     if (!TextUtils.isEmpty(topicDetail.getLink())) {
-                        productImageLoader.loadImage(topicDetail.getLink(), viewHolder.productImage);
+                        productImageLoader.loadImage(conversation, viewHolder.productImage);
                     }
                     if (!TextUtils.isEmpty(topicDetail.getTitle())) {
                         viewHolder.titleTextView.setText(topicDetail.getTitle());
@@ -116,45 +118,48 @@ public class ApplozicContextSpinnerAdapter extends BaseAdapter {
                 }
             }
 
-            return convertView;
+        } catch (Exception e) {
 
         }
+        return convertView;
+
+    }
 
 
-        @Override
-        public int getCount() {
-            if(context == null){
-                return 0;
-            }
-            return conversationList.size();
-        }
-
-        @Override
-        public Object getItem(int position) {
-            if(context == null){
-                return null;
-            }
-            return conversationList.get(position);
-        }
-
-        @Override
-        public long getItemId(int position) {
+    @Override
+    public int getCount() {
+        if (context == null) {
             return 0;
         }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            return getCustomView(position, convertView, parent);
-        }
-
-
-        private static class ApplozicProductViewHolder {
-            TextView titleTextView, subTitleTextView, key1TextView, value1TextView, key2TextView, value2TextView;
-            ImageView productImage;
-
-            ApplozicProductViewHolder() {
-
-            }
-
-        }
+        return conversationList.size();
     }
+
+    @Override
+    public Object getItem(int position) {
+        if (context == null) {
+            return null;
+        }
+        return conversationList.get(position);
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return 0;
+    }
+
+    @Override
+    public View getView(int position, View convertView, ViewGroup parent) {
+        return getCustomView(position, convertView, parent);
+    }
+
+
+    private static class ApplozicProductViewHolder {
+        TextView titleTextView, subTitleTextView, key1TextView, value1TextView, key2TextView, value2TextView;
+        ImageView productImage;
+
+        ApplozicProductViewHolder() {
+
+        }
+
+    }
+}

@@ -17,11 +17,13 @@
 package com.applozic.mobicomkit.api.attachment;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.support.v4.util.LruCache;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
@@ -73,10 +75,11 @@ public class AttachmentManager {
     static final int TASK_COMPLETE = 4;
     private static final String TAG = "AttachmentManager";
     // Sets the size of the storage that's used to cache images
-    private static final int IMAGE_CACHE_SIZE = 1024 * 1024 * 4;
-
     // Sets the amount of time an idle thread will wait for a task before terminating
     private static final int KEEP_ALIVE_TIME = 1;
+
+    // Sets the size of the storage that's used to cache images
+    private static final int IMAGE_CACHE_SIZE = 1024 * 1024 * 4;
 
     // Sets the Time Unit to seconds
     private static final TimeUnit KEEP_ALIVE_TIME_UNIT;
@@ -96,8 +99,6 @@ public class AttachmentManager {
     private static int NUMBER_OF_CORES = Runtime.getRuntime().availableProcessors();
     // A single instance of PhotoManager, used to implement the singleton pattern
     private static AttachmentManager sInstance = null;
-    public final List<String> attachmentInProgress;
-    public final List<AttachmentTask> attachmentTaskList;
 
     // A static block that sets class fields
     static {
@@ -109,11 +110,8 @@ public class AttachmentManager {
         sInstance = new AttachmentManager();
     }
 
-    /*
-     * Creates a cache of byte arrays indexed by image URLs. As new items are added to the
-     * cache, the oldest items are ejected and subject to garbage collection.
-     */
-    private LruCache<String, Bitmap> mPhotoCache = null;
+    public final List<String> attachmentInProgress;
+    public final List<AttachmentTask> attachmentTaskList;
     // A queue of Runnables for the image download pool
     private final BlockingQueue<Runnable> mDownloadWorkQueue;
     // A queue of Runnables for the image decoding pool
@@ -122,10 +120,14 @@ public class AttachmentManager {
     private final Queue<AttachmentTask> mPhotoTaskWorkQueue;
     // A managed pool of background download threads
     private final ThreadPoolExecutor mDownloadThreadPool;
-
     //taking reference for future use ::
     // A managed pool of background decoder threads
     private final ThreadPoolExecutor mDecodeThreadPool;
+    /*
+     * Creates a cache of byte arrays indexed by image URLs. As new items are added to the
+     * cache, the oldest items are ejected and subject to garbage collection.
+     */
+    private LruCache<String, Bitmap> mPhotoCache = null;
     // An object that manages Messages in a Thread
     private Handler mHandler;
 
@@ -231,15 +233,21 @@ public class AttachmentManager {
 
                         case DOWNLOAD_STARTED:
                             localView.getMessage().setAttDownloadInProgress(true);
-                            localView.getProressBar().setVisibility(View.VISIBLE);
+                            if (localView.getProressBar() != null) {
+                                localView.getProressBar().setVisibility(View.VISIBLE);
+                            }
                             break;
                         case DOWNLOAD_COMPLETE:
-                            localView.getProressBar().setProgress(70);
+                            if (localView.getProressBar() != null) {
+                                localView.getProressBar().setProgress(70);
+                            }
                             localView.getMessage().setAttDownloadInProgress(false);
                             break;
                         case DECODE_STARTED:
-                            localView.getProressBar().setVisibility(View.VISIBLE);
-                            localView.getProressBar().setProgress(90);
+                            if (localView.getProressBar() != null) {
+                                localView.getProressBar().setVisibility(View.VISIBLE);
+                                localView.getProressBar().setProgress(90);
+                            }
                             break;
                             /*
                              * The decoding is done, so this sets the
@@ -267,6 +275,33 @@ public class AttachmentManager {
                             localView.cancelDownload();
                             BroadcastService.sendMessageUpdateBroadcast(localView.getContext(), BroadcastService.INTENT_ACTIONS.MESSAGE_ATTACHMENT_DOWNLOAD_FAILD.toString(), localView.getMessage());
                             Toast.makeText(localView.getContext(), "Download failed.", Toast.LENGTH_SHORT).show();
+                            // Attempts to re-use the Task object
+                            recycleTask(attachmentTask);
+                            break;
+                        default:
+                            // Otherwise, calls the super method
+                            super.handleMessage(inputMessage);
+                    }
+                } else if (attachmentTask.getAttachmentView() != null) {
+                    AttachmentViewProperties attachmentView = attachmentTask.getAttachmentView();
+                    switch (inputMessage.what) {
+
+                        case DOWNLOAD_STARTED:
+                            break;
+                        case DOWNLOAD_COMPLETE:
+                            break;
+                        case DECODE_STARTED:
+                            break;
+                        case TASK_COMPLETE:
+                            BroadcastService.sendMessageUpdateBroadcast(attachmentView.getContext(), BroadcastService.INTENT_ACTIONS.MESSAGE_ATTACHMENT_DOWNLOAD_DONE.toString(), attachmentView.getMessage());
+                            recycleTask(attachmentTask);
+                            break;
+                        // The download failed, sets the background color to dark red
+                        case DOWNLOAD_FAILED:
+                            //localView.setStatusResource(R.drawable.imagedownloadfailed);
+                            attachmentView.getMessage().setAttDownloadInProgress(false);
+                            BroadcastService.sendMessageUpdateBroadcast(attachmentView.getContext(), BroadcastService.INTENT_ACTIONS.MESSAGE_ATTACHMENT_DOWNLOAD_FAILD.toString(), attachmentView.getMessage());
+                            Toast.makeText(attachmentView.getContext(), "Download failed.", Toast.LENGTH_SHORT).show();
                             // Attempts to re-use the Task object
                             recycleTask(attachmentTask);
                             break;
@@ -338,7 +373,7 @@ public class AttachmentManager {
      *
      * @param downloaderTask The download task associated with the Thread
      */
-    static public void removeDownload(AttachmentTask downloaderTask) {
+    static public void removeDownload(AttachmentTask downloaderTask, boolean documentView) {
 
         // If the Thread object still exists and the download matches the specified URL
         if (downloaderTask != null) {
@@ -354,6 +389,12 @@ public class AttachmentManager {
                     thread.interrupt();
                 } else {
                     Log.i(TAG, "Thread is coming null");
+                    if (downloaderTask.getAttachmentView() == null && downloaderTask.getPhotoView() == null) {
+                        return;
+                    }
+                    Context context = documentView ? downloaderTask.getAttachmentView().getContext() : downloaderTask.getPhotoView().getContext();
+                    com.applozic.mobicomkit.api.conversation.Message message = documentView ? downloaderTask.getAttachmentView().getMessage() : downloaderTask.getPhotoView().getMessage();
+                    BroadcastService.sendMessageUpdateBroadcast(context, BroadcastService.INTENT_ACTIONS.MESSAGE_ATTACHMENT_DOWNLOAD_FAILD.toString(), message);
                 }
 
             }
@@ -400,7 +441,54 @@ public class AttachmentManager {
             sInstance.attachmentInProgress.add(downloadTask.getMessage().getKeyString());
             sInstance.attachmentTaskList.add(downloadTask);
             // Sets the display to show that the image is queued for downloading and decoding.
-            imageView.getProressBar().setVisibility(View.VISIBLE);
+            if (imageView.getProressBar() != null) {
+                imageView.getProressBar().setVisibility(View.VISIBLE);
+            }
+            //imageView.setStatusResource(R.drawable.imagequeued);
+
+            // The image was cached, so no download is required.
+        } else {
+
+            /*
+             * Signals that the download is "complete", because the byte array already contains the
+             * undecoded image. The decoding starts.
+             */
+            //imageView.getProressBar().setVisibility(View.VISIBLE);
+            sInstance.handleState(downloadTask, DOWNLOAD_COMPLETE);
+        }
+
+        // Returns a task object, either newly-created or one from the task pool
+        return downloadTask;
+    }
+
+
+    static public AttachmentTask startDownload(AttachmentViewProperties attachmentViewProperties,
+                                               boolean cacheFlag) {
+
+        /*
+         * Gets a task from the pool of tasks, returning null if the pool is empty
+         */
+        AttachmentTask downloadTask = sInstance.mPhotoTaskWorkQueue.poll();
+
+        // If the queue was empty, create a new task instead.
+        if (null == downloadTask) {
+            downloadTask = new AttachmentTask();
+        }
+
+        // Initializes the task
+        downloadTask.initializeDownloaderTask(AttachmentManager.sInstance, attachmentViewProperties, cacheFlag);
+
+        // If image is already downloaded ...just pass-message as download complete
+        if (!downloadTask.getMessage().isAttachmentDownloaded()) {
+
+            /*
+             * "Executes" the tasks' download Runnable in order to download the image. If no
+             * Threads are available in the thread pool, the Runnable waits in the queue.
+             */
+            sInstance.mDownloadThreadPool.execute(downloadTask.getHTTPDownloadRunnable());
+            sInstance.attachmentInProgress.add(downloadTask.getMessage().getKeyString());
+            sInstance.attachmentTaskList.add(downloadTask);
+            // Sets the display to show that the image is queued for downloading and decoding.
             //imageView.setStatusResource(R.drawable.imagequeued);
 
             // The image was cached, so no download is required.
@@ -451,7 +539,7 @@ public class AttachmentManager {
                     // If the task is set to cache the results, put the buffer
                     // that was
                     // successfully decoded into the cache
-                    if (photoTask != null && photoTask.getImage() != null) {
+                    if (photoTask != null && photoTask.getImage() != null && !TextUtils.isEmpty(photoTask.getMessage().getKeyString())) {
                         mPhotoCache.put(photoTask.getMessage().getKeyString(), photoTask.getImage());
                     }
                 }
@@ -498,7 +586,7 @@ public class AttachmentManager {
     }
 
     public Bitmap getBitMapFromCache(String key) {
-        if (mPhotoCache != null) {
+        if (mPhotoCache != null && !TextUtils.isEmpty(key)) {
             return mPhotoCache.get(key);
         }
         return null;

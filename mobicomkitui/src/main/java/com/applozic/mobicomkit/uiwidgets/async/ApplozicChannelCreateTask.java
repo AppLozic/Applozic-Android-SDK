@@ -6,7 +6,6 @@ import android.text.TextUtils;
 
 import com.applozic.mobicomkit.api.people.ChannelInfo;
 import com.applozic.mobicomkit.channel.service.ChannelService;
-import com.applozic.mobicomkit.uiwidgets.R;
 import com.applozic.mobicommons.people.channel.Channel;
 
 import java.util.List;
@@ -25,6 +24,7 @@ public class ApplozicChannelCreateTask extends AsyncTask<Void, Void, Boolean> {
     ChannelCreateListener channelCreateListener;
     String groupImageLink;
     String clientGroupId;
+    int type = Channel.GroupType.PUBLIC.getValue().intValue();
 
 
     public ApplozicChannelCreateTask(Context context, ChannelCreateListener channelCreateListener, String groupName, List<String> groupMemberList, String groupImageLink) {
@@ -36,6 +36,22 @@ public class ApplozicChannelCreateTask extends AsyncTask<Void, Void, Boolean> {
         this.channelService = ChannelService.getInstance(context);
     }
 
+    public String getClientGroupId() {
+        return clientGroupId;
+    }
+
+    public void setClientGroupId(String clientGroupId) {
+        this.clientGroupId = clientGroupId;
+    }
+
+    public int getType() {
+        return type;
+    }
+
+    public void setType(int type) {
+        this.type = type;
+    }
+
     @Override
     protected Boolean doInBackground(Void... params) {
         try {
@@ -44,11 +60,11 @@ public class ApplozicChannelCreateTask extends AsyncTask<Void, Void, Boolean> {
                 if (!TextUtils.isEmpty(clientGroupId)) {
                     channelInfo.setClientGroupId(clientGroupId);
                 }
+                channelInfo.setType(type);
                 channel = channelService.createChannel(channelInfo);
-                return true;
-            } else {
-                throw new Exception(context.getString(R.string.applozic_channel_error_info_in_logs));
+                return channel != null;
             }
+            return false;
         } catch (Exception e) {
             e.printStackTrace();
             exception = e;
@@ -62,7 +78,7 @@ public class ApplozicChannelCreateTask extends AsyncTask<Void, Void, Boolean> {
 
         if (resultBoolean && channel != null && channelCreateListener != null) {
             channelCreateListener.onSuccess(channel, context);
-        } else if (exception != null && !resultBoolean && channelCreateListener != null) {
+        } else if (!resultBoolean && channelCreateListener != null) {
             channelCreateListener.onFailure(exception, context);
         }
 

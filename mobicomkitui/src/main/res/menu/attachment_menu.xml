@@ -6,22 +6,22 @@
 
     <item
         android:id="@+id/forward"
-        android:orderInCategory="1"
-        android:icon="@drawable/applozic_ic_action_forward"
-        android:visible="false"
-        mobitexter:showAsAction="always"
-        android:showAsAction="always"
         android:actionProviderClass="android.support.v7.widget.ShareActionProvider"
-        android:title="@string/shareOptions" />
+        android:icon="@drawable/applozic_ic_action_forward"
+        android:orderInCategory="1"
+        android:showAsAction="always"
+        android:title="@string/shareOptions"
+        android:visible="false"
+        mobitexter:showAsAction="always" />
 
     <item
         android:id="@+id/shareOptions"
-        android:orderInCategory="2"
-        android:icon="@drawable/mobicom_social_share"
-        mobitexter:showAsAction="always"
-        android:showAsAction="always"
         android:actionProviderClass="android.support.v7.widget.ShareActionProvider"
-        android:title="@string/shareOptions" />
+        android:icon="@drawable/mobicom_social_share"
+        android:orderInCategory="2"
+        android:showAsAction="always"
+        android:title="@string/shareOptions"
+        mobitexter:showAsAction="always" />
 
 
 </menu>

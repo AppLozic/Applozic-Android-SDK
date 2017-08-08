@@ -69,17 +69,17 @@ public class LocationUtils {
         return null;
     }
 
-    public static String loadStaticMap(String message){
+    public static String loadStaticMap(String message) {
 
         String location = getLocationFromMessage(message);
 
         final String staticMapUrl = "http://maps.googleapis.com/maps/api/staticmap?center=" + location
                 + "&zoom=17&size=400x400&maptype=roadmap&format=png&visual_refresh=true&markers=" + location;
 
-        return  staticMapUrl;
+        return staticMapUrl;
     }
 
-    public static String getLocationFromMessage(String message){
+    public static String getLocationFromMessage(String message) {
         String latitude = "0";
         String longitude = "0";
 

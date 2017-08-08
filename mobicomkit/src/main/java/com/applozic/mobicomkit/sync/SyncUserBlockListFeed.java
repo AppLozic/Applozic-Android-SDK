@@ -9,8 +9,8 @@ import java.util.List;
  */
 public class SyncUserBlockListFeed extends JsonMarker {
 
-    List<SyncUserBlockFeed>  blockedByUserList;
-    List<SyncUserBlockFeed>  blockedToUserList;
+    List<SyncUserBlockFeed> blockedByUserList;
+    List<SyncUserBlockFeed> blockedToUserList;
 
     public List<SyncUserBlockFeed> getBlockedByUserList() {
         return blockedByUserList;

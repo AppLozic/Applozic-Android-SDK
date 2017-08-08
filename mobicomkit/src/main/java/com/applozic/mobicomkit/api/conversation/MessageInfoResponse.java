@@ -40,17 +40,17 @@ public class MessageInfoResponse extends JsonMarker {
 
     public List<MessageInfo> getReadByUserList() {
 
-            if (this.messageInfoList == null) {
-                return null;
-            }
-            List<MessageInfo> readList = new ArrayList<MessageInfo>();
-
-            for (MessageInfo messageInfo : messageInfoList) {
-                if (messageInfo.isRead()) {
-                    readList.add(messageInfo);
-                }
-            }
-            return readList;
+        if (this.messageInfoList == null) {
+            return null;
         }
+        List<MessageInfo> readList = new ArrayList<MessageInfo>();
+
+        for (MessageInfo messageInfo : messageInfoList) {
+            if (messageInfo.isRead()) {
+                readList.add(messageInfo);
+            }
+        }
+        return readList;
+    }
 
 }

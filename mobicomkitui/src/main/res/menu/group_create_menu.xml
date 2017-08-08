@@ -4,11 +4,25 @@
 
     <item
         android:id="@+id/Next"
-        android:title="Next"
+        android:title="@string/next"
+        android:orderInCategory="2"
         app:showAsAction="always|withText" />
 
     <item
         android:id="@+id/Done"
-        android:title="Done"
+        android:title="@string/done"
+        android:orderInCategory="2"
         app:showAsAction="always|withText" />
+
+    <item
+        android:id="@+id/menu_search"
+        android:actionViewClass="android.support.v7.widget.SearchView"
+        android:icon="@drawable/applozic_ic_action_search"
+        android:iconifiedByDefault="true"
+        android:showAsAction="always"
+        android:orderInCategory="1"
+        android:title="@string/menu_search"
+        app:actionViewClass="android.support.v7.widget.SearchView"
+        app:iconifiedByDefault="true"
+        app:showAsAction="always" />
 </menu>

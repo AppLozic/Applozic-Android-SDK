@@ -9,7 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 
-
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
@@ -30,6 +29,10 @@ public class EcommerceFragment extends Fragment {
 
     private OnFragmentInteractionListener mListener;
 
+    public EcommerceFragment() {
+        // Required empty public constructor
+    }
+
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
@@ -46,10 +49,6 @@ public class EcommerceFragment extends Fragment {
         args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
-    }
-
-    public EcommerceFragment() {
-        // Required empty public constructor
     }
 
     @Override

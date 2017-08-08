@@ -24,6 +24,7 @@ import android.util.Log;
 import com.applozic.mobicomkit.api.MobiComKitClientService;
 import com.applozic.mobicomkit.api.conversation.Message;
 import com.applozic.mobicomkit.api.conversation.database.MessageDatabaseService;
+import com.applozic.mobicommons.commons.core.utils.Utils;
 import com.applozic.mobicommons.file.FileUtils;
 
 import java.io.File;
@@ -125,7 +126,7 @@ class AttachmentDownloader implements Runnable {
         } finally {
 
             // If the byteBuffer is null, reports that the download failed.
-            if (mPhotoTask.getMessage() != null && !mPhotoTask.getMessage().isAttachmentDownloaded()) {
+            if (mPhotoTask.getMessage() != null && !mPhotoTask.getMessage().isAttachmentDownloaded() && mPhotoTask.getMessage().isSentToServer()) {
                 mPhotoTask.handleDownloadState(HTTP_STATE_FAILED);
             } else {
                 mPhotoTask.handleDownloadState(HTTP_STATE_COMPLETED);
@@ -154,21 +155,21 @@ class AttachmentDownloader implements Runnable {
             String contentType = fileMeta.getContentType();
             String fileKey = fileMeta.getKeyString();
             HttpURLConnection connection = null;
-            String fileName=null;
-            if( message.getContentType()== Message.ContentType.AUDIO_MSG.getValue() ) {
+            String fileName = null;
+            if (message.getContentType() == Message.ContentType.AUDIO_MSG.getValue()) {
                 fileName = fileMeta.getName();
-            }else{
-                fileName = fileMeta.getBlobKeyString() + "." + FileUtils.getFileFormat(fileMeta.getName());
+            } else {
+                fileName = FileUtils.getName(fileMeta.getName()) + message.getCreatedAtTime() + "." + FileUtils.getFileFormat(fileMeta.getName());
             }
 
-            file = FileClientService.getFilePath(fileName, context, contentType);
+            file = FileClientService.getFilePath(fileName, context.getApplicationContext(), contentType);
             if (!file.exists()) {
                 connection = new MobiComKitClientService(context).openHttpConnection(new MobiComKitClientService(context).getFileUrl() + fileMeta.getBlobKeyString());
                 if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
                     inputStream = connection.getInputStream();
                 } else {
                     //TODO: Error Handling...
-                    Log.i(TAG, "Got Error response while uploading file : " + connection.getResponseCode());
+                    Utils.printLog(context,TAG, "Got Error response while uploading file : " + connection.getResponseCode());
                     return;
                 }
 
@@ -214,15 +215,15 @@ class AttachmentDownloader implements Runnable {
 
         } catch (FileNotFoundException ex) {
             ex.printStackTrace();
-            Log.e(TAG, "File not found on server");
+            Utils.printLog(context,TAG, "File not found on server");
         } catch (Exception ex) {
             //If partial file got created delete it, we try to download it again
             if (file != null && file.exists()) {
-                Log.i(TAG, " Exception occured while downloading :" + file.getAbsolutePath());
+                Utils.printLog(context,TAG, " Exception occured while downloading :" + file.getAbsolutePath());
                 file.delete();
             }
             ex.printStackTrace();
-            Log.e(TAG, "Exception fetching file from server");
+            Utils.printLog(context,TAG, "Exception fetching file from server");
         }
     }
 
@@ -262,4 +263,3 @@ class AttachmentDownloader implements Runnable {
         String getContentType();
     }
 }
-

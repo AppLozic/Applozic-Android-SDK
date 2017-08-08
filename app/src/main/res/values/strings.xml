@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources  xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="MissingTranslation">
 
     <string name="app_name">Applozic</string>
     <string name="mobicomkit_label">Applozic</string>
@@ -41,9 +42,13 @@
     <string name="default_media_location_folder">Applozic</string>
     <string name="order_sample_button">Chat with seller</string>
     <string name="take_order_userid">ApplozicShop</string>
+    <string name="initiate_chat_button_info">Start Chatting</string>
+    <string name="enter_user_id_info">Please Enter UserId</string>
+    <string name="empty_user_id_info">UserId is empty</string>
 
     <!-- support or admin  contact information ...please add details here  -->
     <string name="support_contact_display_name">AppLozic</string>
+    <string name="initiate_chat_info">Initiate chat with user</string>
     <string name="support_contact_userId">applozic</string>
     <string name="support_contact_emailId">devashish@applozic.com</string>
     <string name="support_contact_number">918042028425</string>
@@ -51,5 +56,17 @@
     <string name="invite_message">Hey, check out Applozic -
         Plug &amp; Play Messaging: http://www.applozic.com</string>
     <string name="facebook_app_id">2194468880571702</string>
-
+    <string name="intrest_in_chat">Hello I am interested in your property, Can we chat?</string>
+    <string name="start">START</string>
+    <string name="cancel">Cancel</string>
+    <string name="TestTopic2">TestTopic2</string>
+    <string name="Topic_1">Topic 1</string>
+    <string name="Price">Price</string>
+    <string name="Qty">Qty</string>
+    <string name="rs">20 Rs</string>
+    <string name="group_chat">Group chat</string>
+    <string name="Please_download_the_Google_play_store_apk">Please download the Google play store apk</string>
+    <string name="click_more">Click more</string>
+    <string name="press_back_again_to_exit">Press Back again to Exit.</string>
+    <string name="log_out_successful">Log out successful</string>
 </resources>

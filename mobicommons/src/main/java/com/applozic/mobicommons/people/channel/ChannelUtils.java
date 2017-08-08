@@ -4,6 +4,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.provider.ContactsContract;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.applozic.mobicommons.people.contact.ContactUtils;
 
@@ -57,11 +58,32 @@ public class ChannelUtils {
         return "";
     }
 
-    public static boolean isAdminUserId(String userId,Channel channel){
-        if(channel != null &&  !TextUtils.isEmpty(channel.getAdminKey()) && !TextUtils.isEmpty(userId)){
+    public static boolean isAdminUserId(String userId, Channel channel) {
+        if (channel != null && !TextUtils.isEmpty(channel.getAdminKey()) && !TextUtils.isEmpty(userId)) {
             return channel.getAdminKey().equals(userId);
         }
         return false;
+    }
+
+    public static String getWithUserId(Channel channel, String loggedInUserId) {
+        try {
+            if (Channel.GroupType.GROUPOFTWO.getValue().equals(channel.getType())) {
+                String[] userIdSplit = new String[2];
+                if (!TextUtils.isEmpty(channel.getClientGroupId())) {
+                    userIdSplit = channel.getClientGroupId().split(":");
+                    String userId1 = userIdSplit[1];
+                    String userId2 = userIdSplit[2];
+                    if (!loggedInUserId.equals(userId2)) {
+                        return userId2;
+                    } else if (!loggedInUserId.equals(userId1)) {
+                        return userId1;
+                    }
+                }
+            }
+        } catch (Exception e) {
+            Log.i("ChannelUtils", "Got exception in Group of two");
+        }
+        return "";
     }
 
 }

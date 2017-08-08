@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -25,23 +26,28 @@ import android.widget.Toast;
 import com.applozic.mobicomkit.ApplozicClient;
 import com.applozic.mobicomkit.api.account.user.MobiComUserPreference;
 import com.applozic.mobicomkit.api.account.user.UserLogoutTask;
+import com.applozic.mobicomkit.api.conversation.Message;
+import com.applozic.mobicomkit.api.conversation.MessageIntentService;
+import com.applozic.mobicomkit.api.conversation.MobiComConversationService;
 import com.applozic.mobicomkit.contact.AppContactService;
 import com.applozic.mobicomkit.feed.TopicDetail;
-import com.applozic.mobicomkit.uiwidgets.async.ApplzoicConversationCreateTask;
+import com.applozic.mobicomkit.uiwidgets.async.ApplozicConversationCreateTask;
 import com.applozic.mobicomkit.uiwidgets.conversation.ConversationUIService;
 import com.applozic.mobicomkit.uiwidgets.conversation.activity.ConversationActivity;
 import com.applozic.mobicommons.people.channel.Conversation;
 import com.applozic.mobicommons.people.contact.Contact;
 
+import java.util.HashMap;
+import java.util.Map;
+
 
 public class MainActivity extends ActionBarActivity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks, EcommerceFragment.OnFragmentInteractionListener {
-    private UserLogoutTask userLogoutTask;
     public static final String TAKE_ORDER = "takeOrder";
     public static final String TAG = "MainActivity";
     public static final String TAKE_ORDER_USERID_METADATA = "com.applozic.take.order.userId";
     private static final String CONVERSATION_FRAGMENT = "ConversationFragment";
-
+    private UserLogoutTask userLogoutTask;
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
      */
@@ -86,6 +92,15 @@ public class MainActivity extends ActionBarActivity
 
         setContentView(R.layout.activity_main);
 
+        MobiComUserPreference userPreference = MobiComUserPreference.getInstance(this);
+        if (!userPreference.isRegistered()) {
+            Intent intent = new Intent(this, LoginActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            startActivity(intent);
+            finish();
+            return;
+        }
+
         mNavigationDrawerFragment = (NavigationDrawerFragment)
                 getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
         mTitle = getTitle();
@@ -98,15 +113,7 @@ public class MainActivity extends ActionBarActivity
         //Put Support Contact Data
         buildSupportContactData();
 
-        MobiComUserPreference userPreference = MobiComUserPreference.getInstance(this);
-        if (!userPreference.isRegistered()) {
-            Intent intent = new Intent(this, LoginActivity.class);
-            //startActivity(intent);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-            startActivity(intent);
-            finish();
-            return;
-        } /*else {
+        /*else {
             Intent intent = new Intent(this, ConversationActivity.class);
                 startActivity(intent);
         }*/
@@ -123,8 +130,8 @@ public class MainActivity extends ActionBarActivity
 
         if (position == 1) {
             Intent intent = new Intent(this, ConversationActivity.class);
-            if(ApplozicClient.getInstance(this).isContextBasedChat()){
-                intent.putExtra(ConversationUIService.CONTEXT_BASED_CHAT,true);
+            if (ApplozicClient.getInstance(this).isContextBasedChat()) {
+                intent.putExtra(ConversationUIService.CONTEXT_BASED_CHAT, true);
             }
             startActivity(intent);
             return;
@@ -149,12 +156,12 @@ public class MainActivity extends ActionBarActivity
 
         if (position == 2) {
 
-            UserLogoutTask.TaskListener userLogoutTaskListener = new UserLogoutTask.TaskListener(){
+            UserLogoutTask.TaskListener userLogoutTaskListener = new UserLogoutTask.TaskListener() {
 
                 @Override
                 public void onSuccess(Context context) {
                     userLogoutTask = null;
-                    Toast.makeText(getBaseContext(), "Log out successful", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getBaseContext(),getBaseContext().getString(R.string.log_out_successful), Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(context, LoginActivity.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP);
                     startActivity(intent);
@@ -167,7 +174,7 @@ public class MainActivity extends ActionBarActivity
                     AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this).create();
                     alertDialog.setTitle(getString(R.string.text_alert));
                     alertDialog.setMessage(exception.toString());
-                    alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(android.R.string.ok),
+                    alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.ok_alert),
                             new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int which) {
                                     dialog.dismiss();
@@ -179,9 +186,31 @@ public class MainActivity extends ActionBarActivity
                 }
             };
 
-            userLogoutTask = new UserLogoutTask(userLogoutTaskListener,this);
-            userLogoutTask.execute((Void)null);
+            userLogoutTask = new UserLogoutTask(userLogoutTaskListener, this);
+            userLogoutTask.execute((Void) null);
+
         }
+
+        if (position == 3) {
+            Map<String, String> messageMetaData = new HashMap<>();
+            messageMetaData.put(Message.MetaDataType.KEY.getValue(), Message.MetaDataType.HIDDEN.getValue());
+            Message message = new Message();
+            MobiComUserPreference userPreferences = MobiComUserPreference.getInstance(MainActivity.this);
+            message.setContactIds("android");
+            message.setTo("android");
+            message.setContentType(Message.ContentType.CUSTOM.getValue());
+            message.setMessage("this is meta data hidden");
+            message.setMetadata(messageMetaData);
+            message.setStoreOnDevice(Boolean.TRUE);
+            message.setRead(Boolean.TRUE);
+            message.setCreatedAtTime(System.currentTimeMillis() + userPreferences.getDeviceTimeOffset());
+            message.setSendToDevice(Boolean.FALSE);
+            message.setType(Message.MessageType.MT_OUTBOX.getValue());
+            message.setDeviceKeyString(userPreferences.getDeviceKeyString());
+            message.setSource(Message.Source.MT_MOBILE_APP.getValue());
+            new MobiComConversationService(MainActivity.this).sendMessage(message, MessageIntentService.class);
+        }
+
 
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction()
@@ -202,17 +231,17 @@ public class MainActivity extends ActionBarActivity
 
     public void takeOrder(View v) {
         Conversation conversation = buildConversation();
-        ApplzoicConversationCreateTask applzoicConversationCreateTask;
+        ApplozicConversationCreateTask applozicConversationCreateTask;
 
-        ApplzoicConversationCreateTask.ConversationCreateListener conversationCreateListener =  new ApplzoicConversationCreateTask.ConversationCreateListener() {
+        ApplozicConversationCreateTask.ConversationCreateListener conversationCreateListener = new ApplozicConversationCreateTask.ConversationCreateListener() {
             @Override
             public void onSuccess(Integer conversationId, Context context) {
-                Log.i(TAG,"ConversationID is:"+conversationId);
+                Log.i(TAG, "ConversationID is:" + conversationId);
                 Intent takeOrderIntent = new Intent(context, ConversationActivity.class);
                 takeOrderIntent.putExtra(TAKE_ORDER, true);
-                takeOrderIntent.putExtra(ConversationUIService.CONTEXT_BASED_CHAT,true);
+                takeOrderIntent.putExtra(ConversationUIService.CONTEXT_BASED_CHAT, true);
                 takeOrderIntent.putExtra(ConversationUIService.USER_ID, "usertest2");
-                takeOrderIntent.putExtra(ConversationUIService.DEFAULT_TEXT, "Hello I am interested in your property, Can we chat?");
+                takeOrderIntent.putExtra(ConversationUIService.DEFAULT_TEXT, R.string.intrest_in_chat);
                 takeOrderIntent.putExtra(ConversationUIService.CONVERSATION_ID,conversationId);
                 startActivity(takeOrderIntent);
 
@@ -223,8 +252,8 @@ public class MainActivity extends ActionBarActivity
 
             }
         };
-        applzoicConversationCreateTask =  new ApplzoicConversationCreateTask(MainActivity.this,conversationCreateListener,conversation);
-        applzoicConversationCreateTask.execute((Void)null);
+        applozicConversationCreateTask = new ApplozicConversationCreateTask(MainActivity.this, conversationCreateListener, conversation);
+        applozicConversationCreateTask.execute((Void) null);
 
     }
 
@@ -234,17 +263,30 @@ public class MainActivity extends ActionBarActivity
         conversation.setUserId("usertest2");
         conversation.setTopicId("Topic#Id#Test");
         TopicDetail topic = new TopicDetail();
-        topic.setTitle("TestTopic2");
-        topic.setSubtitle("Topic1");
+        topic.setTitle(getResources().getString(R.string.TestTopic2));
+        topic.setSubtitle(getResources().getString(R.string.Topic_1));
         topic.setLink("https://www.applozic.com/resources/sidebox/images/applozic.png");
-        topic.setKey1("Qty");
+        topic.setKey1(getResources().getString(R.string.Qty));
         topic.setValue1("1000");
-        topic.setKey2("Price");
-        topic.setValue2("20 Rs");
+        topic.setKey2(getResources().getString(R.string.Price));
+        topic.setValue2(getResources().getString(R.string.rs));
         conversation.setSenderSmsFormat(MobiComUserPreference.getInstance(this).getUserId(), "SENDER SMS  FORMAT");
         conversation.setReceiverSmsFormat("usertest2", "RECEIVER SMS FORMAT");
         conversation.setTopicDetail(topic.getJson());
         return conversation;
+    }
+
+    public void initiateChatClick(View v) {
+        FragmentManager supportFragmentManager = getSupportFragmentManager();
+        DialogFragment fragment = new InitiateDialogFragment();
+        FragmentTransaction fragmentTransaction = supportFragmentManager
+                .beginTransaction();
+        Fragment prev = getSupportFragmentManager().findFragmentByTag("InitiateDialogFragment");
+        if (prev != null) {
+            fragmentTransaction.remove(prev);
+        }
+        fragmentTransaction.addToBackStack(null);
+        fragment.show(fragmentTransaction, "InitiateDialogFragment");
     }
 
     public void groupChat(View v) {

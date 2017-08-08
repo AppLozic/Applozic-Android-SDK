@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources  xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="MissingTranslation">
+    <string name="app_name">Applozic</string>
+    <string name="mobicomkit_label">Applozic</string>
+    <string name="title_activity_main">मुख्य गतिविधि</string>
+    <string name="title_section1">अनुभाग </string>
+    <string name="title_section2">फ्रैगमेंट का उपयोग करके चैट करें </string>
+    <string name="title_section3">संदेश</string>
+    <string name="title_section4">ईकॉमर्स</string>
+    <string name="title_section5">संदेश (गतिविधि आधारित)</string>
+    <string name="title_section6">संदेश</string>
+    <string name="title_section7">लोग आउट</string>
+    <string name="navigation_drawer_open">नेविगेशन ड्रॉवर खोलें</string>
+    <string name="navigation_drawer_close">नेविगेशन ड्रॉवर को बंद करें</string>
+    <string name="action_example">चैट</string>
+    <string name="action_settings">सेटिंग्स</string>
+    <string name="hello_blank_fragment">हैलो खाली टुकड़ा</string>
+    <string name="button_text">टेस्ट</string>
+    <string name="hello_world">हैलो वर्ल्ड टेस्ट!</string>
+    <string name="ecommerce">Applozic</string>
+    <string name="ecommerce_button1_text">गैजेट्स</string>
+    <string name="ecommerce_button2_text">होम </string>
+    <string name="ecommerce_button3_text">पीसी</string>
+    <string name="ecommerce_button4_text">बैग</string>
+    <string name="ecommerce_button5_text">घड़ियों</string>
+    <string name="ecommerce_button6_text">मोबाइल्स</string>
+    <string name="ecommerce_button7_text">कारें</string>
+    <string name="ecommerce_button8_text">खेल</string>
+    <string name="ecommerce_button9_text">संगीत</string>
+    <string name="ecommerce_ad_button">मुफ्त विज्ञापन पोस्ट करें</string>
+    <string name="ecommerce_chat_button">चैट</string>
+    <string name="ecommerce_ad_text">नि: शुल्क विज्ञापन दें</string>
+    <string name="ecommerce_text1">संदेश एकीकरण दिखाने के लिए डेमो स्क्रीन, नीचे चैट बटन पर टैप करें</string>
+    <string name="application_key">applozic-sample-app</string>
+    <string name="default_server_url">https://apps.applozic.com</string>
+    <string name="default_mqtt_server_url">tcp://apps.applozic.com:1883</string>
+    <string name="default_media_location_folder">Applozic</string>
+    <string name="order_sample_button">विक्रेता के साथ चैट करें</string>
+    <string name="take_order_userid">ApplozicShop</string>
+    <string name="initiate_chat_button_info">चैटिंग शुरू करें</string>
+    <string name="enter_user_id_info">कृपया उपयोगकर्ता आईडी दर्ज करें</string>
+    <string name="empty_user_id_info">उपयोगकर्ता आईडी खाली है</string>
+
+    <!-- support or admin  contact information ...please add details here  -->
+    <string name="support_contact_display_name">AppLozic</string>
+    <string name="initiate_chat_info">उपयोगकर्ता के साथ चैट आरंभ करें</string>
+    <string name="support_contact_userId">applozic</string>
+    <string name="support_contact_emailId">devashish@applozic.com</string>
+    <string name="support_contact_number">918042028425</string>
+    <string name="support_contact_image_url">R.drawable.ic_launcher</string>
+    <string name="invite_message">Hey, check out Applozic -
+        Plug &amp; Play Messaging: http://www.applozic.com</string>
+    <string name="facebook_app_id">2194468880571702</string>
+
+    <!-- Strings related to login -->
+    <string name="prompt_email">ईमेल</string>
+    <string name="prompt_user_id">यूज़र आईडी</string>
+    <string name="prompt_phone_number">फ़ोन नंबर</string>
+    <string name="prompt_password">पासवर्ड</string>
+    <string name="prompt_display_name">प्रदर्शित होने वाला नाम</string>
+    <string name="action_sign_in">लॉगिन या साइन अप करें</string>
+    <string name="action_sign_in_short">साइन अप करें</string>
+    <string name="error_invalid_email">यह ईमेल आईडी अमान्य है</string>
+    <string name="error_invalid_password">यह पासवर्ड बहुत छोटा है</string>
+    <string name="error_incorrect_password">यह पासवर्ड गलत है</string>
+    <string name="error_field_required">यह फ़ील्ड आवश्यक है</string>
+    <string name="text_alert">अलर्ट </string>
+    <string name="mobicomkitdemo">डेमो ऐप</string>
+    <string name="intrest_in_chat">हैलो आपकी संपत्ति में दिलचस्पी है, क्या हम चैट कर सकते हैं?</string>
+    <string name="start">स्टार्ट</string>
+    <string name="cancel">रद्द करें</string>
+    <string name="TestTopic2">टेस्टटोपिक 2</string>
+    <string name="Topic_1">विषय 1</string>
+    <string name="Price">मूल्य</string>
+    <string name="Qty">मात्रा</string>
+    <string name="rs">20 रुपये</string>
+    <string name="group_chat">समूह चैट</string>
+    <string name="send_your_current_location">अपना वर्तमान स्थान भेजें</string>
+    <string name="Please_download_the_Google_play_store_apk">कृपया गूगल प्ले स्टोर एपीके डाउनलोड करें</string>
+    <string name="click_more">अधिक क्लिक करें</string>
+    <string name="press_back_again_to_exit">बाहर निकलने के लिए वापस बटन दबाएं</string>
+    <string name="log_out_successful">लॉग आउट सफल है</string>
+    <string-array name="select_url">
+        <item>https://apps.applozic.com</item>
+        <item>https://staging.applozic.com</item>
+        <item>https://apps-test.applozic.com</item>
+        <item>https://test.applozic.com</item>
+        <item>https://applozic.appspot.com</item>
+        <item>http://test.applozic.com</item>
+        <item>https://test.applozic.com</item>
+        <item>https://mobi-com.appspot.com</item>
+        <item>http://dashboard.mobicomkit.com</item>
+    </string-array>
+</resources>

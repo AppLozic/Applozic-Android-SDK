@@ -16,20 +16,20 @@ import java.net.URLEncoder;
  */
 public class MTUserClientService extends MobiComKitClientService {
 
+    public static final String CHECK_FOR_MT_USER = "/rest/ws/contact/v2/ismtexter";
+
     public MTUserClientService(Context context) {
         super(context);
     }
 
-    public static final String CHECK_FOR_MT_USER = "/rest/ws/contact/v2/ismtexter";
-
-    public String getCheckForMtUser(){
+    public String getCheckForMtUser() {
         return getBaseUrl() + CHECK_FOR_MT_USER;
     }
 
     public ContactContent getContactContent(String contactNumber) {
         String response = null;
         try {
-            response = new HttpRequestUtils(context).getResponse(getCheckForMtUser()+ "?requestSource=1&contactNumber=" + URLEncoder.encode(contactNumber, "UTF-8"), "text/plain", "application/json");
+            response = new HttpRequestUtils(context).getResponse(getCheckForMtUser() + "?requestSource=1&contactNumber=" + URLEncoder.encode(contactNumber, "UTF-8"), "text/plain", "application/json");
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }

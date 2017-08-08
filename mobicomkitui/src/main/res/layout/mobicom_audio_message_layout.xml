@@ -3,8 +3,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
     android:background="@color/apploizc_transparent_color"
+    android:orientation="vertical"
     android:weightSum="1">
 
 
@@ -12,72 +12,75 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:background="@color/white"
+        android:layout_margin="0dp"
         android:layout_marginLeft="0dp"
         android:layout_marginRight="0dp"
+        android:layout_marginEnd="0dp"
+        android:layout_marginStart="0dp"
         android:layout_marginTop="0dp"
-        android:layout_margin="0dp">
+        android:background="@color/white">
 
         <RelativeLayout
             android:layout_width="268dp"
             android:layout_height="242dp"
-            android:orientation="vertical"
-            android:background="@color/apploizc_transparent_color"
-            android:weightSum="1"
+            android:layout_gravity="center_horizontal|top"
             android:layout_marginBottom="10dp"
-            android:layout_gravity="center_horizontal|top">
+            android:background="@color/apploizc_transparent_color"
+            android:orientation="vertical"
+            android:weightSum="1">
+
             <ImageButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
                 android:id="@+id/audio_mic_imageview"
-                android:src="@drawable/applozic_audio_normal"
-                android:layout_centerHorizontal="true"
-                android:background="@color/apploizc_transparent_color"
-                android:layout_gravity="center_horizontal" />
-
-            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/txtcount"
-                android:textSize="30sp"
-                android:textColor="@color/black"
-                android:textAlignment="center"
-                android:text="00:00:00"
-                android:layout_marginTop="55dp"
+                android:layout_centerHorizontal="true"
                 android:layout_gravity="center_horizontal"
-                android:layout_below="@+id/audio_mic_imageview"
-                android:layout_centerHorizontal="true"
-                android:phoneNumber="false" />
+                android:background="@color/apploizc_transparent_color"
+                android:src="@drawable/applozic_audio_normal" />
 
             <TextView
+                android:id="@+id/txtcount"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/start_text"
-                android:id="@+id/audio_recording_text"
                 android:layout_below="@+id/audio_mic_imageview"
-                android:layout_centerHorizontal="true" />
+                android:layout_centerHorizontal="true"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="55dp"
+                android:phoneNumber="false"
+                android:text="00:00:00"
+                android:textAlignment="center"
+                android:textColor="@color/black"
+                android:textSize="30sp" />
+
+            <TextView
+                android:id="@+id/audio_recording_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/audio_mic_imageview"
+                android:layout_centerHorizontal="true"
+                android:text="@string/start_text" />
 
             <Button
+                android:id="@+id/audio_cancel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/audio_cancel"
-                android:text="@string/cancel_text"
-                android:layout_gravity="left|bottom"
-                android:background="@color/apploizc_transparent_color"
                 android:layout_alignParentBottom="true"
                 android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true" />
+                android:layout_alignParentStart="true"
+                android:layout_gravity="start|bottom"
+                android:background="@color/apploizc_transparent_color"
+                android:text="@string/cancel_text" />
 
             <Button
+                android:id="@+id/audio_send"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/audio_send"
-                android:text="@string/send_text"
-                android:layout_gravity="right|bottom"
-                android:background="@color/apploizc_transparent_color"
                 android:layout_alignTop="@+id/audio_cancel"
+                android:layout_gravity="end|bottom"
+                android:layout_toEndOf="@+id/audio_mic_imageview"
                 android:layout_toRightOf="@+id/audio_mic_imageview"
-                android:layout_toEndOf="@+id/audio_mic_imageview" />
+                android:background="@color/apploizc_transparent_color"
+                android:text="@string/send_text" />
         </RelativeLayout>
     </FrameLayout>
 </RelativeLayout>

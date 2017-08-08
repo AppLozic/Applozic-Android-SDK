@@ -63,6 +63,7 @@
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:layout_marginBottom="15dp"
+            android:layout_marginEnd="15dp"
             android:layout_marginRight="15dp"
             android:background="@drawable/circle"
             android:src="@drawable/applozic_ic_action_add"
@@ -78,7 +79,7 @@
         android:gravity="center_vertical|center_horizontal"
         android:text="@string/empty_conversations"
         android:textColor="@color/empty_conversation_text_color"
-        android:textSize="18dp"
+        android:textSize="18sp"
         android:textStyle="bold"
         android:visibility="gone" />
 
@@ -116,6 +117,7 @@
             android:id="@+id/close_attachment_layout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:layout_alignParentTop="true"
             android:src="@drawable/applozic_ic_action_cancel" />
@@ -139,6 +141,7 @@
             android:layout_width="0dp"
             android:layout_height="35dp"
             android:layout_marginBottom="0dp"
+            android:layout_marginEnd="4dp"
             android:layout_marginRight="4dp"
             android:layout_weight="2"
             android:background="@color/message_action_button">
@@ -156,6 +159,7 @@
             android:layout_width="0dp"
             android:layout_height="35dp"
             android:layout_marginBottom="0dp"
+            android:layout_marginEnd="4dp"
             android:layout_marginRight="4dp"
             android:layout_weight="3"
             android:background="@color/message_action_button">
@@ -165,7 +169,7 @@
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
                 android:background="@color/message_action_button"
-                android:text="Schedule"
+                android:text="@string/schedule"
                 android:textColor="@color/black" />
 
         </FrameLayout>
@@ -175,6 +179,7 @@
             android:layout_width="0dp"
             android:layout_height="35dp"
             android:layout_marginBottom="0dp"
+            android:layout_marginEnd="2dp"
             android:layout_marginRight="2dp"
             android:layout_weight="3"
             android:background="@color/message_action_button">
@@ -203,9 +208,7 @@
             android:id="@+id/isTyping"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentLeft="true"
-            android:layout_gravity="left"
+            android:layout_gravity="start"
             android:gravity="center"
             android:padding="20dp"
             android:textSize="16sp"
@@ -218,93 +221,206 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
+        android:background="@color/apploizc_transparent_color"
         android:orientation="horizontal"
         android:visibility="gone">
 
         <LinearLayout
-            android:id="@+id/edit_text_linear_layout"
+            android:id="@+id/main_edit_text_linear_layout"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
             android:layout_marginBottom="8dp"
             android:layout_marginLeft="8dp"
+            android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
-            android:layout_weight="1"
-            android:orientation="horizontal">
+            android:layout_weight="2"
+            android:background="@drawable/input"
+            android:orientation="vertical">
 
-            <ImageButton
-                android:id="@+id/emoticons_btn"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_weight="2"
-                android:background="@color/apploizc_transparent_color"
-                android:paddingLeft="20dp"
-                android:paddingRight="20dp"
-                android:scaleType="center"
-                android:src="@drawable/mobicom_emoticons_icon" />
+            <include layout="@layout/reply_message_layout" />
 
-            <ImageButton
-                android:id="@+id/attach_button"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:id="@+id/edit_text_linear_layout"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="bottom|left"
-                android:background="@color/apploizc_transparent_color"
-                android:paddingLeft="10dp"
-                android:gravity="center"
-                android:minHeight="48dp"
-                android:scaleType="center"
-                android:paddingRight="20dp"
-                android:src="@drawable/applozic_ic_action_attachment"
-                android:visibility="visible" />
+                android:layout_gravity="bottom"
+                android:layout_marginLeft="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_weight="1"
+                android:orientation="horizontal">
 
-            <!--
-                    <EditText
-                        android:id="@+id/conversation_message"
-                        android:layout_width="fill_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="8"
-                        android:hint="@string/enter_message_hint"
-                        android:maxLines="6"
-                        android:minLines="2"
-                        android:textColor="@color/black"
-                        android:textSize="16sp" />
-            -->
-            <EditText
-                android:id="@+id/conversation_message"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="8"
-                android:background="@color/apploizc_transparent_color"
-                android:cursorVisible="true"
-                android:hint="@string/enter_message_hint"
-                android:maxLines="6"
-                android:minHeight="50dp"
-                android:minLines="2"
-                android:textColor="@color/black"
-                android:textColorHint="@color/edittext_hint_color"
-                android:textSize="16sp" />
+                <ImageButton
+                    android:id="@+id/emoticons_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="2"
+                    android:background="@color/apploizc_transparent_color"
+                    android:paddingEnd="20dp"
+                    android:paddingLeft="20dp"
+                    android:paddingRight="20dp"
+                    android:paddingStart="20dp"
+                    android:scaleType="center"
+                    android:src="@drawable/mobicom_emoticons_icon" />
+
+                <ImageButton
+                    android:id="@+id/attach_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom|start"
+                    android:background="@color/apploizc_transparent_color"
+                    android:gravity="center"
+                    android:minHeight="48dp"
+                    android:paddingEnd="20dp"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="20dp"
+                    android:paddingStart="10dp"
+                    android:scaleType="center"
+                    android:src="@drawable/applozic_ic_action_attachment"
+                    android:visibility="visible" />
+
+                <!--
+                        <EditText
+                            android:id="@+id/conversation_message"
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="8"
+                            android:hint="@string/enter_message_hint"
+                            android:maxLines="6"
+                            android:minLines="2"
+                            android:textColor="@color/black"
+                            android:textSize="16sp" />
+                -->
+                <EditText
+                    android:id="@+id/conversation_message"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:layout_weight="8"
+                    android:background="@color/apploizc_transparent_color"
+                    android:cursorVisible="true"
+                    android:inputType="textCapSentences|textMultiLine"
+                    android:maxLines="6"
+                    android:minHeight="50dp"
+                    android:minLines="2"
+                    android:textAlignment="viewStart"
+                    android:textColor="@color/black"
+                    android:textColorHint="@color/edittext_hint_color"
+                    android:textSize="16sp" />
+            </LinearLayout>
         </LinearLayout>
+        <FrameLayout
+            android:id="@+id/audio_record_frame_layout"
+            android:layout_width="0dp"
+            android:layout_height="53dp"
+            android:layout_gravity="bottom"
+            android:layout_marginBottom="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_weight="2"
+            android:background="@drawable/input"
+            android:orientation="vertical"
+            android:visibility="gone">
 
+            <include layout="@layout/reply_message_layout" />
 
+            <LinearLayout
+                android:id="@+id/slide_LinearLayout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginLeft="40dp"
+                android:layout_marginStart="40dp"
+                android:orientation="horizontal"
+                android:paddingLeft="50dp"
+                android:paddingRight="50dp"
+                android:visibility="visible">
+
+                <ImageView
+                    android:id="@+id/slide_image_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginTop="1dp"
+                    android:src="@drawable/slide_arrow_left" />
+
+                <TextView
+                    android:id="@+id/slide_to_cancel_text_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="6dp"
+                    android:layout_marginStart="6dp"
+                    android:text="@string/slide_to_cancel"
+                    android:textColor="#999999"
+                    android:textSize="12dp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start|center"
+                android:orientation="horizontal"
+                android:paddingEnd="13dp"
+                android:paddingLeft="13dp"
+                android:paddingStart="13dp">
+
+                <ImageView
+                    android:id="@+id/audio_record_icon_image_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start|center"
+                    android:layout_marginTop="1dp"
+                    android:src="@drawable/applozic_audio_record" />
+
+                <TextView
+                    android:id="@+id/recording_time_text_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start|center"
+                    android:layout_marginLeft="6dp"
+                    android:layout_marginStart="6dp"
+                    android:text="00:00"
+                    android:textColor="#4d4c4b"
+                    android:textSize="16dp" />
+            </LinearLayout>
+
+        </FrameLayout>
         <!--<com.rockerhieu.emojicon.EmojiconEditText-->
         <!--android:id="@+id/conversation_message"-->
         <!--android:text="I \ue32d emojicon"-->
         <!--emojicon:emojiconSize="28sp"-->
         <!--android:layout_width="match_parent"-->
         <!--android:layout_height="wrap_content"/>-->
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:gravity="center">
 
-        <ImageButton
-            android:id="@+id/conversation_send"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_gravity="bottom|right"
-            android:layout_margin="10dp"
-            android:background="@drawable/button_circle"
-            android:clickable="true"
-            android:gravity="center"
-            android:scaleType="center"
-            android:src="@drawable/mobicom_ic_action_send"
-            android:visibility="visible" />
+            <ImageButton
+                android:id="@+id/conversation_send"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_gravity="bottom|end"
+                android:layout_margin="10dp"
+                android:background="@drawable/button_circle"
+                android:clickable="true"
+                android:gravity="center"
+                android:scaleType="center"
+                android:src="@drawable/applozic_mic_pressed"
+                android:visibility="visible" />
+
+            <EditText
+                android:id="@+id/error_edit_text_view"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:enabled="false"
+                android:hint=""
+                android:inputType="none" />
+        </FrameLayout>
     </LinearLayout>
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -347,7 +463,7 @@
             android:horizontalSpacing="1dp"
             android:numColumns="3"
             android:stretchMode="columnWidth"
-            android:verticalSpacing="1dp"></GridView>
+            android:verticalSpacing="1dp" />
 
     </LinearLayout>
 

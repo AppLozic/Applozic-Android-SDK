@@ -19,7 +19,7 @@ public class ApplozicChannelAddMemberTask extends AsyncTask<Void, Void, Boolean>
     ChannelAddMemberListener channelAddMemberListener;
     ChannelService channelService;
     Exception exception;
-    String addResponse;
+    String addResponse ;
 
     public ApplozicChannelAddMemberTask(Context context, Integer channelKey, String userId, ChannelAddMemberListener channelAddMemberListener) {
         this.channelKey = channelKey;
@@ -49,12 +49,12 @@ public class ApplozicChannelAddMemberTask extends AsyncTask<Void, Void, Boolean>
     }
 
     @Override
-    protected void onPostExecute(Boolean resultBoolean) {
-        super.onPostExecute(resultBoolean);
+    protected void onPostExecute(Boolean result) {
+        super.onPostExecute(result);
 
-        if (resultBoolean  && channelAddMemberListener != null) {
+        if (result && channelAddMemberListener != null) {
             channelAddMemberListener.onSuccess(addResponse, context);
-        } else if (!resultBoolean && exception != null && channelAddMemberListener != null) {
+        } else if (!result && channelAddMemberListener != null) {
             channelAddMemberListener.onFailure(addResponse, exception, context);
         }
     }

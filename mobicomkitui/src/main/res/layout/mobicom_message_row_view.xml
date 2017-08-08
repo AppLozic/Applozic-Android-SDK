@@ -1,63 +1,56 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    android:gravity="center"
     android:longClickable="true"
     android:minHeight="68dp"
     android:orientation="horizontal"
-    android:gravity="center"
+    android:paddingBottom="9dp"
     android:paddingLeft="10dp"
+    android:paddingStart="10dp"
     android:paddingRight="10dp"
-    android:paddingTop="9dp"
-    android:paddingBottom="9dp">
+    android:paddingEnd="10dp"
+    android:paddingTop="9dp">
 
-    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/layout_online"
+    <RelativeLayout
+        android:id="@+id/profile_image_relative_layout"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/onlineTextView"
-        android:visibility="gone">
-    </FrameLayout>
+        android:layout_height="wrap_content">
 
+        <TextView
+            android:id="@+id/alphabeticImage"
+            android:layout_width="46dp"
+            android:layout_height="46dp"
+            android:layout_gravity="center"
+            android:layout_margin="4dp"
+            android:background="@drawable/mobiframework_circular_text_view"
+            android:gravity="center"
+            android:text=""
+            android:textColor="#ffffff"
+            android:textSize="20sp"
+            android:visibility="gone" />
 
-    <TextView
-        android:id="@+id/alphabeticImage"
-        android:layout_width="46dp"
-        android:layout_height="46dp"
-        android:layout_margin="4dp"
-        android:background="@drawable/mobiframework_circular_text_view"
-        android:gravity="center"
-        android:layout_gravity="center"
-        android:text=""
-        android:textColor="#ffffff"
-        android:textSize="20dp"
-        android:visibility="gone" />
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/contactImage"
+            android:layout_width="46dp"
+            android:layout_height="46dp"
+            android:layout_gravity="center"
+            android:layout_margin="4dp"
+            android:layout_toRightOf="@+id/alphabeticImage"
+            android:layout_toEndOf="@+id/alphabeticImage"
+            android:src="@drawable/applozic_group_icon"
+            android:visibility="visible" />
 
-    <!--<ImageView
-        android:id="@+id/contactImage"
-        android:layout_width="55dp"
-        android:layout_height="55dp"
-        android:layout_gravity="center"
-        android:layout_margin="4dp"
-        android:layout_toRightOf="@+id/alphabeticImage"
-        android:src="@drawable/applozic_ic_contact_picture_180_holo_light"
-        android:visibility="visible" />-->
-
-      <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/contactImage"
-        android:layout_width="46dp"
-        android:layout_height="46dp"
-        android:layout_toRightOf="@+id/alphabeticImage"
-        android:layout_margin="4dp"
-        android:src="@drawable/applozic_group_icon"
-        android:layout_gravity="center"
-        android:visibility="visible" />
+    </RelativeLayout>
 
     <LinearLayout
         android:id="@+id/name_time"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="12dp"
-        android:layout_toRightOf="@+id/contactImage"
+        android:layout_toRightOf="@+id/profile_image_relative_layout"
+        android:layout_marginStart="12dp"
+        android:layout_toEndOf="@+id/profile_image_relative_layout"
         android:orientation="horizontal"
         android:paddingBottom="1dp"
         android:visibility="visible"
@@ -67,12 +60,14 @@
             android:id="@+id/smReceivers"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
+            android:textDirection="locale"
+            android:textAlignment="gravity"
             android:layout_weight="22"
             android:ellipsize="end"
             android:singleLine="true"
             android:text=""
             android:textIsSelectable="false"
-            android:textSize="18dp" />
+            android:textSize="18sp" />
 
         <TextView
             android:id="@+id/createdAtTime"
@@ -84,7 +79,7 @@
             android:singleLine="true"
             android:text="22 Apr 08:10 AM"
             android:textColor="@color/message_details_text_color"
-            android:textSize="10dp" />
+            android:textSize="10sp" />
     </LinearLayout>
 
     <ImageView
@@ -92,7 +87,7 @@
         android:layout_width="18dp"
         android:layout_height="18dp"
         android:layout_below="@+id/name_time"
-        android:layout_toRightOf="@+id/contactImage"
+        android:layout_toRightOf="@+id/profile_image_relative_layout"
         android:gravity="center_vertical"
         android:visibility="gone" />
 
@@ -105,9 +100,11 @@
         android:layout_alignParentRight="false"
         android:layout_below="@+id/messageUnread"
         android:gravity="center_vertical"
-        android:text="delivery status"
+        android:text="@string/delivery_status"
+        android:layout_alignParentEnd="false"
+        android:layout_alignParentStart="false"
         android:textColor="@color/message_details_text_color"
-        android:textSize="12dp"
+        android:textSize="12sp"
         android:visibility="gone" />
 
     <TextView
@@ -115,10 +112,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="false"
-        android:text="testTime"
+        android:layout_alignParentEnd="false"
+        android:text="@string/testTime"
         android:textColor="@color/message_details_text_color"
         android:textIsSelectable="true"
-        android:textSize="13dp"
+        android:textSize="13sp"
         android:textStyle="bold"
         android:visibility="gone" />
 
@@ -128,7 +126,9 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/name_time"
         android:layout_marginLeft="12dp"
-        android:layout_toRightOf="@+id/contactImage"
+        android:layout_toEndOf="@+id/profile_image_relative_layout"
+        android:layout_marginStart="12dp"
+        android:layout_toRightOf="@+id/profile_image_relative_layout"
         android:orientation="horizontal">
 
         <ImageView
@@ -147,9 +147,12 @@
             android:layout_weight="1"
             android:ellipsize="end"
             android:maxLines="1"
-            android:paddingTop="3dp"
             android:paddingBottom="3dp"
-            android:text="message"
+            android:paddingTop="3dp"
+            android:text="@string/message"
+            android:layout_marginEnd="48dp"
+            android:textDirection="locale"
+            android:textAlignment="gravity"
             android:textColor="#999"
             android:textSize="14sp" />
 
@@ -157,8 +160,9 @@
             android:id="@+id/unreadSmsCount"
             android:layout_width="18dp"
             android:layout_height="18dp"
-            android:layout_gravity="right"
+            android:layout_gravity="end"
             android:layout_marginRight="2dp"
+            android:layout_marginEnd="2dp"
             android:background="@drawable/unread_message_background"
             android:gravity="center_horizontal|center_vertical"
             android:text=""
@@ -174,8 +178,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/messageUnread"
-        android:layout_toRightOf="@+id/contactImage"
-        android:text="Self destruct"
+        android:layout_toRightOf="@+id/profile_image_relative_layout"
+        android:layout_toEndOf="@+id/profile_image_relative_layout"
+        android:text="@string/self_destruct"
         android:textColor="@color/message_details_text_color"
         android:textSize="12dp"
         android:visibility="gone" />
@@ -184,10 +189,10 @@
         android:id="@+id/onlineTextView"
         android:layout_width="15dp"
         android:layout_height="15dp"
-        android:layout_alignBottom="@+id/alphabeticImage"
-        android:layout_alignEnd="@+id/alphabeticImage"
-        android:layout_alignRight="@+id/alphabeticImage"
-        android:layout_gravity="left|top"
+        android:layout_alignBottom="@+id/profile_image_relative_layout"
+        android:layout_alignEnd="@+id/profile_image_relative_layout"
+        android:layout_alignRight="@+id/profile_image_relative_layout"
+        android:layout_gravity="start|top"
         android:background="@drawable/online_circle"
         android:textColor="@color/white"
         android:textStyle="bold"

@@ -1,6 +1,141 @@
 
-##Changelog
+## Changelog
 
+**Version 4.78**  - Thursday, 2 March 2017
+   
+  - Group of two support 
+  - Group member limit in group create and group member add
+  - Launch one to one chat in group member name click or profile click 
+  - Sending meta data in message by adding settings 
+  - Group and profile image upload bug fix
+  - Other bug fixes 
+ 
+
+ **Version 4.76**  - Friday,10 February 2017
+   
+  - Android N contact sharing bug fix  .
+ 
+
+ **Version 4.75**  - Wednesday,8 February 2017
+   
+  - Group Delete support: deleted group will be disabled.
+ 
+ **Version 4.74**  - Sunday, 5 February 2017
+   
+  - Support for version 7.1 
+  - Support for support-library version 25.1.0
+  - Chat not syncing bug fix for android 7.1
+  
+ **Version 4.73**  - Sunday, 5 January 2017
+ 
+ - Support for version 7.0 
+ - Group mute
+ 
+   
+ **Version 4.71**  - Thursday, 5 January 2017
+ 
+ - Attachments options settings 
+ - Restricted words settings 
+ 
+  
+   
+ **Version 4.64**  - Friday, 18 November 2016
+   
+  Group info members context menu
+ 
+  Smart messaging with message meta data : Push notification,Archive
+  
+  Group silent notifications 
+
+  Bug fixes and Improvements
+  
+### Steps for upgrading from 4.63 to 4.64
+
+
+**Step 1: Add the following in your build.gradle dependency**
+
+`compile 'com.applozic.communication.uiwidget:mobicomkitui:4.64'`
+
+
+**Version 4.63**  - Tuesday, 25 October 2016
+   
+  Broadcast messageing 
+  
+  Smart messaging with message meta data : Hidden messages
+
+  Bug fixes and Improvements
+
+
+### Steps for upgrading from 4.62 to 4.63
+
+
+**Step 1: Add the following in your Top-level/Proejct level build.gradle file change the version according to your app**:   
+
+ ```
+ext.googlePlayServicesVersion = '9.0.2'
+ext.supportLibraryVersion = '23.1.1'
+ ```
+
+**Step 2: Add the following in your build.gradle dependency**
+
+`compile 'com.applozic.communication.uiwidget:mobicomkitui:4.63'`
+
+
+ **Version 4.62**  - Tuesday, 11 October 2016
+
+  
+  Change in Settings config now added json file 
+  
+  Bug fixes and Improvements
+
+
+### Steps for upgrading from 4.61 to 4.62
+
+
+**Step 1: Add the following in your build.gradle dependency**
+
+`compile 'com.applozic.communication.uiwidget:mobicomkitui:4.62'`
+
+
+ **Version 4.61**  - wednesday, 5 October 2016
+
+   Contact list selection added search option ,UI change
+
+   Bug fixes and Improvements
+
+
+### Steps for upgrading from 4.60 to 4.61
+
+
+**Step 1: Add the following in your build.gradle dependency**
+
+`compile 'com.applozic.communication.uiwidget:mobicomkitui:4.61'`
+
+
+ **Version 4.60**  - Friday, 30 September 2016
+ 
+ Bug fixes and Improvements
+ 
+  
+### Steps for upgrading from 4.59 to 4.60
+
+
+**Step 1: Add the following in your build.gradle dependency**
+
+`compile 'com.applozic.communication.uiwidget:mobicomkitui:4.60'`
+
+ 
+ **Version 4.59**  - Saturday, 17 September 2016
+ 
+ Bug fixes and Improvements
+ 
+ 
+###  Steps for upgrading from 4.58 to 4.59
+
+**Step 1: Add the following in your build.gradle dependency**
+
+`compile 'com.applozic.communication.uiwidget:mobicomkitui:4.59'`
+ 
 
  **Version 4.58**  - Thursday, 15 September 2016
  

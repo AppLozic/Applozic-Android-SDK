@@ -4,58 +4,48 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:padding="10dp"
     android:background="@color/apploizc_transparent_color"
-    android:weightSum="1"
     android:orientation="vertical"
-    >
-    <!--<android.support.v7.widget.Toolbar-->
-    <!--android:id="@+id/my_toolbar"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="?attr/actionBarSize"-->
-    <!--android:background="?attr/colorPrimary"-->
-    <!--android:elevation="4dp"-->
-    <!--android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"-->
-    <!--android:titleTextAppearance="@color/white"-->
-    <!--app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />-->
-
+    android:padding="10dp"
+    android:weightSum="1">
     <include
         android:id="@+id/mobicom_attachment_grid_View"
         layout="@layout/mobicom_attachment_gridview_layout"
-        android:layout_height="0dp"
-        android:layout_weight="0.8"
-        android:layout_marginTop="10dp"
         android:layout_width="wrap_content"
+        android:layout_height="0dp"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true" />
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="10dp"
+        android:layout_weight="0.8" />
 
     <RelativeLayout
+        android:id="@+id/multi_attachment_heading_layout"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
-        android:layout_marginTop="10dp"
-        android:layout_weight="0.15"
         android:layout_below="@+id/mobicom_attachment_grid_View"
-        android:id="@+id/multi_attachment_heading_layout"
-        >
+        android:layout_marginTop="10dp"
+        android:layout_weight="0.15">
+
         <EditText
+            android:id="@+id/mobicom_attachment_edit_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="textMultiLine"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:background="@drawable/input"
             android:ems="10"
+            android:focusable="true"
+            android:hint="@string/Add_caption"
+            android:focusableInTouchMode="true"
+            android:inputType="textMultiLine"
+            android:textAlignment="viewStart"
+            android:layout_gravity="start"
             android:paddingBottom="10dp"
             android:paddingLeft="10dp"
-            android:background="@drawable/input"
-            android:textColor="@color/black"
-            android:id="@+id/mobicom_attachment_edit_text"
-            android:layout_gravity="center_horizontal"
-            android:focusable="true"
-            android:hint="Add caption..."
-            android:focusableInTouchMode="true"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true" />
-
+            android:paddingStart="10dp"
+            android:textColor="@color/black" />
 
 
     </RelativeLayout>
@@ -67,38 +57,41 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:background="#80000000"
         android:layout_below="@+id/mobicom_attachment_edit_text"
-        >
+        android:background="#80000000">
 
         <Button
             android:id="@+id/mobicom_attachment_cancel_btn"
             android:layout_width="165dp"
             android:layout_height="wrap_content"
+            android:layout_gravity="start|center_vertical"
+            android:background="@color/apploizc_transparent_color"
+            android:paddingLeft="10dp"
+            android:paddingStart="10dp"
             android:text="@string/cancel_text"
             android:textColor="@color/white"
-            android:background="@color/apploizc_transparent_color"
             android:textSize="15sp"
-            android:paddingLeft="10dp"
-            android:visibility="visible"
-            android:layout_gravity="left|center_vertical" />
+            android:visibility="visible" />
+
         <View
             android:layout_width="1dp"
             android:layout_height="30dp"
             android:layout_gravity="center"
             android:background="@color/white" />
+
         <Button
             android:id="@+id/mobicom_attachment_send_btn"
             android:layout_width="167dp"
             android:layout_height="wrap_content"
-            android:text="@string/send_text"
-            android:paddingRight="10dp"
+            android:layout_gravity="end|center_vertical"
             android:background="@color/apploizc_transparent_color"
+            android:gravity="center"
+            android:paddingRight="10dp"
+            android:paddingEnd="10dp"
+            android:text="@string/send_text"
             android:textColor="@color/white"
             android:textSize="15sp"
-            android:visibility="visible"
-            android:gravity="center"
-            android:layout_gravity="right|center_vertical" />
+            android:visibility="visible" />
 
     </FrameLayout>
 </LinearLayout>

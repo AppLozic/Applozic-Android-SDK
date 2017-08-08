@@ -30,22 +30,212 @@ import android.util.Log;
  */
 public class PhotoDecodeRunnable implements Runnable {
 
-    // Limits the number of times the decoder tries to process an image
-    private static final int NUMBER_OF_DECODE_TRIES = 2;
-
-    // Tells the Runnable to pause for a certain number of milliseconds
-    private static final long SLEEP_TIME_MILLISECONDS = 250;
-
-    // Sets the log tag
-    private static final String LOG_TAG = "PhotoDecodeRunnable";
-
     // Constants for indicating the state of the decode
     public static final int DECODE_STATE_FAILED = -1;
     public static final int DECODE_STATE_STARTED = 0;
     public static final int DECODE_STATE_COMPLETED = 1;
-
+    // Limits the number of times the decoder tries to process an image
+    private static final int NUMBER_OF_DECODE_TRIES = 2;
+    // Tells the Runnable to pause for a certain number of milliseconds
+    private static final long SLEEP_TIME_MILLISECONDS = 250;
+    // Sets the log tag
+    private static final String LOG_TAG = "PhotoDecodeRunnable";
     // Defines a field that contains the calling object of type PhotoTask.
     final TaskRunnableDecodeMethods mPhotoTask;
+
+    /**
+     * This constructor creates an instance of PhotoDownloadRunnable and stores in it a reference
+     * to the PhotoTask instance that instantiated it.
+     *
+     * @param downloadTask The PhotoTask, which implements ImageDecoderRunnableCallback
+     */
+    public PhotoDecodeRunnable(TaskRunnableDecodeMethods downloadTask) {
+        mPhotoTask = downloadTask;
+    }
+
+    /*
+     * Defines this object's task, which is a set of instructions designed to be run on a Thread.
+     */
+    @Override
+    public void run() {
+
+        /*
+         * Stores the current Thread in the the PhotoTask instance, so that the instance
+         * can interrupt the Thread.
+         */
+        mPhotoTask.setImageDecodeThread(Thread.currentThread());
+
+        /*
+         * Gets the image cache buffer object from the PhotoTask instance. This makes the
+         * to both PhotoDownloadRunnable and PhotoTask.
+         */
+        String imagePath = mPhotoTask.getLocalPath();
+        if (imagePath == null) {
+            mPhotoTask.handleDecodeState(DECODE_STATE_FAILED);
+            return;
+
+        }
+        // Defines the Bitmap object that this thread will create
+        Bitmap returnBitmap = null;
+
+        /*
+         * A try block that decodes a downloaded image.
+         *
+         */
+        try {
+
+            /*
+             * Calls the PhotoTask implementation of {@link #handleDecodeState} to
+             * set the state of the download
+             */
+            mPhotoTask.handleDecodeState(DECODE_STATE_STARTED);
+
+            // Sets up options for creating a Bitmap object from the
+            // downloaded image.
+            BitmapFactory.Options bitmapOptions = new BitmapFactory.Options();
+
+            /*
+             * Sets the desired image height and width based on the
+             * ImageView being created.
+             */
+            int targetWidth = mPhotoTask.getTargetWidth();
+            int targetHeight = mPhotoTask.getTargetHeight();
+
+            // Before continuing, checks to see that the Thread hasn't
+            // been interrupted
+            if (Thread.interrupted()) {
+
+                return;
+            }
+
+            /*
+             * Even if the decoder doesn't set a Bitmap, this flag tells
+             * the decoder to return the calculated bounds.
+             */
+            bitmapOptions.inJustDecodeBounds = true;
+
+            /*
+             * First pass of decoding to get scaling and sampling
+             * parameters from the image
+             */
+            BitmapFactory
+                    .decodeFile(imagePath, bitmapOptions);
+
+            /*
+             * Sets horizontal and vertical scaling factors so that the
+             * image is expanded or compressed from its actual size to
+             * the size of the target ImageView
+             */
+            int hScale = targetHeight == 0 ? bitmapOptions.outHeight : bitmapOptions.outHeight / targetHeight;
+            int wScale = targetWidth == 0 ? bitmapOptions.outWidth : bitmapOptions.outWidth / targetWidth;
+
+            /*
+             * Sets the sample size to be larger of the horizontal or
+             * vertical scale factor
+             */
+            //
+            int sampleSize = Math.max(hScale, wScale);
+
+            /*
+             * If either of the scaling factors is > 1, the image's
+             * actual dimension is larger that the available dimension.
+             * This means that the BitmapFactory must compress the image
+             * by the larger of the scaling factors. Setting
+             * inSampleSize accomplishes this.
+             */
+            if (sampleSize > 1) {
+                bitmapOptions.inSampleSize = sampleSize;
+            }
+
+            if (Thread.interrupted()) {
+                return;
+            }
+
+            // Second pass of decoding. If no bitmap is created, nothing
+            // is set in the object.
+            bitmapOptions.inJustDecodeBounds = false;
+
+            /*
+             * This does the actual decoding of the buffer. If the
+             * decode encounters an an out-of-memory error, it may throw
+             * an Exception or an Error, both of which need to be
+             * handled. Once the problem is handled, the decode is
+             * re-tried.
+             */
+            for (int i = 0; i < NUMBER_OF_DECODE_TRIES; i++) {
+                try {
+                    // Tries to decode the image buffer
+                    returnBitmap = BitmapFactory.decodeFile(
+                            imagePath,
+                            bitmapOptions
+                    );
+                    /*
+                     * If the decode works, no Exception or Error has occurred.
+                    break;
+
+                    /*
+                     * If the decode fails, this block tries to get more memory.
+                     */
+                } catch (Throwable e) {
+
+                    // Logs an error
+                    Log.e(LOG_TAG, "Out of memory in decode stage. Throttling.");
+
+                    /*
+                     * Tells the system that garbage collection is
+                     * necessary. Notice that collection may or may not
+                     * occur.
+                     */
+                    System.gc();
+
+                    if (Thread.interrupted()) {
+                        return;
+
+                    }
+                    /*
+                     * Tries to pause the thread for 250 milliseconds,
+                     * and catches an Exception if something tries to
+                     * activate the thread before it wakes up.
+                     */
+                    try {
+                        Thread.sleep(SLEEP_TIME_MILLISECONDS);
+                    } catch (InterruptedException interruptException) {
+                        return;
+                    }
+                }
+            }
+
+            // Catches exceptions if something tries to activate the
+            // Thread incorrectly.
+        } finally {
+            // If the decode failed, there's no bitmap.
+            if (null == returnBitmap) {
+
+                // Sends a failure status to the PhotoTask
+                mPhotoTask.handleDecodeState(DECODE_STATE_FAILED);
+
+                // Logs the error
+                Log.e(LOG_TAG, "Download failed in PhotoDecodeRunnable");
+
+            } else {
+
+                // Sets the ImageView Bitmap
+                returnBitmap = ImageUtils.getImageRotatedBitmap(returnBitmap, imagePath, returnBitmap.getWidth(), returnBitmap.getHeight());
+                mPhotoTask.setImage(returnBitmap);
+
+                // Reports a status of "completed"
+                mPhotoTask.handleDecodeState(DECODE_STATE_COMPLETED);
+            }
+
+            // Sets the current Thread to null, releasing its storage
+            mPhotoTask.setImageDecodeThread(null);
+
+            // Clears the Thread's interrupt flag
+            Thread.interrupted();
+
+        }
+
+    }
 
     /**
      * An interface that defines methods that PhotoTask implements. An instance of
@@ -92,200 +282,5 @@ public class PhotoDecodeRunnable implements Runnable {
         void setImage(Bitmap image);
 
         String getLocalPath();
-    }
-
-    /**
-     * This constructor creates an instance of PhotoDownloadRunnable and stores in it a reference
-     * to the PhotoTask instance that instantiated it.
-     *
-     * @param downloadTask The PhotoTask, which implements ImageDecoderRunnableCallback
-     */
-    public PhotoDecodeRunnable(TaskRunnableDecodeMethods downloadTask) {
-        mPhotoTask = downloadTask;
-    }
-
-    /*
-     * Defines this object's task, which is a set of instructions designed to be run on a Thread.
-     */
-    @Override
-    public void run() {
-
-        /*
-         * Stores the current Thread in the the PhotoTask instance, so that the instance
-         * can interrupt the Thread.
-         */
-        mPhotoTask.setImageDecodeThread(Thread.currentThread());
-        
-        /*
-         * Gets the image cache buffer object from the PhotoTask instance. This makes the
-         * to both PhotoDownloadRunnable and PhotoTask.
-         */
-        String imagePath = mPhotoTask.getLocalPath();
-        if (imagePath == null) {
-            Log.e(LOG_TAG, "@@@Image path is coming as null");
-            mPhotoTask.handleDecodeState(DECODE_STATE_FAILED);
-            return;
-
-        }
-        // Defines the Bitmap object that this thread will create
-        Bitmap returnBitmap = null;
-
-        /*
-         * A try block that decodes a downloaded image.
-         *
-         */
-        try {
-
-            /*
-             * Calls the PhotoTask implementation of {@link #handleDecodeState} to
-             * set the state of the download
-             */
-            mPhotoTask.handleDecodeState(DECODE_STATE_STARTED);
-
-            // Sets up options for creating a Bitmap object from the
-            // downloaded image.
-            BitmapFactory.Options bitmapOptions = new BitmapFactory.Options();
-    
-            /*
-             * Sets the desired image height and width based on the
-             * ImageView being created.
-             */
-            int targetWidth = mPhotoTask.getTargetWidth();
-            int targetHeight = mPhotoTask.getTargetHeight();
-
-            // Before continuing, checks to see that the Thread hasn't
-            // been interrupted
-            if (Thread.interrupted()) {
-
-                return;
-            }
-    
-            /*
-             * Even if the decoder doesn't set a Bitmap, this flag tells
-             * the decoder to return the calculated bounds.
-             */
-            bitmapOptions.inJustDecodeBounds = true;
-    
-            /*
-             * First pass of decoding to get scaling and sampling
-             * parameters from the image
-             */
-            BitmapFactory
-                    .decodeFile(imagePath, bitmapOptions);
-    
-            /*
-             * Sets horizontal and vertical scaling factors so that the
-             * image is expanded or compressed from its actual size to
-             * the size of the target ImageView
-             */
-            int hScale = targetHeight == 0 ? bitmapOptions.outHeight : bitmapOptions.outHeight / targetHeight;
-            int wScale = targetWidth == 0 ? bitmapOptions.outWidth : bitmapOptions.outWidth / targetWidth;
-    
-            /*
-             * Sets the sample size to be larger of the horizontal or
-             * vertical scale factor
-             */
-            //
-            int sampleSize = Math.max(hScale, wScale);
-    
-            /*
-             * If either of the scaling factors is > 1, the image's
-             * actual dimension is larger that the available dimension.
-             * This means that the BitmapFactory must compress the image
-             * by the larger of the scaling factors. Setting
-             * inSampleSize accomplishes this.
-             */
-            if (sampleSize > 1) {
-                bitmapOptions.inSampleSize = sampleSize;
-            }
-
-            if (Thread.interrupted()) {
-                return;
-            }
-
-            // Second pass of decoding. If no bitmap is created, nothing
-            // is set in the object.
-            bitmapOptions.inJustDecodeBounds = false;
-    
-            /*
-             * This does the actual decoding of the buffer. If the
-             * decode encounters an an out-of-memory error, it may throw
-             * an Exception or an Error, both of which need to be
-             * handled. Once the problem is handled, the decode is
-             * re-tried.
-             */
-            for (int i = 0; i < NUMBER_OF_DECODE_TRIES; i++) {
-                try {
-                    // Tries to decode the image buffer
-                    returnBitmap = BitmapFactory.decodeFile(
-                            imagePath,
-                            bitmapOptions
-                    );
-                    /*
-                     * If the decode works, no Exception or Error has occurred.
-                    break;
-    
-                    /*
-                     * If the decode fails, this block tries to get more memory.
-                     */
-                } catch (Throwable e) {
-
-                    // Logs an error
-                    Log.e(LOG_TAG, "Out of memory in decode stage. Throttling.");
-    
-                    /*
-                     * Tells the system that garbage collection is
-                     * necessary. Notice that collection may or may not
-                     * occur.
-                     */
-                    System.gc();
-
-                    if (Thread.interrupted()) {
-                        return;
-
-                    }
-                    /*
-                     * Tries to pause the thread for 250 milliseconds,
-                     * and catches an Exception if something tries to
-                     * activate the thread before it wakes up.
-                     */
-                    try {
-                        Thread.sleep(SLEEP_TIME_MILLISECONDS);
-                    } catch (InterruptedException interruptException) {
-                        return;
-                    }
-                }
-            }
-
-            // Catches exceptions if something tries to activate the
-            // Thread incorrectly.
-        } finally {
-            // If the decode failed, there's no bitmap.
-            if (null == returnBitmap) {
-
-                // Sends a failure status to the PhotoTask
-                mPhotoTask.handleDecodeState(DECODE_STATE_FAILED);
-
-                // Logs the error
-                Log.e(LOG_TAG, "Download failed in PhotoDecodeRunnable");
-
-            } else {
-
-                // Sets the ImageView Bitmap
-                returnBitmap = ImageUtils.getImageRotatedBitmap(returnBitmap,imagePath,returnBitmap.getWidth(),returnBitmap.getHeight());
-                mPhotoTask.setImage(returnBitmap);
-
-                // Reports a status of "completed"
-                mPhotoTask.handleDecodeState(DECODE_STATE_COMPLETED);
-            }
-
-            // Sets the current Thread to null, releasing its storage
-            mPhotoTask.setImageDecodeThread(null);
-
-            // Clears the Thread's interrupt flag
-            Thread.interrupted();
-
-        }
-
     }
 }

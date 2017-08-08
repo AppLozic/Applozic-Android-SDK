@@ -54,6 +54,62 @@ public class ImageCache {
     }
 
     /**
+     * Get the size in bytes of a bitmap.
+     *
+     * @param bitmap The bitmap to calculate the size of.
+     * @return size of bitmap in bytes.
+     */
+    @TargetApi(12)
+    public static int getBitmapSize(Bitmap bitmap) {
+        if (Utils.hasHoneycombMR1()) {
+            return bitmap.getByteCount();
+        }
+        // Pre HC-MR1
+        return bitmap.getRowBytes() * bitmap.getHeight();
+    }
+
+    /**
+     * Calculates the memory cache size based on a percentage of the max available VM memory.
+     * Eg. setting percent to 0.2 would set the memory cache to one fifth of the available
+     * memory. Throws {@link IllegalArgumentException} if percent is less than 0.05 or greater than .8.
+     * memCacheSize is stored in kilobytes instead of bytes as this will eventually be passed
+     * to construct a LruCache which takes an int in its constructor.
+     * This value should be chosen carefully based on a number of factors
+     * Refer to the corresponding Android Training class for more discussion:
+     * http://developer.android.com/training/displaying-bitmaps/
+     *
+     * @param percent Percent of available app memory to use to size memory cache.
+     */
+    public static int calculateMemCacheSize(float percent) {
+        if (percent < 0.05f || percent > 0.8f) {
+            throw new IllegalArgumentException("setMemCacheSizePercent - percent must be "
+                    + "between 0.05 and 0.8 (inclusive)");
+        }
+        return Math.round(percent * Runtime.getRuntime().maxMemory() / 1024);
+    }
+
+    /**
+     * Locate an existing instance of this Fragment or if not found, create and
+     * add it using FragmentManager.
+     *
+     * @param fm The FragmentManager manager to use.
+     * @return The existing instance of the Fragment or the new instance if just
+     * created.
+     */
+    public static RetainFragment findOrCreateRetainFragment(FragmentManager fm) {
+        // Check to see if we have retained the worker fragment.
+        RetainFragment mRetainFragment = (RetainFragment) fm.findFragmentByTag(TAG);
+
+        // If not retained (or first time running), we need to create and add it.
+        if (mRetainFragment == null) {
+            mRetainFragment = new RetainFragment();
+            fm.beginTransaction().add(mRetainFragment, TAG).commitAllowingStateLoss();
+        }
+
+        return mRetainFragment;
+    }
+
+    /**
      * Initialize the cache.
      *
      * @param memCacheSizePercent The cache size as a percent of available app memory.
@@ -115,62 +171,6 @@ public class ImageCache {
     }
 
     /**
-     * Get the size in bytes of a bitmap.
-     *
-     * @param bitmap The bitmap to calculate the size of.
-     * @return size of bitmap in bytes.
-     */
-    @TargetApi(12)
-    public static int getBitmapSize(Bitmap bitmap) {
-        if (Utils.hasHoneycombMR1()) {
-            return bitmap.getByteCount();
-        }
-        // Pre HC-MR1
-        return bitmap.getRowBytes() * bitmap.getHeight();
-    }
-
-    /**
-     * Calculates the memory cache size based on a percentage of the max available VM memory.
-     * Eg. setting percent to 0.2 would set the memory cache to one fifth of the available
-     * memory. Throws {@link IllegalArgumentException} if percent is less than 0.05 or greater than .8.
-     * memCacheSize is stored in kilobytes instead of bytes as this will eventually be passed
-     * to construct a LruCache which takes an int in its constructor.
-     * This value should be chosen carefully based on a number of factors
-     * Refer to the corresponding Android Training class for more discussion:
-     * http://developer.android.com/training/displaying-bitmaps/
-     *
-     * @param percent Percent of available app memory to use to size memory cache.
-     */
-    public static int calculateMemCacheSize(float percent) {
-        if (percent < 0.05f || percent > 0.8f) {
-            throw new IllegalArgumentException("setMemCacheSizePercent - percent must be "
-                    + "between 0.05 and 0.8 (inclusive)");
-        }
-        return Math.round(percent * Runtime.getRuntime().maxMemory() / 1024);
-    }
-
-    /**
-     * Locate an existing instance of this Fragment or if not found, create and
-     * add it using FragmentManager.
-     *
-     * @param fm The FragmentManager manager to use.
-     * @return The existing instance of the Fragment or the new instance if just
-     * created.
-     */
-    public static RetainFragment findOrCreateRetainFragment(FragmentManager fm) {
-        // Check to see if we have retained the worker fragment.
-        RetainFragment mRetainFragment = (RetainFragment) fm.findFragmentByTag(TAG);
-
-        // If not retained (or first time running), we need to create and add it.
-        if (mRetainFragment == null) {
-            mRetainFragment = new RetainFragment();
-            fm.beginTransaction().add(mRetainFragment, TAG).commitAllowingStateLoss();
-        }
-
-        return mRetainFragment;
-    }
-
-    /**
      * A simple non-UI Fragment that stores a single Object and is retained over configuration
      * changes. It will be used to retain the ImageCache object.
      */
@@ -192,21 +192,21 @@ public class ImageCache {
         }
 
         /**
-         * Store a single object in this Fragment.
-         *
-         * @param object The object to store
-         */
-        public void setObject(Object object) {
-            mObject = object;
-        }
-
-        /**
          * Get the stored object.
          *
          * @return The stored object
          */
         public Object getObject() {
             return mObject;
+        }
+
+        /**
+         * Store a single object in this Fragment.
+         *
+         * @param object The object to store
+         */
+        public void setObject(Object object) {
+            mObject = object;
         }
     }
 

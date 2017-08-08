@@ -33,6 +33,42 @@ Example
 new MobiComConversationService(activity).sendMessage(new Message("contact@applozic.com", "hello test"));         
 ```
 
+#### Send message with metadata
+
+You can send extra information along with message text as meta-data. These key value pair can be used to do some extra processing or keep information about messages.
+
+```
+        MobiComUserPreference userPreferences = MobiComUserPreference.getInstance(context);
+        Message message = new Message();
+        //Note:This is only for sending a message to Group then pass the channelKey
+        message.setGroupId(channelKey);  
+        
+        //Note:This is only for sending a message to User then pass the receiver UserId 
+        message.setTo(receiverUserId); 
+        message.setContactIds(receiverUserId); 
+        
+        message.setRead(Boolean.TRUE);
+        message.setStoreOnDevice(Boolean.TRUE);
+        message.setCreatedAtTime(System.currentTimeMillis() + userPreferences.getDeviceTimeOffset());
+        message.setSendToDevice(Boolean.FALSE);
+        message.setType(Message.MessageType.MT_OUTBOX.getValue());
+        message.setMessage(messageToSend); //Message to send
+        message.setDeviceKeyString(userPreferences.getDeviceKeyString());
+        message.setSource(Message.Source.MT_MOBILE_APP.getValue());
+        
+       //Messsage metadata map 
+        Map<String,String> messageMetaDataMap = new HashMap<>();
+        messageMetaDataMap.put("key1","value1");
+        messageMetaDataMap.put("key2","value2");
+        message.setMetadata(messageMetaDataMap);
+        
+        //Method for sending a message 
+        new MobiComConversationService(context).sendMessage(message);
+
+```
+
+
+
 
 #### Messages list 
 
@@ -64,7 +100,7 @@ Code
 
 #### Unread Count
 
-i)To get the unread count of individual conatct pass the userId
+i)To get the unread count of individual contact pass the userId
 
 Code
 
@@ -115,7 +151,7 @@ The below methods are for creating contacts to be stored locally on the user's d
 You can create the contact list in two easy steps by using AppContactService.java api. 
 Sample method **buildContactData()** for adding contacts is present in sample app MainActivity.java.
 
-#####Step 1: Creating contact   
+##### Step 1: Creating contact   
 
 Create
 ```
@@ -138,7 +174,7 @@ Example :
     contact.setEmailId("github@applozic.com");                
 ```
 
-#####Step 2: Save contact
+##### Step 2: Save contact
 
 Save the contact using AppContactService.java add() method.
  
@@ -150,7 +186,7 @@ Save the contact using AppContactService.java add() method.
 
 
 
-#####AppContactService.Java at a glance
+##### AppContactService.Java at a glance
 
 
 AppContactService.java provides methods you need to add, delete and update contacts.
@@ -205,18 +241,7 @@ startActivity(intent);
 ```
 
 
-Enable Group Messaging for a user
-```
-ApplozicSetting.getInstance(context).showStartNewGroupButton();
-```
-
-Disable Group Messaging for a user
-```
-ApplozicSetting.getInstance(context).hideStartNewGroupButton();
-```
-
-
-#####1) Create Group
+##### 1) Create Group
 
  Create a group with a specific group type 
  
@@ -268,11 +293,12 @@ Code
        List<String> channelMembersList =  new ArrayList<String>();
        channelMembersList.add("user1");
        channelMembersList.add("user2");
-       channelMembersList.add("user3");
+       channelMembersList.add("user3");//Note:while creating group exclude logged in userId from list
        ChannelInfo channelInfo  = new ChannelInfo("Group name",channelMembersList);
        channelInfo.setType(Channel.GroupType.PUBLIC.getValue().intValue()); //group type
        //channelInfo.setImageUrl(""); //pass group image link URL
        //channelInfo.setChannelMetadata(channelMetadata); //Optional option for setting group meta data 
+       //channelInfo.setClientGroupId(clientGroupId); //Optional if you have your own groupId then you can pass here
         Channel channel = ChannelService.getInstance(context).createChannel(channelInfo);
 
  ```
@@ -311,7 +337,7 @@ Code
 | userId | Unique identifier of the user |
 
  
-#####3) Remove Member from Group
+##### 3) Remove Member from Group
  
 Import  
 ```
@@ -346,7 +372,7 @@ Code
   __NOTE:__ Only admin can remove member from the group/channel.
   
  
-#####4) Leave Group
+##### 4) Leave Group
  
 Import
 ```
@@ -379,7 +405,7 @@ Code
  
  __Note:__ This is only for logged in user who want's to leave from group
  
-#####5) Change Group Name
+##### 5) Change Group Name
 
 Import
 
@@ -497,9 +523,9 @@ Steps to create Context based chat
 ##### Step 2 : Create Async task and Starting Conversation chat
 
 ```
-   ApplzoicConversationCreateTask applzoicConversationCreateTask = null;
+   ApplozicConversationCreateTask applozicConversationCreateTask = null;
 
-   ApplzoicConversationCreateTask.ConversationCreateListener conversationCreateListener =  new ApplzoicConversationCreateTask.ConversationCreateListener() {
+   ApplozicConversationCreateTask.ConversationCreateListener conversationCreateListener =  new ApplozicConversationCreateTask.ConversationCreateListener() {
             @Override
             public void onSuccess(Integer conversationId, Context context) {
 
@@ -520,7 +546,62 @@ Steps to create Context based chat
             }
         };
     Conversation conversation = buildConversation(); //From Step 1 
-applzoicConversationCreateTask = new ApplzoicConversationCreateTask(context,conversationCreateListener,conversation);
-   applzoicConversationCreateTask.execute((Void)null);
+applozicConversationCreateTask = new ApplozicConversationCreateTask(context,conversationCreateListener,conversation);
+   applozicConversationCreateTask.execute((Void)null);
  
 ```
+#### Audio/Video Call setup
+
+Once you are done with [normal chat integration](https://www.applozic.com/docs/android-chat-sdk.html#overview), below steps you need to follow to enable audio/video call.
+
+a) Enable audio/video feature: 
+
+while doing user registration, you should set audio/video feature in user detail.
+
+```
+List<String> featureList =  new ArrayList<>();
+featureList.add(User.Features.IP_AUDIO_CALL.getValue());// FOR AUDIO
+featureList.add(User.Features.IP_VIDEO_CALL.getValue());// FOR VIDEO
+user.setFeatures(featureList); // ADD FEATURES
+```
+
+b) Add setting for audio/video handler class:
+
+onSuccess of UserLoginTask, you need to set below handlers in settings.
+
+```
+  ApplozicClient.getInstance(context).setHandleDial(true).setIPCallEnabled(true);
+  Map<ApplozicSetting.RequestCode, String> activityCallbacks = new HashMap<ApplozicSetting.RequestCode, String>();
+  activityCallbacks.put(ApplozicSetting.RequestCode.AUDIO_CALL, AudioCallActivityV2.class.getName());
+  activityCallbacks.put(ApplozicSetting.RequestCode.VIDEO_CALL, VideoActivity.class.getName());
+  ApplozicSetting.getInstance(context).setActivityCallbacks(activityCallbacks);
+  
+```
+
+c) Add these activity in your AndroidManifest.xml.
+
+```
+<activity android:name="com.applozic.audiovideo.activity.AudioCallActivityV2"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:exported="true"
+            android:launchMode="singleTop"
+            android:theme="@style/Applozic_FullScreen_Theme"/>
+
+        <activity
+            android:name="com.applozic.audiovideo.activity.CallActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="@string/app_name"
+            android:launchMode="singleTop"
+            android:theme="@style/Applozic_FullScreen_Theme"/>
+
+        <activity
+            android:name="com.applozic.audiovideo.activity.VideoActivity"
+            android:launchMode="singleTop"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:exported="true"
+            android:theme="@style/Applozic_FullScreen_Theme">
+        </activity>
+```
+
+
+

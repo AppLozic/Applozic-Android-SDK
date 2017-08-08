@@ -4,6 +4,7 @@ import android.content.Context;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 
+import com.applozic.mobicommons.json.JsonMarker;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -15,7 +16,7 @@ import java.util.Map;
 /**
  * @author devashish
  */
-public class Contact implements Serializable {
+public class Contact extends JsonMarker {
 
     public static final String R_DRAWABLE = "R.drawable";
     @Expose
@@ -53,6 +54,9 @@ public class Contact implements Serializable {
     private boolean blocked;
     private boolean blockedBy;
     private String status;
+    private short contactType;
+    private Short userTypeId;
+    private Long deletedAtTime;
 
     public Contact() {
 
@@ -82,6 +86,14 @@ public class Contact implements Serializable {
     public Contact(Context context, String userId) {
         this.userId = userId;
         this.processContactNumbers(context);
+    }
+
+    public short getContactType() {
+        return contactType;
+    }
+
+    public void setContactType(short contactType) {
+        this.contactType = contactType;
     }
 
     public void processContactNumbers(Context context) {
@@ -274,6 +286,18 @@ public class Contact implements Serializable {
         this.status = status;
     }
 
+    public Long getDeletedAtTime() {
+        return deletedAtTime == null ? 0 : deletedAtTime;
+    }
+
+    public void setDeletedAtTime(Long deletedAtTime) {
+        this.deletedAtTime = deletedAtTime;
+    }
+
+    public boolean isDeleted() {
+        return (deletedAtTime != null && deletedAtTime > 0);
+    }
+
     public void processFullName(String fullName) {
         this.fullName = fullName;
         if (fullName != null) {
@@ -297,28 +321,14 @@ public class Contact implements Serializable {
         }
     }
 
-    @Override
-    public String toString() {
-        return "Contact{" +
-                "firstName='" + firstName + '\'' +
-                ", middleName='" + middleName + '\'' +
-                ", lastName='" + lastName + '\'' +
-                ", emailIds=" + emailIds +
-                ", contactNumbers=" + contactNumbers +
-                ", phoneNumbers=" + phoneNumbers +
-                ", contactNumber='" + contactNumber + '\'' +
-                ", formattedContactNumber='" + formattedContactNumber + '\'' +
-                ", contactId=" + contactId +
-                ", fullName='" + fullName + '\'' +
-                ", userId='" + userId + '\'' +
-                ", imageURL='" + imageURL + '\'' +
-                ", localImageUrl='" + localImageUrl + '\'' +
-                ", emailId='" + emailId + '\'' +
-                ", applicationId='" + applicationId + '\'' +
-                ", connected='" + connected + '\'' +
-                ", lastSeenAtTime='" + lastSeenAtTime + '\'' +
-                '}';
+    public Short getUserTypeId() {
+        return userTypeId;
     }
+
+    public void setUserTypeId(Short userTypeId) {
+        this.userTypeId = userTypeId;
+    }
+
 
     public String getUserId() {
         return userId;
@@ -391,5 +401,36 @@ public class Contact implements Serializable {
 
     public boolean isOnline() {
         return !isBlocked() && !isBlockedBy() && isConnected();
+    }
+
+    @Override
+    public String toString() {
+        return "Contact{" +
+                "firstName='" + firstName + '\'' +
+                ", middleName='" + middleName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", emailIds=" + emailIds +
+                ", contactNumbers=" + contactNumbers +
+                ", phoneNumbers=" + phoneNumbers +
+                ", contactNumber='" + contactNumber + '\'' +
+                ", formattedContactNumber='" + formattedContactNumber + '\'' +
+                ", contactId=" + contactId +
+                ", fullName='" + fullName + '\'' +
+                ", userId='" + userId + '\'' +
+                ", imageURL='" + imageURL + '\'' +
+                ", localImageUrl='" + localImageUrl + '\'' +
+                ", emailId='" + emailId + '\'' +
+                ", applicationId='" + applicationId + '\'' +
+                ", connected=" + connected +
+                ", lastSeenAtTime=" + lastSeenAtTime +
+                ", checked=" + checked +
+                ", unreadCount=" + unreadCount +
+                ", blocked=" + blocked +
+                ", blockedBy=" + blockedBy +
+                ", status='" + status + '\'' +
+                ", contactType=" + contactType +
+                ", userTypeId=" + userTypeId +
+                ", deletedAtTime=" + deletedAtTime +
+                '}';
     }
 }

@@ -18,23 +18,23 @@
 
     <!--http://stackoverflow.com/questions/21536018/android-get-support-action-bar-always-returns-null
     use android:windowNoTitle as false-->
-     <style name="ApplozicTheme" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="ApplozicTheme" parent="Theme.AppCompat.Light.NoActionBar">
 
-         <item name="colorPrimary">@color/applozic_theme_color_primary</item>
-         <!-- colorPrimaryDark is used for the status bar -->
-         <item name="colorPrimaryDark">@color/applozic_theme_color_primary_dark</item>
-         <!-- colorAccent is used as the default value for colorControlActivated which is used to tint widgets -->
-         <item name="colorAccent">@color/applozic_theme_color_primary</item>
-         <item name="windowActionModeOverlay">true</item>
+        <item name="colorPrimary">@color/applozic_theme_color_primary</item>
+        <!-- colorPrimaryDark is used for the status bar -->
+        <item name="colorPrimaryDark">@color/applozic_theme_color_primary_dark</item>
+        <!-- colorAccent is used as the default value for colorControlActivated which is used to tint widgets -->
+        <item name="colorAccent">@color/applozic_theme_color_primary</item>
+        <item name="windowActionModeOverlay">true</item>
 
-       <!-- &lt;!&ndash; You can also set colorControlNormal, colorControlActivated
-             colorControlHighlight & colorSwitchThumbNormal. &ndash;&gt;
-       &lt;!&ndash; <item name="colorControlNormal">#c5c5c5</item>&ndash;&gt;
-        <item name="colorControlActivated">@color/applozic_theme_color_control_activated</item>
-        <item name="colorControlHighlight">@color/applozic_theme_color_control_highlight</item>
-        <item name="android:textColorPrimary">@color/applozic_theme_primary_text</item>
-         &lt;!&ndash;actionbar icon color&ndash;&gt;
-        <item name="android:textColorSecondary">@color/applozic_theme_secondary_text</item>-->
+        <!-- &lt;!&ndash; You can also set colorControlNormal, colorControlActivated
+              colorControlHighlight & colorSwitchThumbNormal. &ndash;&gt;
+        &lt;!&ndash; <item name="colorControlNormal">#c5c5c5</item>&ndash;&gt;
+         <item name="colorControlActivated">@color/applozic_theme_color_control_activated</item>
+         <item name="colorControlHighlight">@color/applozic_theme_color_control_highlight</item>
+         <item name="android:textColorPrimary">@color/applozic_theme_primary_text</item>
+          &lt;!&ndash;actionbar icon color&ndash;&gt;
+         <item name="android:textColorSecondary">@color/applozic_theme_secondary_text</item>-->
     </style>
 
     <style name="Applozic.People.Theme" parent="Theme.AppCompat.Light.NoActionBar">
@@ -57,6 +57,16 @@
         <item name="android:textColorSecondary">@color/applozic_theme_secondary_text</item>
     </style>
 
+
+    <style name="ToolbarTitle" parent="@style/TextAppearance.Widget.AppCompat.Toolbar.Title">
+        <item name="android:textSize">18sp</item>
+    </style>
+
+    <style name="ToolbarSubtitle" parent="@style/TextAppearance.Widget.AppCompat.Toolbar.Subtitle">
+        <item name="android:textSize">14sp</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:singleLine">true</item>
+    </style>
 
     <style name="ApplozicTheme.ActionBarStyle" parent="@android:style/Widget.Holo.Light.ActionBar.Solid.Inverse">
         <item name="android:subtitleTextStyle">@style/ApplozicTheme.ActionBar.TitleTextStyle</item>

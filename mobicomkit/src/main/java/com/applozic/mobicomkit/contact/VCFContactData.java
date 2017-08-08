@@ -45,8 +45,8 @@ public class VCFContactData {
         this.telephoneNumber = telephoneNumber;
     }
 
-    public boolean isValid(){
-      return (this.name!=null && (this.telephoneNumber!=null || this.email!=null)) ;
+    public boolean isValid() {
+        return (this.name != null && (this.telephoneNumber != null || this.email != null));
 
     }
 

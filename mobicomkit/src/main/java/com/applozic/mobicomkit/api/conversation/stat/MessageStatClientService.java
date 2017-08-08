@@ -12,26 +12,26 @@ import com.applozic.mobicommons.json.GsonUtils;
  */
 public class MessageStatClientService extends MobiComKitClientService {
 
+    public static final String MESSAGE_STAT_URL = "/rest/ws/sms/stat/update";
     private static final String TAG = "MessageStatClientService";
-    public static final String MESSAGE_STAT_URL =  "/rest/ws/sms/stat/update";
 
 
     public MessageStatClientService(Context context) {
         super(context);
     }
 
-    public  String getMessageStatUrl() {
+    public String getMessageStatUrl() {
         return getBaseUrl() + MESSAGE_STAT_URL;
     }
 
 
     public String sendMessageStat(MessageStat messageStat) {
-        try{
+        try {
             return new HttpRequestUtils(context).postData(getMessageStatUrl(), "application/json", null, GsonUtils.getJsonFromObject(messageStat, MessageStat.class));
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
-       return null;
+        return null;
     }
 
 }

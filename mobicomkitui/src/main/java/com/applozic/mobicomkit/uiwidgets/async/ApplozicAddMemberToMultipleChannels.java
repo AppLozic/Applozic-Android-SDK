@@ -63,7 +63,7 @@ public class ApplozicAddMemberToMultipleChannels extends AsyncTask<Void, Void, B
 
         if (resultBoolean && addMemberToMultipleChannels != null) {
             addMemberToMultipleChannels.onSuccess(addResponse, context);
-        } else if (!resultBoolean && exception != null && addMemberToMultipleChannels != null) {
+        } else if (!resultBoolean  && addMemberToMultipleChannels != null) {
             addMemberToMultipleChannels.onFailure(addResponse, exception, context);
         }
     }

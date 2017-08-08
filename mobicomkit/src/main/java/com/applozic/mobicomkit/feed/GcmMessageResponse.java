@@ -6,7 +6,7 @@ import com.applozic.mobicomkit.api.conversation.Message;
 /**
  * Created by sunil on 30/12/15.
  */
-public class GcmMessageResponse  extends JsonMarker{
+public class GcmMessageResponse extends JsonMarker {
 
     private String id;
     private String type;

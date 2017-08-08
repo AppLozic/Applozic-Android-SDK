@@ -37,15 +37,20 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.webkit.MimeTypeMap;
 
+import com.applozic.mobicommons.commons.core.utils.Utils;
 import com.applozic.mobicommons.commons.image.ImageUtils;
 
+import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.text.DecimalFormat;
+import java.util.Arrays;
 import java.util.Comparator;
+import java.util.List;
 
 
 /**
@@ -311,7 +316,7 @@ public class FileUtils {
     public static String getPath(final Context context, final Uri uri) {
 
         if (DEBUG)
-            Log.d(TAG + " File -",
+            Utils.printLog(context,TAG + " File -",
                     "Authority: " + uri.getAuthority() +
                             ", Fragment: " + uri.getFragment() +
                             ", Port: " + uri.getPort() +
@@ -409,6 +414,66 @@ public class FileUtils {
         return null;
     }
 
+    public static String loadSettingsJsonFile(Context context) {
+        BufferedReader br = null;
+        StringBuffer sb = new StringBuffer();
+
+        try {
+            br = new BufferedReader(new InputStreamReader(context.getAssets().open(
+                    "applozic-settings.json"), "UTF-8"));
+            String line;
+            if (br != null) {
+                while ((line = br.readLine()) != null) {
+                    sb.append(line);
+                }
+            }
+        } catch (IOException ioe) {
+            return null;
+        } catch (Exception e) {
+        } finally {
+            try {
+                if (br != null) {
+                    br.close();
+                }
+            } catch (IOException e) {
+            }
+        }
+        return sb.toString();
+    }
+
+    public static List<String> loadRestrictedWordsFile(Context context) {
+
+        BufferedReader br = null;
+        StringBuffer sb = new StringBuffer();
+
+        try {
+            br = new BufferedReader(new InputStreamReader(context.getAssets().open(
+                    "restrictWords.txt"), "UTF-8"));
+            String line;
+            if (br != null) {
+
+                while ((line = br.readLine()) != null) {
+                    sb.append(line);
+                }
+            }
+        } catch (IOException ioe) {
+            return null;
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (br != null) {
+                    br.close();
+                }
+            } catch (IOException e) {
+            }
+        }
+        String outputString = sb.toString();
+        String[] words = outputString.split(",");
+        List<String> wordList = Arrays.asList(words);
+        return wordList;
+    }
+
     /**
      * Get the file size in a human-readable string.
      *
@@ -478,10 +543,10 @@ public class FileUtils {
      */
     public static Bitmap getThumbnail(Context context, Uri uri, String mimeType) {
         if (DEBUG)
-            Log.d(TAG, "Attempting to get thumbnail");
+            Utils.printLog(context,TAG, "Attempting to get thumbnail");
 
         if (!isMediaUri(uri)) {
-            Log.e(TAG, "You can only retrieve thumbnails for images and videos.");
+            Utils.printLog(context,TAG, "You can only retrieve thumbnails for images and videos.");
             return null;
         }
 
@@ -494,7 +559,7 @@ public class FileUtils {
                 if (cursor.moveToFirst()) {
                     final int id = cursor.getInt(0);
                     if (DEBUG)
-                        Log.d(TAG, "Got thumb ID: " + id);
+                        Utils.printLog(context,TAG, "Got thumb ID: " + id);
 
                     if (mimeType.contains("video")) {
                         bm = MediaStore.Video.Thumbnails.getThumbnail(
@@ -553,14 +618,13 @@ public class FileUtils {
         return type;
     }
 
-    public static Bitmap getPreview(String filePath, int reqWidth, int reqHeight, boolean enabled,String mimeType) {
+    public static Bitmap getPreview(String filePath, int reqWidth, int reqHeight, boolean enabled, String mimeType) {
 
-        if(mimeType.startsWith("video")){
+        if (mimeType.startsWith("video")) {
             return ThumbnailUtils.createVideoThumbnail(filePath, 1);
         }
-        return getPreview(filePath, reqWidth,reqHeight);
+        return getPreview(filePath, reqWidth, reqHeight);
     }
-
 
 
     public static Bitmap getPreview(String filePath, int reqWidth, int reqHeight) {
@@ -614,13 +678,14 @@ public class FileUtils {
     }
 
     /**
-     *  This method will compressed Image to a pre-configured files.
+     * This method will compressed Image to a pre-configured files.
+     *
      * @param filePath
      * @param newFileName
      * @param maxFileSize
      * @return
      */
-    public static File compressImageFiles(String filePath, String newFileName,int maxFileSize){
+    public static File compressImageFiles(String filePath, String newFileName, int maxFileSize) {
 
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inJustDecodeBounds = true;
@@ -629,8 +694,8 @@ public class FileUtils {
         int actualHeight = options.outHeight;
         int actualWidth = options.outWidth;
         float imgRatio = actualWidth / actualHeight;
-        int maxHeight = (2 * actualHeight)/3;
-        int maxWidth =  (2* actualWidth)/3;
+        int maxHeight = (2 * actualHeight) / 3;
+        int maxWidth = (2 * actualWidth) / 3;
 
         float maxRatio = maxWidth / maxHeight;
         if (actualHeight > maxHeight || actualWidth > maxWidth) {
@@ -662,7 +727,7 @@ public class FileUtils {
         int streamLength = maxFileSize;
         int compressQuality = 100;// Maximum 20 loops to retry to maintain quality.
         ByteArrayOutputStream bmpStream = new ByteArrayOutputStream();
-        while (streamLength >=maxFileSize && compressQuality > 50) {
+        while (streamLength >= maxFileSize && compressQuality > 50) {
 
             try {
                 bmpStream.flush();
@@ -673,7 +738,7 @@ public class FileUtils {
             bitmap.compress(Bitmap.CompressFormat.JPEG, compressQuality, bmpStream);
             byte[] bmpPicByteArray = bmpStream.toByteArray();
             streamLength = bmpPicByteArray.length;
-            if(BuildConfig.DEBUG) {
+            if (BuildConfig.DEBUG) {
                 Log.i("test upload", "Quality: " + compressQuality);
                 Log.i("test upload", "Size: " + streamLength);
             }
@@ -724,14 +789,47 @@ public class FileUtils {
     public static String getFileName(Context context, Uri uri) {
 
         String fileName = null;
-        Cursor returnCursor =
-                context.getContentResolver().query(uri, null, null, null, null);
-        if (returnCursor != null && returnCursor.moveToFirst()) {
-            int columnIndex = returnCursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
-            fileName = returnCursor.getString(columnIndex);
+        if (uri.getScheme().equals("content")) {
+            Cursor cursor = context.getContentResolver().query(uri, null, null, null, null);
+            if (cursor != null) {
+                try {
+                    if (cursor.moveToFirst()) {
+                        fileName = cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME));
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                } finally {
+                    cursor.close();
+                }
+            }
         }
-
+        if (TextUtils.isEmpty(fileName)) {
+            fileName = uri.getPath();
+            int cut = fileName.lastIndexOf('/');
+            if (cut != -1) {
+                fileName = fileName.substring(cut + 1);
+            }
+        }
         return fileName;
+    }
+
+    public static String getFileName(Uri uri) {
+        if (uri == null) {
+            return null;
+        }
+        File file = new File(uri.toString());
+        return file.getName();
+    }
+
+    public static String getMimeTypeByContentUriOrOther(Context context, Uri uri) {
+        if (context == null) {
+            return null;
+        }
+        String mimeType = context.getContentResolver().getType(uri);
+        if (TextUtils.isEmpty(mimeType)) {
+            mimeType = getMimeType(context, uri);
+        }
+        return mimeType;
     }
 
     public static String getSize(Context context, Uri uri) {
@@ -755,6 +853,41 @@ public class FileUtils {
         }
 
         return sizeInMB;
+    }
+
+    public static String getName(String name) {
+        if (TextUtils.isEmpty(name)) {
+            return "";
+        }
+        int pos = name.lastIndexOf(".");
+
+        if (pos == -1) {
+            return name;
+        }
+        return name.substring(0, pos);
+    }
+
+    public static boolean isMaxUploadSizeReached(Context context ,Uri uri,int maxFileSize) {
+        try{
+            Cursor returnCursor = context.getContentResolver().query(uri, null, null, null, null);
+            if (returnCursor != null) {
+                int sizeIndex = returnCursor.getColumnIndex(OpenableColumns.SIZE);
+                returnCursor.moveToFirst();
+                Long fileSize = returnCursor.getLong(sizeIndex);
+                returnCursor.close();
+                return fileSize > maxFileSize;
+            }
+
+        }catch (Exception e){
+        }
+        return false;
+    }
+
+    public static boolean isContentScheme(Uri uri){
+        if (uri == null) {
+            return false;
+        }
+        return "content".equalsIgnoreCase(uri.getScheme());
     }
 
 }

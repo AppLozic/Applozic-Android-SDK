@@ -36,51 +36,54 @@ public class ApplozicMqttIntentService extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
-        boolean subscribe = intent.getBooleanExtra(SUBSCRIBE,false);
+        if (intent == null) {
+            return;
+        }
+        boolean subscribe = intent.getBooleanExtra(SUBSCRIBE, false);
         if (subscribe) {
             ApplozicMqttService.getInstance(getApplicationContext()).subscribe();
         }
         Contact contact = (Contact) intent.getSerializableExtra(CONTACT);
         Channel channel = (Channel) intent.getSerializableExtra(CHANNEL);
 
-        boolean subscribeToTyping = intent.getBooleanExtra(SUBSCRIBE_TO_TYPING,false);
-        if(subscribeToTyping){
+        boolean subscribeToTyping = intent.getBooleanExtra(SUBSCRIBE_TO_TYPING, false);
+        if (subscribeToTyping) {
             ApplozicMqttService.getInstance(getApplicationContext()).subscribeToTypingTopic(channel);
             return;
         }
-        boolean unSubscribeToTyping = intent.getBooleanExtra(UN_SUBSCRIBE_TO_TYPING,false);
-        if(unSubscribeToTyping){
+        boolean unSubscribeToTyping = intent.getBooleanExtra(UN_SUBSCRIBE_TO_TYPING, false);
+        if (unSubscribeToTyping) {
             ApplozicMqttService.getInstance(getApplicationContext()).unSubscribeToTypingTopic(channel);
             return;
         }
         String userKeyString = intent.getStringExtra(USER_KEY_STRING);
         String deviceKeyString = intent.getStringExtra(DEVICE_KEY_STRING);
         if (!TextUtils.isEmpty(userKeyString) && !TextUtils.isEmpty(deviceKeyString)) {
-            ApplozicMqttService.getInstance(getApplicationContext()).disconnectPublish(userKeyString,deviceKeyString, "0");
+            ApplozicMqttService.getInstance(getApplicationContext()).disconnectPublish(userKeyString, deviceKeyString, "0");
         }
 
         boolean connectedStatus = intent.getBooleanExtra(CONNECTED_PUBLISH, false);
         if (connectedStatus) {
-            ApplozicMqttService.getInstance(getApplicationContext()).connectPublish(MobiComUserPreference.getInstance(getApplicationContext()).getSuUserKeyString(),MobiComUserPreference.getInstance(getApplicationContext()).getDeviceKeyString(), "1");
+            ApplozicMqttService.getInstance(getApplicationContext()).connectPublish(MobiComUserPreference.getInstance(getApplicationContext()).getSuUserKeyString(), MobiComUserPreference.getInstance(getApplicationContext()).getDeviceKeyString(), "1");
         }
 
-        if (contact != null ){
+        if (contact != null) {
             boolean stop = intent.getBooleanExtra(STOP_TYPING, false);
             if (stop) {
-                ApplozicMqttService.getInstance(getApplicationContext()).typingStopped(contact,null);
+                ApplozicMqttService.getInstance(getApplicationContext()).typingStopped(contact, null);
             }
         }
 
-        if(contact != null && (contact.isBlocked() || contact.isBlockedBy())){
+        if (contact != null && (contact.isBlocked() || contact.isBlockedBy())) {
             return;
         }
 
-        if (contact != null || channel != null){
+        if (contact != null || channel != null) {
             boolean typing = intent.getBooleanExtra(TYPING, false);
             if (typing) {
-                ApplozicMqttService.getInstance(getApplicationContext()).typingStarted(contact,channel);
+                ApplozicMqttService.getInstance(getApplicationContext()).typingStarted(contact, channel);
             } else {
-                ApplozicMqttService.getInstance(getApplicationContext()).typingStopped(contact,channel);
+                ApplozicMqttService.getInstance(getApplicationContext()).typingStopped(contact, channel);
             }
         }
 

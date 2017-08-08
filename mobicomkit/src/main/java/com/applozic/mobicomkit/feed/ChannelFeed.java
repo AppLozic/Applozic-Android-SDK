@@ -1,10 +1,14 @@
 package com.applozic.mobicomkit.feed;
 
+import android.text.TextUtils;
+
 import com.applozic.mobicommons.json.JsonMarker;
 import com.applozic.mobicomkit.api.account.user.UserDetail;
 import com.applozic.mobicommons.people.channel.Channel;
 import com.applozic.mobicommons.people.channel.Conversation;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -16,14 +20,18 @@ public class ChannelFeed extends JsonMarker {
     private String clientGroupId;
     private String name;
     private String adminName;
+    private String adminId;
     private int unreadCount;
     private int userCount;
     private String imageUrl;
     private short type;
     private Set<String> membersName;
+    private Set<String> membersId;
     private Set<UserDetail> users;
     private Conversation conversationPxy;
-
+    private Long notificationAfterTime;
+    private Long deletedAtTime;
+    private Map<String, String> metadata = new HashMap<>();
 
     public ChannelFeed(Integer id, String name) {
         this.id = id;
@@ -60,7 +68,7 @@ public class ChannelFeed extends JsonMarker {
     }
 
     public String getAdminName() {
-        return adminName;
+        return TextUtils.isEmpty(adminName) ? adminId : adminName;
     }
 
     public void setAdminName(String adminName) {
@@ -92,11 +100,20 @@ public class ChannelFeed extends JsonMarker {
     }
 
     public Set<String> getMembersName() {
-        return membersName;
+
+        return (membersName == null) ? membersId : membersName;
     }
 
     public void setMembersName(Set<String> membersName) {
         this.membersName = membersName;
+    }
+
+    public Set<String> getContactGroupMembersId() {
+        return membersId;
+    }
+
+    public void setContactGroupMembersId(Set<String> membersId) {
+        this.membersId = membersId;
     }
 
     public Conversation getConversationPxy() {
@@ -123,19 +140,64 @@ public class ChannelFeed extends JsonMarker {
         this.imageUrl = imageUrl;
     }
 
+    public Long getNotificationAfterTime() {
+        return notificationAfterTime;
+    }
+
+    public void setNotificationAfterTime(Long notificationAfterTime) {
+        this.notificationAfterTime = notificationAfterTime;
+    }
+
+    public Long getDeletedAtTime() {
+        return deletedAtTime;
+    }
+
+    public void setDeletedAtTime(Long deletedAtTime) {
+        this.deletedAtTime = deletedAtTime;
+    }
+
+    public Set<String> getMembersId() {
+        return membersId;
+    }
+
+    public void setMembersId(Set<String> membersId) {
+        this.membersId = membersId;
+    }
+
+    public String getAdminId() {
+        return adminId;
+    }
+
+    public void setAdminId(String adminId) {
+        this.adminId = adminId;
+    }
+
+    public Map<String, String> getMetadata() {
+        return metadata;
+    }
+
+    public void setMetadata(Map<String, String> metadata) {
+        this.metadata = metadata;
+    }
+
     @Override
     public String toString() {
         return "ChannelFeed{" +
                 "id=" + id +
+                ", clientGroupId='" + clientGroupId + '\'' +
                 ", name='" + name + '\'' +
                 ", adminName='" + adminName + '\'' +
+                ", adminId='" + adminId + '\'' +
                 ", unreadCount=" + unreadCount +
                 ", userCount=" + userCount +
                 ", imageUrl='" + imageUrl + '\'' +
                 ", type=" + type +
                 ", membersName=" + membersName +
+                ", membersId=" + membersId +
                 ", users=" + users +
                 ", conversationPxy=" + conversationPxy +
+                ", notificationAfterTime=" + notificationAfterTime +
+                ", deletedAtTime=" + deletedAtTime +
                 '}';
     }
 }

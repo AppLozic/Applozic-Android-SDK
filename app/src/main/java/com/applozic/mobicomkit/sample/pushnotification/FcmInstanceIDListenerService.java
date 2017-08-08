@@ -15,6 +15,7 @@ import com.google.firebase.iid.FirebaseInstanceIdService;
 public class FcmInstanceIDListenerService extends FirebaseInstanceIdService {
 
     final private static String TAG = "FcmInstanceIDListener";
+
     @Override
     public void onTokenRefresh() {
         super.onTokenRefresh();

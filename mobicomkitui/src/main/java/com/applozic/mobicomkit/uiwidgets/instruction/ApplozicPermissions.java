@@ -7,6 +7,7 @@ import android.widget.LinearLayout;
 
 import com.applozic.mobicomkit.uiwidgets.R;
 import com.applozic.mobicomkit.uiwidgets.conversation.activity.ConversationActivity;
+import com.applozic.mobicomkit.uiwidgets.conversation.activity.MobicomLocationActivity;
 import com.applozic.mobicommons.commons.core.utils.PermissionsUtils;
 
 /**
@@ -99,10 +100,18 @@ public class ApplozicPermissions {
         }
     }
 
+    public void checkRuntimePermissionForLocationActivity() {
+        if (PermissionsUtils.checkSelfPermissionForLocation(activity)) {
+            requestLocationPermissions();
+        } else {
+            ((MobicomLocationActivity) activity).processingLocation();
+        }
+    }
+
     public void showSnackBar(int resId, final String[] permissions, final int requestCode) {
         Snackbar.make(snackBarLayout, resId,
                 Snackbar.LENGTH_INDEFINITE)
-                .setAction(android.R.string.ok, new View.OnClickListener() {
+                .setAction(R.string.ok_alert, new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         PermissionsUtils.requestPermissions(activity, permissions, requestCode);

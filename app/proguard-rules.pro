@@ -45,6 +45,10 @@
     public static final *** NULL;
 }
 
+-dontwarn android.support.v4.**
+-keep public class com.google.android.gms.* { public *; }
+-dontwarn com.google.android.gms.**
+-keep class com.google.gson.** { *; }
 
 -keep public class * extends View {
 public <init>(android.content.Context);

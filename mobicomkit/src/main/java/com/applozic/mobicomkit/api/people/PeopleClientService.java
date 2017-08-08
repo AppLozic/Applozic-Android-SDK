@@ -11,10 +11,9 @@ import com.applozic.mobicommons.json.GsonUtils;
  * Created by devashish on 27/12/14.
  */
 public class PeopleClientService extends MobiComKitClientService {
-    private HttpRequestUtils httpRequestUtils;
     public static final String GOOGLE_CONTACT_URL = "/rest/ws/user/session/contact/google/list";
     public static final String PLATFORM_CONTACT_URL = "/rest/ws/user/session/contact/google/list";
-
+    private HttpRequestUtils httpRequestUtils;
 
 
     public PeopleClientService(Context context) {
@@ -22,11 +21,11 @@ public class PeopleClientService extends MobiComKitClientService {
         this.httpRequestUtils = new HttpRequestUtils(context);
     }
 
-    public  String getGoogleContactUrl() {
+    public String getGoogleContactUrl() {
         return getBaseUrl() + GOOGLE_CONTACT_URL;
     }
 
-    public  String getPlatformContactUrl() {
+    public String getPlatformContactUrl() {
         return getBaseUrl() + PLATFORM_CONTACT_URL;
     }
 

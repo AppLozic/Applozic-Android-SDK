@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fillViewport="true"
-    app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    app:layout_scrollFlags="scroll">
+    app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -17,101 +15,113 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="end"
-            android:padding="0dp"
             android:layout_marginLeft="70dp"
             android:layout_marginRight="10dp"
             android:layout_marginTop="10dp"
             android:background="@drawable/applozic_sent_message"
-            android:clickable="false">
+            android:layout_marginStart="70dp"
+            android:layout_marginEnd="10dp"
+            android:clickable="false"
+            android:padding="0dp">
 
-        <!--FrameLayout for message text -->
-        <include
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="end"
-            layout="@layout/mobicom_contact_share_layout" />
+            <!--FrameLayout for message text -->
+            <include
+                layout="@layout/mobicom_contact_share_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end" />
 
-        <include
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="end"
-            layout="@layout/mobicom_chat_location_view" />
+            <include
+                layout="@layout/mobicom_chat_location_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end" />
         </RelativeLayout>
+
         <RelativeLayout
 
+            android:id="@+id/applozic_message_info_default_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="end"
-            android:id="@+id/applozic_message_info_default_layout"
             android:layout_marginLeft="70dp"
             android:layout_marginRight="10dp"
             android:layout_marginTop="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginStart="70dp"
             android:background="@drawable/applozic_sent_message"
             android:clickable="false">
+
             <RelativeLayout
+                android:id="@+id/applozic_file_info_inner_layout"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/applozic_file_info_inner_layout">
-            <com.applozic.mobicomkit.api.attachment.AttachmentView
-                android:id="@+id/applozic_message_info_attachmentview"
-                android:layout_width="match_parent"
-                android:layout_height="150dp"
-                android:adjustViewBounds="true"
-                android:scaleType="centerCrop"
-                android:visibility="visible" />
+                android:layout_height="wrap_content">
 
-            <ProgressBar
-                android:id="@+id/applozic_message_info_progress_bar"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:visibility="gone" />
-            <ImageView
-                android:layout_height="wrap_content"
-                android:layout_width="wrap_content"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentLeft="true"
-                android:id="@+id/applozic_message_info_attachment_icon"
-                android:visibility="visible"
-                android:src="@drawable/applozic_ic_action_attachment"
-                />
+                <com.applozic.mobicomkit.api.attachment.AttachmentView
+                    android:id="@+id/applozic_message_info_attachmentview"
+                    android:layout_width="match_parent"
+                    android:layout_height="150dp"
+                    android:adjustViewBounds="true"
+                    android:scaleType="centerCrop"
+                    android:visibility="visible" />
 
-            <TextView
-                android:id="@+id/applozic_message_info_attachment_filename"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_toRightOf="@+id/applozic_message_info_attachment_icon"
-                android:layout_gravity="bottom"
-                android:padding="10dp"
-                android:text="Message Text"
-                android:textColor="@color/applozic_send_message_layout_background_color"
-                android:textSize="18sp" />
+                <ProgressBar
+                    android:id="@+id/applozic_message_info_progress_bar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:visibility="gone" />
+
+                <ImageView
+                    android:id="@+id/applozic_message_info_attachment_icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentTop="true"
+                    android:src="@drawable/applozic_ic_action_attachment"
+                    android:visibility="visible" />
+
+                <TextView
+                    android:id="@+id/applozic_message_info_attachment_filename"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom"
+                    android:layout_toRightOf="@+id/applozic_message_info_attachment_icon"
+                    android:padding="10dp"
+                    android:layout_toEndOf="@+id/applozic_message_info_attachment_icon"
+                    android:text="@string/message_text"
+                    android:textColor="@color/applozic_send_message_layout_background_color"
+                    android:textSize="18sp" />
             </RelativeLayout>
+
             <TextView
                 android:id="@+id/messageText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_below="@+id/applozic_file_info_inner_layout"
                 android:layout_gravity="end|bottom"
                 android:padding="10dp"
-                android:layout_below="@+id/applozic_file_info_inner_layout"
-                android:text="Message Text"
+                android:text="@string/message_text"
                 android:textColor="@color/applozic_send_message_layout_background_color"
                 android:textSize="18sp" />
         </RelativeLayout>
 
         <TextView
-                android:id="@+id/applozic_message_info_message_text"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="end|bottom"
-                android:padding="10dp"
-                android:layout_marginLeft="70dp"
-                android:layout_marginRight="10dp"
-                android:layout_marginTop="20dp"
-                android:background="@drawable/applozic_sent_message"
-                android:text="Message Text"
-                android:textColor="@color/applozic_send_message_layout_background_color"
-                android:textSize="18sp" />
+            android:id="@+id/applozic_message_info_message_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end|bottom"
+            android:layout_marginLeft="70dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/applozic_sent_message"
+            android:padding="10dp"
+            android:layout_marginEnd="10dp"
+           android:layout_marginStart="70dp"
+           android:text="@string/message_text"
+            android:textColor="@color/applozic_send_message_layout_background_color"
+            android:textSize="18sp" />
 
         <!-- List View for read -->
         <RelativeLayout
@@ -126,6 +136,8 @@
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
                 android:layout_marginTop="20dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginStart="10dp"
                 android:clickable="true"
                 app:cardCornerRadius="0dp"
                 app:layout_behavior="@string/appbar_scrolling_view_behavior">
@@ -135,7 +147,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="3dp"
                     android:padding="5dp"
-                    android:text="Read"
+                    android:text="@string/read"
+                    android:layout_marginStart="3dp"
                     android:textColor="@color/applozic_theme_color_primary"
                     android:textSize="18sp" />
 
@@ -157,15 +170,17 @@
                 android:layout_marginRight="10dp"
                 android:clickable="true"
                 app:cardCornerRadius="0dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginStart="10dp"
                 app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-
-                <ListView
+                <android.support.v7.widget.RecyclerView
                     android:id="@+id/applozic_message_info_read_list"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:fillViewport="true"
-                    android:fitsSystemWindows="true"
+                    android:layout_height="wrap_content"
+                    android:scrollbars="vertical"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginStart="10dp"
                     app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
             </android.support.v7.widget.CardView>
@@ -194,7 +209,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="3dp"
                     android:padding="5dp"
-                    android:text="Delivered"
+                    android:text="@string/delivered"
+                    android:layout_marginStart="3dp"
                     android:textColor="@color/applozic_theme_color_primary"
                     android:textSize="18sp" />
 
@@ -213,18 +229,20 @@
                 android:layout_marginBottom="65dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
                 android:clickable="true"
                 app:cardCornerRadius="0dp"
                 app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-                <ListView
+                <android.support.v7.widget.RecyclerView
                     android:id="@+id/applozic_message_info_delivered_list_view"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:fillViewport="true"
-                    android:fitsSystemWindows="true"
+                    android:layout_height="wrap_content"
+                    android:scrollbars="vertical"
                     app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
             </android.support.v7.widget.CardView>
         </RelativeLayout>
     </LinearLayout>
-</android.support.v4.widget.NestedScrollView>
+</ScrollView>

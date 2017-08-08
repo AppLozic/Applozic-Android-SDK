@@ -1,17 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:padding="10dp"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="10dp">
 
     <LinearLayout
-        android:orientation="horizontal"
+        android:id="@+id/upload_gallery_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="10dp"
-        android:id="@+id/upload_gallery_layout"
-        android:background="@color/applozic_theme_color_primary">
+        android:background="@color/applozic_theme_color_primary"
+        android:orientation="horizontal"
+        android:padding="10dp">
+
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -20,63 +21,61 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text=" Gallery "
-            android:textSize="20sp"
-            android:textColor="@color/white"
             android:layout_gravity="center_horizontal"
-            />
+            android:text="@string/gallery"
+            android:textColor="@color/white"
+            android:textSize="20sp" />
 
     </LinearLayout>
 
     <LinearLayout
-        android:orientation="horizontal"
+        android:id="@+id/upload_camera_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:padding="10dp"
-        android:id="@+id/upload_camera_layout"
-        android:background="@color/applozic_theme_color_primary">
+        android:background="@color/applozic_theme_color_primary"
+        android:orientation="horizontal"
+        android:padding="10dp">
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/applozic_ic_image_camera_alt"
-            android:layout_gravity="center_horizontal" />
+            android:layout_gravity="center_horizontal"
+            android:src="@drawable/applozic_ic_image_camera_alt" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text=" Camera "
-            android:textSize="20sp"
-            android:textColor="@color/white"
             android:layout_gravity="center"
-            />
+            android:text="@string/camera_option"
+            android:textColor="@color/white"
+            android:textSize="20sp" />
 
 
     </LinearLayout>
 
     <LinearLayout
-        android:orientation="horizontal"
+        android:id="@+id/upload_remove_image_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="right"
-        android:padding="10dp"
-        android:id="@+id/upload_remove_image_layout"
-        android:background="@color/applozic_theme_color_primary">
+        android:layout_gravity="end"
+        android:background="@color/applozic_theme_color_primary"
+        android:orientation="horizontal"
+        android:padding="10dp">
+
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/applozic_ic_action_highlight_remove"
-            android:layout_gravity="center" />
+            android:layout_gravity="center"
+            android:src="@drawable/applozic_ic_action_highlight_remove" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text=" Remove Image "
-            android:textSize="20sp"
-            android:textColor="@color/white"
             android:layout_gravity="center"
-            />
+            android:text="@string/remove_image"
+            android:textColor="@color/white"
+            android:textSize="20sp" />
 
     </LinearLayout>
 </LinearLayout>

@@ -1,6 +1,7 @@
 package com.applozic.mobicomkit.uiwidgets.conversation.fragment;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Process;
@@ -8,7 +9,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.os.AsyncTaskCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
+import android.text.TextUtils;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -20,6 +21,7 @@ import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -35,6 +37,7 @@ import com.applozic.mobicomkit.channel.service.ChannelService;
 import com.applozic.mobicomkit.contact.AppContactService;
 import com.applozic.mobicomkit.contact.BaseContactService;
 import com.applozic.mobicomkit.uiwidgets.ApplozicApplication;
+import com.applozic.mobicomkit.uiwidgets.AlCustomizationSettings;
 import com.applozic.mobicomkit.uiwidgets.ApplozicSetting;
 import com.applozic.mobicomkit.uiwidgets.R;
 import com.applozic.mobicomkit.uiwidgets.conversation.ConversationListView;
@@ -44,6 +47,9 @@ import com.applozic.mobicomkit.uiwidgets.conversation.adapter.QuickConversationA
 import com.applozic.mobicomkit.uiwidgets.instruction.InstructionUtil;
 import com.applozic.mobicommons.commons.core.utils.DateUtils;
 import com.applozic.mobicommons.commons.core.utils.Utils;
+import com.applozic.mobicommons.file.FileUtils;
+import com.applozic.mobicommons.json.GsonUtils;
+import com.applozic.mobicommons.people.SearchListFragment;
 import com.applozic.mobicommons.people.channel.Channel;
 import com.applozic.mobicommons.people.contact.Contact;
 
@@ -55,7 +61,7 @@ import java.util.Map;
 /**
  * Created by devashish on 10/2/15.
  */
-public class MobiComQuickConversationFragment extends Fragment {
+public class MobiComQuickConversationFragment extends Fragment implements SearchListFragment {
 
     public static final String QUICK_CONVERSATION_EVENT = "quick_conversation";
     protected ConversationListView listView = null;
@@ -69,7 +75,9 @@ public class MobiComQuickConversationFragment extends Fragment {
     protected QuickConversationAdapter conversationAdapter = null;
     protected boolean loadMore = false;
     protected SyncCallService syncCallService;
-    private ApplozicSetting applozicSetting;
+    ConversationUIService conversationUIService;
+    AlCustomizationSettings alCustomizationSettings;
+    String searchString;
     private Long minCreatedAtTime;
     private DownloadConversation downloadConversation;
     private BaseContactService baseContactService;
@@ -81,7 +89,6 @@ public class MobiComQuickConversationFragment extends Fragment {
     private boolean loading = true;
     private int startingPageIndex = 0;
     private ProgressBar progressBar;
-    ConversationUIService conversationUIService;
 
     public ConversationListView getListView() {
         return listView;
@@ -90,10 +97,16 @@ public class MobiComQuickConversationFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        applozicSetting = ApplozicSetting.getInstance(getActivity());
+        String jsonString = FileUtils.loadSettingsJsonFile(getActivity().getApplicationContext());
+        if (!TextUtils.isEmpty(jsonString)) {
+            alCustomizationSettings = (AlCustomizationSettings) GsonUtils.getObjectFromJson(jsonString, AlCustomizationSettings.class);
+        } else {
+            alCustomizationSettings = new AlCustomizationSettings();
+        }
         syncCallService = SyncCallService.getInstance(getActivity());
         conversationAdapter = new QuickConversationAdapter(getActivity(),
                 messageList, null);
+        conversationAdapter.setAlCustomizationSettings(alCustomizationSettings);
         conversationUIService = new ConversationUIService(getActivity());
         baseContactService = new AppContactService(getActivity());
         messageDatabaseService = new MessageDatabaseService(getActivity());
@@ -106,6 +119,7 @@ public class MobiComQuickConversationFragment extends Fragment {
         thread.setPriority(Process.THREAD_PRIORITY_BACKGROUND);
         thread.start();
         setHasOptionsMenu(true);
+        BroadcastService.lastIndexForChats = 0;
     }
 
     @Override
@@ -131,9 +145,11 @@ public class MobiComQuickConversationFragment extends Fragment {
 
         //spinner = (ProgressBar) spinnerLayout.findViewById(R.id.spinner);
         emptyTextView = (TextView) list.findViewById(R.id.noConversations);
+        emptyTextView.setTextColor(Color.parseColor(alCustomizationSettings.getNoConversationLabelTextColor().trim()));
+
         // startNewButton = (Button) spinnerLayout.findViewById(R.id.start_new_conversation);
 
-        fabButton.setVisibility(applozicSetting.isStartNewFloatingActionButtonVisible() ? View.VISIBLE : View.GONE);
+        fabButton.setVisibility(alCustomizationSettings.isStartNewFloatingButton() ? View.VISIBLE : View.GONE);
 
         swipeLayout = (SwipeRefreshLayout) list.findViewById(R.id.swipe_container);
         swipeLayout.setColorScheme(android.R.color.holo_blue_bright,
@@ -171,22 +187,31 @@ public class MobiComQuickConversationFragment extends Fragment {
         String[] menuItems = getResources().getStringArray(R.array.conversation_options_menu);
 
         boolean isUserPresentInGroup = false;
+        boolean isChannelDeleted = false;
+        Channel channel = null;
         if (message.getGroupId() != null) {
-            isUserPresentInGroup =  ChannelService.getInstance(getActivity()).processIsUserPresentInChannel(message.getGroupId());
+            channel = ChannelService.getInstance(getActivity()).getChannelByChannelKey(message.getGroupId());
+            if (channel != null) {
+                isChannelDeleted = channel.isDeleted();
+            }
+            isUserPresentInGroup = ChannelService.getInstance(getActivity()).processIsUserPresentInChannel(message.getGroupId());
         }
 
         for (int i = 0; i < menuItems.length; i++) {
 
-            if (message.getGroupId() == null &&  (menuItems[i].equals("Delete group") ||
-                    menuItems[i].equals("Exit group"))) {
+            if ((message.getGroupId() == null || (channel != null && Channel.GroupType.GROUPOFTWO.getValue().equals(channel.getType()))) && (menuItems[i].equals(getResources().getString(R.string.delete_group)) ||
+                    menuItems[i].equals(getResources().getString(R.string.exit_group)))) {
                 continue;
             }
 
-            if (menuItems[i].equals("Exit group") && !isUserPresentInGroup) {
+            if (menuItems[i].equals(getResources().getString(R.string.exit_group)) && (isChannelDeleted || !isUserPresentInGroup)) {
                 continue;
             }
 
-            if (menuItems[i].equals("Delete group") && isUserPresentInGroup) {
+            if (menuItems[i].equals(getResources().getString(R.string.delete_group)) && (isUserPresentInGroup || !isChannelDeleted)) {
+                continue;
+            }
+            if (menuItems[i].equals(getResources().getString(R.string.delete_conversation)) && !alCustomizationSettings.isDeleteOption()) {
                 continue;
             }
 
@@ -206,7 +231,6 @@ public class MobiComQuickConversationFragment extends Fragment {
 
         Channel channel = null;
         Contact contact = null;
-
         if (message.getGroupId() != null) {
             channel = ChannelDatabaseService.getInstance(getActivity()).getChannelByChannelKey(message.getGroupId());
         } else {
@@ -215,7 +239,11 @@ public class MobiComQuickConversationFragment extends Fragment {
 
         switch (item.getItemId()) {
             case 0:
-                conversationUIService.deleteConversationThread(contact, channel);
+                if (channel != null && channel.isDeleted()) {
+                    conversationUIService.deleteGroupConversation(channel);
+                } else {
+                    conversationUIService.deleteConversationThread(contact, channel);
+                }
                 break;
             case 1:
                 conversationUIService.deleteGroupConversation(channel);
@@ -233,23 +261,34 @@ public class MobiComQuickConversationFragment extends Fragment {
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
 
-        if (!ApplozicSetting.getInstance(getActivity()).isStartNewButtonVisible()) {
-            menu.removeItem(R.id.start_new);
-        }else {
+
+        if (alCustomizationSettings.isStartNewButton() || ApplozicSetting.getInstance(getContext()).isStartNewButtonVisible()) {
             menu.findItem(R.id.start_new).setVisible(true);
         }
-        if (!ApplozicSetting.getInstance(getActivity()).isStartNewGroupButtonVisible()) {
-            menu.removeItem(R.id.conversations);
-        }else {
+        if (alCustomizationSettings.isStartNewGroup() || ApplozicSetting.getInstance(getContext()).isStartNewGroupButtonVisible()) {
             menu.findItem(R.id.conversations).setVisible(true);
         }
-        menu.findItem(R.id.refresh).setVisible(true);
-        if(ApplozicSetting.getInstance(getActivity()).isProfileOptionEnabled()){
+        if (alCustomizationSettings.isRefreshOption()) {
+            menu.findItem(R.id.refresh).setVisible(true);
+        }
+        if (alCustomizationSettings.isProfileOption()) {
             menu.findItem(R.id.applozicUserProfile).setVisible(true);
+        }
+        if (alCustomizationSettings.isMessageSearchOption()) {
+            menu.findItem(R.id.menu_search).setVisible(true);
+        }
+        if (alCustomizationSettings.isBroadcastOption()) {
+            menu.findItem(R.id.broadcast).setVisible(true);
+        }
+        if (alCustomizationSettings.isLogoutOption()) {
+            menu.findItem(R.id.logout).setVisible(true);
         }
     }
 
     public void addMessage(final Message message) {
+        if (getActivity() == null) {
+            return;
+        }
         final Context context = getActivity();
         this.getActivity().runOnUiThread(new Runnable() {
             @Override
@@ -277,19 +316,72 @@ public class MobiComQuickConversationFragment extends Fragment {
                 //listView.smoothScrollToPosition(messageList.size());
                 listView.setSelection(0);
                 emptyTextView.setVisibility(View.GONE);
+                emptyTextView.setText(alCustomizationSettings.getNoConversationLabel());
                 // startQNewButton.setVisibility(View.GONE);
             }
         });
+    }
+
+    public void refreshView() {
+        if (!getUserVisibleHint()) {
+            return;
+        }
+        if (getActivity() == null) {
+            return;
+        }
+        try {
+            if (getActivity() != null) {
+                if (conversationAdapter != null) {
+                    conversationAdapter.notifyDataSetChanged();
+                }
+            }
+        } catch (Exception e) {
+            Utils.printLog(getActivity(), "AL", "Exception while updating view .");
+        }
+    }
+
+
+    public void updateUserInfo(final String userId) {
+        if (!getUserVisibleHint()) {
+            return;
+        }
+        if (getActivity() == null) {
+            return;
+        }
+        if (getActivity() != null) {
+            this.getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        Message message = latestMessageForEachContact.get(userId);
+                        if (message != null) {
+                            int index = messageList.indexOf(message);
+                            View view = listView.getChildAt(index - listView.getFirstVisiblePosition());
+                            Contact contact = baseContactService.getContactById(userId);
+                            if (view != null && contact != null) {
+                                ImageView contactImage = (ImageView) view.findViewById(R.id.contactImage);
+                                TextView displayNameTextView = (TextView) view.findViewById(R.id.smReceivers);
+                                displayNameTextView.setText(contact.getDisplayName());
+                                conversationAdapter.contactImageLoader.loadImage(contact, contactImage);
+                            }
+                        }
+                    } catch (Exception ex) {
+                        Utils.printLog(getActivity(),"AL", "Exception while updating view .");
+                    }
+                }
+            });
+        }
+
     }
 
     public void updateLastMessage(String keyString, String userId) {
         for (Message message : messageList) {
             if (message.getKeyString() != null && message.getKeyString().equals(keyString)) {
                 List<Message> lastMessage;
-                if(message.getGroupId() != null){
-                    lastMessage =  messageDatabaseService.getLatestMessageByChannelKey(message.getGroupId());
-                }else {
-                    lastMessage  = messageDatabaseService.getLatestMessage(message.getContactIds());
+                if (message.getGroupId() != null) {
+                    lastMessage = messageDatabaseService.getLatestMessageByChannelKey(message.getGroupId());
+                } else {
+                    lastMessage = messageDatabaseService.getLatestMessage(message.getContactIds());
                 }
                 if (lastMessage.isEmpty()) {
                     removeConversation(message, userId);
@@ -301,6 +393,23 @@ public class MobiComQuickConversationFragment extends Fragment {
         }
     }
 
+    public void updateLastMessage(Message message) {
+        if (message == null) {
+            return;
+        }
+        List<Message> lastMessage = new ArrayList<>();
+        if (message.getGroupId() != null) {
+            lastMessage = messageDatabaseService.getLatestMessageByChannelKey(message.getGroupId());
+        } else {
+            lastMessage = messageDatabaseService.getLatestMessage(message.getContactIds());
+        }
+        if (lastMessage.isEmpty()) {
+            removeConversation(message, message.getContactIds());
+        } else {
+            deleteMessage(lastMessage.get(0), message.getContactIds());
+        }
+    }
+
     public String getLatestContact() {
         if (messageList != null && !messageList.isEmpty()) {
             Message message = messageList.get(0);
@@ -309,30 +418,13 @@ public class MobiComQuickConversationFragment extends Fragment {
         return null;
     }
 
-    public void updateUserName(final Integer channelKey) {
+    public void updateChannelName() {
         this.getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                try{
+                try {
                     conversationAdapter.notifyDataSetChanged();
-                   /* Message message = latestMessageForEachContact.get("group-" + channelKey);
-                    if (message != null) {
-                        int index = messageList.indexOf(message);
-                        if (index != -1) {
-                            View view = listView.getChildAt(index -
-                                    listView.getFirstVisiblePosition());
-                            if (view != null) {
-                                TextView receiver = (TextView) view.findViewById(R.id.smReceivers);
-                                Channel channel = ChannelService.getInstance(getActivity()).getChannelByChannelKey(channelKey);
-                                if(channel != null){
-                                    receiver.setText(ChannelUtils.getChannelTitleName(channel, MobiComUserPreference.getInstance(getActivity()).getUserId()));
-                                    conversationAdapter.notifyDataSetChanged();
-                                }
-
-                            }
-                        }
-                    }*/
-                }catch (Exception e){
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
@@ -342,6 +434,9 @@ public class MobiComQuickConversationFragment extends Fragment {
 
 
     public void deleteMessage(final Message message, final String userId) {
+        if (getActivity() == null) {
+            return;
+        }
         this.getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -375,6 +470,9 @@ public class MobiComQuickConversationFragment extends Fragment {
     }
 
     public void removeConversation(final Message message, final String userId) {
+        if (getActivity() == null) {
+            return;
+        }
         this.getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -391,7 +489,9 @@ public class MobiComQuickConversationFragment extends Fragment {
     }
 
     public void removeConversation(final Contact contact, final Integer channelKey, String response) {
-
+        if (getActivity() == null) {
+            return;
+        }
         if ("success".equals(response)) {
             this.getActivity().runOnUiThread(new Runnable() {
                 @Override
@@ -401,6 +501,9 @@ public class MobiComQuickConversationFragment extends Fragment {
                         message = latestMessageForEachContact.get(ConversationUIService.GROUP + channelKey);
                     } else {
                         message = latestMessageForEachContact.get(contact.getUserId());
+                    }
+                    if (message == null) {
+                        return;
                     }
                     messageList.remove(message);
                     if (channelKey != null && channelKey != 0) {
@@ -426,6 +529,7 @@ public class MobiComQuickConversationFragment extends Fragment {
         boolean isLodingConversation = (downloadConversation != null && downloadConversation.getStatus() == AsyncTask.Status.RUNNING);
         if (latestMessageForEachContact.isEmpty() && !isLodingConversation) {
             emptyTextView.setVisibility(View.VISIBLE);
+            emptyTextView.setText(alCustomizationSettings.getNoConversationLabel());
             //startNewButton.setVisibility(applozicSetting.isStartNewButtonVisible() ? View.VISIBLE : View.GONE);
         } else {
             emptyTextView.setVisibility(View.GONE);
@@ -442,7 +546,10 @@ public class MobiComQuickConversationFragment extends Fragment {
         super.onPause();
         listIndex = listView.getFirstVisiblePosition();
         BroadcastService.currentUserId = null;
-        if(conversationAdapter != null){
+        if (listView != null) {
+            BroadcastService.lastIndexForChats = listView.getFirstVisiblePosition();
+        }
+        if (conversationAdapter != null) {
             conversationAdapter.contactImageLoader.setPauseWork(false);
             conversationAdapter.channelImageLoader.setPauseWork(false);
         }
@@ -451,20 +558,20 @@ public class MobiComQuickConversationFragment extends Fragment {
     @Override
     public void onResume() {
         //Assigning to avoid notification in case if quick conversation fragment is opened....
-        toolbar.setTitle(ApplozicApplication.TITLE);
+        toolbar.setTitle(getResources().getString(R.string.chats));
         toolbar.setSubtitle("");
         BroadcastService.selectMobiComKitAll();
         super.onResume();
         latestMessageForEachContact.clear();
         messageList.clear();
         if (listView != null) {
-            if (listView.getCount() > listIndex) {
-                listView.setSelection(listIndex);
+            if (listView.getCount() > BroadcastService.lastIndexForChats) {
+                listView.setSelection(BroadcastService.lastIndexForChats);
             } else {
                 listView.setSelection(0);
             }
         }
-        downloadConversations();
+        downloadConversations(false, searchString);
         swipeLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             public void onRefresh() {
                 SyncMessages syncMessages = new SyncMessages();
@@ -497,7 +604,7 @@ public class MobiComQuickConversationFragment extends Fragment {
                                  int visibleItemCount, int totalItemCount) {
                 if (loading) {
                     if (totalItemCount > previousTotalItemCount) {
-                        if(!messageList.isEmpty()){
+                        if (!messageList.isEmpty()) {
                             loading = false;
                         }
                         previousTotalItemCount = totalItemCount;
@@ -507,8 +614,10 @@ public class MobiComQuickConversationFragment extends Fragment {
                 if ((totalItemCount - visibleItemCount) == 0) {
                     return;
                 }
-
-                if (loadMore && !loading && (totalItemCount - visibleItemCount)<=(firstVisibleItem + visibleThreshold)) {
+                if (totalItemCount <= 5) {
+                    return;
+                }
+                if (loadMore && !loading && (totalItemCount - visibleItemCount) <= (firstVisibleItem + visibleThreshold)) {
                     DownloadConversation downloadConversation = new DownloadConversation(view, false, firstVisibleItem, visibleItemCount, totalItemCount);
                     AsyncTaskCompat.executeParallel(downloadConversation);
                     loading = true;
@@ -519,39 +628,83 @@ public class MobiComQuickConversationFragment extends Fragment {
 
 
     public void downloadConversations() {
-        downloadConversations(false);
+        downloadConversations(false, null);
     }
 
-    public void downloadConversations(boolean showInstruction) {
+    public void downloadConversations(boolean showInstruction, String searchString) {
         minCreatedAtTime = null;
-        downloadConversation = new DownloadConversation(listView, true, 1, 0, 0, showInstruction);
+        downloadConversation = new DownloadConversation(listView, true, 1, 0, 0, showInstruction, searchString);
         AsyncTaskCompat.executeParallel(downloadConversation);
+        if (conversationAdapter != null) {
+            conversationAdapter.searchString = searchString;
+        }
     }
 
     public void updateLastSeenStatus(final String userId) {
-        if (!ApplozicSetting.getInstance(getActivity()).isOnlineStatusInMasterListVisible()) {
+        if (!alCustomizationSettings.isOnlineStatusMasterList()) {
+            return;
+        }
+        if (getActivity() == null) {
+            return;
+        }
+        if (MobiComUserPreference.getInstance(getContext()).getUserId().equals(userId)) {
             return;
         }
         this.getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 try {
-                    Message message = latestMessageForEachContact.get(userId);
-                    if (message != null) {
-                        int index = messageList.indexOf(message);
-                        View view = listView.getChildAt(index - listView.getFirstVisiblePosition());
-                        if (view != null) {
-                            TextView onlineTextView = (TextView) view.findViewById(R.id.onlineTextView);
-                            Contact contact = baseContactService.getContactById(userId);
-                            onlineTextView.setVisibility(contact != null && contact.isOnline() ? View.VISIBLE : View.GONE);
-                        }
+                    if (conversationAdapter != null) {
+                        conversationAdapter.notifyDataSetChanged();
                     }
                 } catch (Exception ex) {
-                    Log.w("AL", "Exception while updating online status.");
+                    Utils.printLog(getActivity(), "AL", "Exception while updating online status.");
                 }
             }
         });
+    }
 
+    public void updateConversationRead(final String currentId, final boolean isGroup) {
+        if (getActivity() == null) {
+            return;
+        }
+        this.getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Message message = null;
+                    if (isGroup) {
+                        message = latestMessageForEachContact.get(ConversationUIService.GROUP + currentId);
+                    } else {
+                        message = latestMessageForEachContact.get(currentId);
+                    }
+
+                    if (message != null) {
+                        int index = messageList.indexOf(message);
+                        if (index != -1) {
+                            View view = listView.getChildAt(index - listView.getFirstVisiblePosition());
+                            if (view != null) {
+                                TextView unreadCountTextView = (TextView) view.findViewById(R.id.unreadSmsCount);
+                                unreadCountTextView.setVisibility(View.GONE);
+                            }
+                        }
+                    }
+                } catch (Exception ex) {
+                    Utils.printLog(getActivity(), "AL", "Exception while updating Unread count...");
+                }
+            }
+        });
+    }
+
+    @Override
+    public boolean onQueryTextChange(String newText) {
+        this.searchString = newText;
+        if (TextUtils.isEmpty(newText)) {
+            downloadConversations(false, null);
+        } else {
+            downloadConversations(false, newText);
+        }
+        return true;
     }
 
     public class DownloadConversation extends AsyncTask<Void, Integer, Long> {
@@ -565,8 +718,9 @@ public class MobiComQuickConversationFragment extends Fragment {
         private List<Message> nextMessageList = new ArrayList<Message>();
         private Context context;
         private boolean loadMoreMessages;
+        private String searchString;
 
-        public DownloadConversation(AbsListView view, boolean initial, int firstVisibleItem, int amountVisible, int totalItems, boolean showInstruction) {
+        public DownloadConversation(AbsListView view, boolean initial, int firstVisibleItem, int amountVisible, int totalItems, boolean showInstruction, String searchString) {
             this.context = getActivity();
             this.view = view;
             this.initial = initial;
@@ -574,10 +728,11 @@ public class MobiComQuickConversationFragment extends Fragment {
             this.amountVisible = amountVisible;
             this.totalItems = totalItems;
             this.showInstruction = showInstruction;
+            this.searchString = searchString;
         }
 
         public DownloadConversation(AbsListView view, boolean initial, int firstVisibleItem, int amountVisible, int totalItems) {
-            this(view, initial, firstVisibleItem, amountVisible, totalItems, false);
+            this(view, initial, firstVisibleItem, amountVisible, totalItems, false, null);
             loadMoreMessages = true;
         }
 
@@ -585,22 +740,24 @@ public class MobiComQuickConversationFragment extends Fragment {
         protected void onPreExecute() {
             super.onPreExecute();
 
-            if(progressBar != null && loadMoreMessages){
+            if (progressBar != null && loadMoreMessages) {
                 progressBar.setVisibility(View.VISIBLE);
-            }else {
-                swipeLayout.setEnabled(true);
-                swipeLayout.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        swipeLayout.setRefreshing(true);
-                    }
-                });
+            } else {
+                if (swipeLayout != null) {
+                    swipeLayout.setEnabled(true);
+                    swipeLayout.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            swipeLayout.setRefreshing(true);
+                        }
+                    });
+                }
             }
         }
 
         protected Long doInBackground(Void... voids) {
             if (initial) {
-                nextMessageList = syncCallService.getLatestMessagesGroupByPeople();
+                nextMessageList = syncCallService.getLatestMessagesGroupByPeople(searchString);
                 if (!nextMessageList.isEmpty()) {
                     minCreatedAtTime = nextMessageList.get(nextMessageList.size() - 1).getCreatedAtTime();
                 }
@@ -608,7 +765,7 @@ public class MobiComQuickConversationFragment extends Fragment {
                 listIndex = firstVisibleItem;
                 Long createdAt = messageList.isEmpty() ? null : messageList.get(messageList.size() - 1).getCreatedAtTime();
                 minCreatedAtTime = (minCreatedAtTime == null ? createdAt : Math.min(minCreatedAtTime, createdAt));
-                nextMessageList = syncCallService.getLatestMessagesGroupByPeople(minCreatedAtTime);
+                nextMessageList = syncCallService.getLatestMessagesGroupByPeople(minCreatedAtTime, searchString);
             }
 
             return 0L;
@@ -619,15 +776,24 @@ public class MobiComQuickConversationFragment extends Fragment {
         }
 
         protected void onPostExecute(Long result) {
-            if(!loadMoreMessages){
-                swipeLayout.setEnabled(true);
-                swipeLayout.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        swipeLayout.setRefreshing(false);
-                    }
-                });
+            if (!loadMoreMessages) {
+                if (swipeLayout != null) {
+                    swipeLayout.setEnabled(true);
+                    swipeLayout.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            swipeLayout.setRefreshing(false);
+                        }
+                    });
+                }
             }
+
+            if (!TextUtils.isEmpty(searchString)) {
+                messageList.clear();
+                latestMessageForEachContact.clear();
+
+            }
+
             for (Message currentMessage : nextMessageList) {
                 if (currentMessage.isSentToMany()) {
                     continue;
@@ -646,8 +812,6 @@ public class MobiComQuickConversationFragment extends Fragment {
                         } else {
                             latestMessageForEachContact.put(currentMessage.getContactIds(), currentMessage);
                         }
-
-                        Log.d("Current message", "message" + currentMessage);
                         messageList.remove(recentSms);
                         messageList.add(currentMessage);
                     }
@@ -661,42 +825,46 @@ public class MobiComQuickConversationFragment extends Fragment {
                     messageList.add(currentMessage);
                 }
             }
-            if(progressBar != null && loadMoreMessages){
+            if (progressBar != null && loadMoreMessages) {
                 progressBar.setVisibility(View.GONE);
             }
-            conversationAdapter.notifyDataSetChanged();
+            if (conversationAdapter != null) {
+                conversationAdapter.notifyDataSetChanged();
+            }
             if (initial) {
-                emptyTextView.setVisibility(messageList.isEmpty() ? View.VISIBLE : View.GONE);
-                if (applozicSetting.isStartNewButtonVisible()) {
-                    // startNewButton.setVisibility(messageList.isEmpty() ? View.VISIBLE : View.GONE);
+                if (emptyTextView != null) {
+                    emptyTextView.setVisibility(messageList.isEmpty() ? View.VISIBLE : View.GONE);
+                    if (!TextUtils.isEmpty(searchString) && messageList.isEmpty()) {
+                        emptyTextView.setText(alCustomizationSettings.getNoSearchFoundForChatMessages());
+                    } else if (TextUtils.isEmpty(searchString) && messageList.isEmpty()) {
+                        emptyTextView.setText(alCustomizationSettings.getNoConversationLabel());
+                    }
                 }
                 if (!messageList.isEmpty()) {
-                    listView.setSelection(0);
+                    if (listView != null) {
+                        if (listView.getCount() > BroadcastService.lastIndexForChats) {
+                            listView.setSelection(BroadcastService.lastIndexForChats);
+                            BroadcastService.lastIndexForChats = 0;
+                        } else {
+                            listView.setSelection(0);
+                        }
+                    }
                 }
             } else {
-                if(!loadMoreMessages){
+                if (!loadMoreMessages) {
                     listView.setSelection(firstVisibleItem);
                 }
             }
-            /*if (isAdded()) {
-                //Utils.isNetworkAvailable(getActivity(), errorMessage);
-                if (!Utils.isInternetAvailable(getActivity())) {
-                    String errorMessage = getResources().getString(R.string.internet_connection_not_available);
-                    ((MobiComKitActivityInterface) getActivity()).showErrorMessageView(errorMessage);
-                }
-            }*/
-
-            if (context != null && showInstruction) {
-                InstructionUtil.showInstruction(context, R.string.instruction_open_conversation_thread, MobiComKitActivityInterface.INSTRUCTION_DELAY, BroadcastService.INTENT_ACTIONS.INSTRUCTION.toString());
-            }
-            if(!nextMessageList.isEmpty()){
+            if (!nextMessageList.isEmpty()) {
                 loadMore = true;
             }
         }
     }
-    private class SyncMessages extends AsyncTask<Void, Integer, Long>{
-        SyncMessages(){
+
+    private class SyncMessages extends AsyncTask<Void, Integer, Long> {
+        SyncMessages() {
         }
+
         @Override
         protected Long doInBackground(Void... params) {
             syncCallService.syncMessages(null);

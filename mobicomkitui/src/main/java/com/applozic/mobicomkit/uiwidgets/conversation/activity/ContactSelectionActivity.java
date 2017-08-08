@@ -1,147 +1,130 @@
 package com.applozic.mobicomkit.uiwidgets.conversation.activity;
 
-import android.content.Context;
-import android.content.Intent;
-import android.graphics.Bitmap;
+import android.content.IntentFilter;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.net.ConnectivityManager;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.AppCompatCheckBox;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
-import android.text.style.TextAppearanceSpan;
-import android.util.DisplayMetrics;
-import android.util.TypedValue;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.AbsListView;
-import android.widget.AdapterView;
-import android.widget.AlphabetIndexer;
-import android.widget.BaseAdapter;
-import android.widget.CompoundButton;
-import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.Toast;
 
-import com.applozic.mobicomkit.ApplozicClient;
-import com.applozic.mobicomkit.api.people.ChannelInfo;
-import com.applozic.mobicomkit.channel.service.ChannelService;
+import com.applozic.mobicomkit.broadcast.ConnectivityReceiver;
 import com.applozic.mobicomkit.contact.AppContactService;
-import com.applozic.mobicomkit.contact.BaseContactService;
+import com.applozic.mobicomkit.contact.database.ContactDatabase;
+import com.applozic.mobicomkit.uiwidgets.AlCustomizationSettings;
 import com.applozic.mobicomkit.uiwidgets.R;
-import com.applozic.mobicomkit.uiwidgets.conversation.ConversationUIService;
+import com.applozic.mobicomkit.uiwidgets.people.contact.ContactSelectionFragment;
 import com.applozic.mobicommons.commons.core.utils.Utils;
-import com.applozic.mobicommons.commons.image.ImageLoader;
+import com.applozic.mobicommons.file.FileUtils;
+import com.applozic.mobicommons.json.GsonUtils;
+import com.applozic.mobicommons.people.SearchListFragment;
 import com.applozic.mobicommons.people.channel.Channel;
-import com.applozic.mobicommons.people.contact.Contact;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
  * Created by sunil on 6/2/16.
  */
-public class ContactSelectionActivity extends AppCompatActivity {
+public class ContactSelectionActivity extends AppCompatActivity implements SearchView.OnQueryTextListener {
     public static final String CHANNEL = "CHANNEL_NAME";
     public static final String CHANNEL_OBJECT = "CHANNEL";
     public static final String CHECK_BOX = "CHECK_BOX";
     public static final String IMAGE_LINK = "IMAGE_LINK";
-    ListView mainListView;
+    public static final String GROUP_TYPE = "GROUP_TYPE";
+    public static final String CONTACTS_GROUP_ID = "CONTACTS_GROUP_ID";
+    public static boolean isSearching = false;
+    protected SearchView searchView;
     Channel channel;
+    boolean disableCheckBox;
+    int groupType;
+    ContactDatabase contactDatabase;
+    ContactSelectionFragment contactSelectionFragment;
+    String contactsGroupId;
+    AlCustomizationSettings alCustomizationSettings;
     private String name;
     private String imageUrl;
-    private ContactsAdapter mAdapter;
-    private ImageLoader mImageLoader;
-    private BaseContactService contactService;
-    private List<Contact> contactList;
     private ActionBar mActionBar;
-    boolean disableCheckBox;
-    boolean isUserPresnt;
-    Integer groupType;
+    private SearchListFragment searchListFragment;
+    private boolean isSearchResultView = false;
+    private String mSearchTerm;
+    private AppContactService contactService;
+    private ConnectivityReceiver connectivityReceiver;
+
+    public static void addFragment(FragmentActivity fragmentActivity, Fragment fragmentToAdd, String fragmentTag) {
+        FragmentManager supportFragmentManager = fragmentActivity.getSupportFragmentManager();
+
+        FragmentTransaction fragmentTransaction = supportFragmentManager
+                .beginTransaction();
+        fragmentTransaction.replace(R.id.layout_child_activity, fragmentToAdd,
+                fragmentTag);
+
+        if (supportFragmentManager.getBackStackEntryCount() > 1) {
+            supportFragmentManager.popBackStack();
+        }
+        fragmentTransaction.addToBackStack(fragmentTag);
+        fragmentTransaction.commitAllowingStateLoss();
+        supportFragmentManager.executePendingTransactions();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.contact_select_layout);
+        contactDatabase = new ContactDatabase(this);
+        contactSelectionFragment = new ContactSelectionFragment();
+        setSearchListFragment(contactSelectionFragment);
         Toolbar toolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(toolbar);
         contactService = new AppContactService(this);
         mActionBar = getSupportActionBar();
+        String jsonString = FileUtils.loadSettingsJsonFile(getApplicationContext());
+        if (!TextUtils.isEmpty(jsonString)) {
+            alCustomizationSettings = (AlCustomizationSettings) GsonUtils.getObjectFromJson(jsonString, AlCustomizationSettings.class);
+        } else {
+            alCustomizationSettings = new AlCustomizationSettings();
+        }
+        if (!TextUtils.isEmpty(alCustomizationSettings.getThemeColorPrimary()) && !TextUtils.isEmpty(alCustomizationSettings.getThemeColorPrimaryDark())) {
+            mActionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor(alCustomizationSettings.getThemeColorPrimary())));
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                getWindow().setStatusBarColor(Color.parseColor(alCustomizationSettings.getThemeColorPrimaryDark()));
+            }
+        }
         mActionBar.setDisplayShowHomeEnabled(true);
         mActionBar.setDisplayHomeAsUpEnabled(true);
         if (getIntent().getExtras() != null) {
             channel = (Channel) getIntent().getSerializableExtra(CHANNEL_OBJECT);
             disableCheckBox = getIntent().getBooleanExtra(CHECK_BOX, false);
             mActionBar.setTitle(R.string.channel_member_title);
+            name = getIntent().getStringExtra(CHANNEL);
+            imageUrl = getIntent().getStringExtra(IMAGE_LINK);
+            contactsGroupId = getIntent().getStringExtra(CONTACTS_GROUP_ID);
+            groupType = getIntent().getIntExtra(GROUP_TYPE, Channel.GroupType.PUBLIC.getValue().intValue());
         } else {
             mActionBar.setTitle(R.string.channel_members_title);
         }
-        mainListView = (ListView) findViewById(R.id.mainList);
-        mainListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View item,
-                                    int position, long id) {
-                Contact contact = contactList.get(position);
-                if (disableCheckBox) {
-                    isUserPresnt = ChannelService.getInstance(ContactSelectionActivity.this).isUserAlreadyPresentInChannel(channel.getKey(), contact.getContactIds());
-                    if (!isUserPresnt) {
-                        Intent intent = new Intent();
-                        intent.putExtra(ChannelInfoActivity.USERID, contact.getUserId());
-                        setResult(RESULT_OK, intent);
-                        finish();
-                    }
-                }
-                contact.toggleChecked();
-                ContactViewHolder viewHolder = (ContactViewHolder) item.getTag();
-                viewHolder.getCheckBox().setChecked(contact.isChecked());
-            }
-        });
-
-        mImageLoader = new ImageLoader(this, getListPreferredItemHeight()) {
-            @Override
-            protected Bitmap processBitmap(Object data) {
-                return contactService.downloadContactImage(getApplicationContext(), (Contact) data);
-            }
-        };
-        mImageLoader.setLoadingImage(R.drawable.applozic_ic_contact_picture_holo_light);
-        mImageLoader.addImageCache(this.getSupportFragmentManager(), 0.1f);
-        mImageLoader.setImageFadeIn(false);
-        contactList = contactService.getAllContactListExcludingLoggedInUser();
-        mAdapter = new ContactsAdapter(this);
-        mainListView.setAdapter(mAdapter);
-        mainListView.setOnScrollListener(new AbsListView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(AbsListView absListView, int scrollState) {
-                // Pause image loader to ensure smoother scrolling when flinging
-                if (scrollState == AbsListView.OnScrollListener.SCROLL_STATE_FLING) {
-                    Utils.toggleSoftKeyBoard(ContactSelectionActivity.this, true);
-                    mImageLoader.setPauseWork(true);
-                } else {
-                    mImageLoader.setPauseWork(false);
-                }
-            }
-            @Override
-            public void onScroll(AbsListView absListView, int i, int i1, int i2) {
-            }
-
-        });
-
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(CHANNEL_OBJECT, channel);
+        bundle.putBoolean(CHECK_BOX, disableCheckBox);
+        bundle.putString(CHANNEL, name);
+        bundle.putString(IMAGE_LINK, imageUrl);
+        bundle.putInt(GROUP_TYPE, groupType);
+        contactSelectionFragment.setArguments(bundle);
+        if (contactsGroupId != null) {
+            bundle.putString(CONTACTS_GROUP_ID, contactsGroupId);
+        }
+        addFragment(this, contactSelectionFragment, "ContactSelectionFragment");
+        connectivityReceiver = new ConnectivityReceiver();
+        registerReceiver(connectivityReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
     }
-
-    private int getListPreferredItemHeight() {
-        final TypedValue typedValue = new TypedValue();
-        this.getTheme().resolveAttribute(
-                android.R.attr.listPreferredItemHeight, typedValue, true);
-        final DisplayMetrics metrics = new DisplayMetrics();
-        this.getWindowManager().getDefaultDisplay().getMetrics(metrics);
-        return (int) typedValue.getDimension(metrics);
-    }
-
 
     @Override
     public void onBackPressed() {
@@ -157,48 +140,31 @@ public class ContactSelectionActivity extends AppCompatActivity {
         if (disableCheckBox) {
             menu.removeItem(R.id.Done);
         }
-        return true;
+        MenuItem searchItem = menu.findItem(R.id.menu_search);
+        searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+        searchView.setQueryHint(getResources().getString(R.string.search_hint));
+        if (Utils.hasICS()) {
+            searchItem.collapseActionView();
+        }
+        searchView.setOnQueryTextListener(this);
+        searchView.setSubmitButtonEnabled(true);
+        searchView.setIconified(true);
+        return super.onCreateOptionsMenu(menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        if (id == R.id.Done) {
-            if (mAdapter.getResult().size() == 0) {
-                Toast.makeText(this, R.string.select_at_least, Toast.LENGTH_SHORT).show();
-            } else {
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        name = getIntent().getStringExtra(CHANNEL);
-                        imageUrl = getIntent().getStringExtra(IMAGE_LINK);
-                        // groupType = getIntent().getIntExtra(ChannelCreateActivity.GROUP_TYPE,2);
-                        List<String> channelMemberNames = null;
-                        if (!TextUtils.isEmpty(name) && mAdapter.getResult().size() > 0) {
-                            channelMemberNames = mAdapter.getResult();
-                            ChannelInfo channelInfo = new ChannelInfo(name, channelMemberNames);
-                            channelInfo.setImageUrl(imageUrl);
-                            // channelInfo.setType(groupType);
-                            Channel channel = ChannelService.getInstance(ContactSelectionActivity.this).createChannel(channelInfo);
-                            if (channel != null) {
-                                Intent intent = new Intent(getApplicationContext(), ConversationActivity.class);
-                                if (ApplozicClient.getInstance(ContactSelectionActivity.this).isContextBasedChat()) {
-                                    intent.putExtra(ConversationUIService.CONTEXT_BASED_CHAT, true);
-                                }
-                                intent.putExtra(ConversationUIService.GROUP_ID, channel.getKey());
-                                intent.putExtra(ConversationUIService.GROUP_NAME, channel.getName());
-                                startActivity(intent);
-                            }
-                        }
-                    }
-                }).start();
-                ChannelCreateActivity.channelActivity.finish();
-                finish();
-            }
-            return true;
+        if (item.getItemId() == R.id.menu_search) {
+            onSearchRequested();
         }
-        return false;
+        return super.onOptionsItemSelected(item);
+    }
 
+    @Override
+    public boolean onSearchRequested() {
+        // Don't allow another search if this activity instance is already showing
+        // search results. Only used pre-HC.
+        return !isSearchResultView && super.onSearchRequested();
     }
 
     @Override
@@ -206,186 +172,45 @@ public class ContactSelectionActivity extends AppCompatActivity {
         this.finish();
         return super.onSupportNavigateUp();
     }
+
     @Override
-    public void onPause() {
-        super.onPause();
-        mImageLoader.setPauseWork(false);
+    public boolean onQueryTextSubmit(String query) {
+        this.mSearchTerm = query;
+        isSearching = false;
+        return false;
     }
 
+    @Override
+    public boolean onQueryTextChange(String query) {
+        this.mSearchTerm = query;
+        if (getSearchListFragment() != null) {
+            getSearchListFragment().onQueryTextChange(query);
+            isSearching = true;
 
-    private class ContactsAdapter extends BaseAdapter {
-        Context context;
-
-        CompoundButton.OnCheckedChangeListener myCheckChangList = new CompoundButton.OnCheckedChangeListener() {
-            public void onCheckedChanged(CompoundButton buttonView,
-                                         boolean isChecked) {
-                ((Contact) buttonView.getTag()).setChecked(isChecked);
+            if (query.isEmpty()) {
+                isSearching = false;
             }
-        };
-
-        private LayoutInflater mInflater; // Stores the layout inflater
-        private AlphabetIndexer mAlphabetIndexer; // Stores the AlphabetIndexer instance
-        private TextAppearanceSpan highlightTextSpan; // Stores the highlight text appearance style
-
-        public ContactsAdapter(Context context) {
-            this.context = context;
-            mInflater = LayoutInflater.from(context);
-            final String alphabet = context.getString(R.string.alphabet);
-
-            highlightTextSpan = new TextAppearanceSpan(ContactSelectionActivity.this, R.style.searchTextHiglight);
         }
-
-        /**
-         * Overrides newView() to inflate the list item views.
-         */
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            // Inflates the list item layout.
-            AppCompatCheckBox checkBox;
-            TextView text2;
-            TextView text1;
-            Contact contact = getContact(position);
-            CircleImageView circleImageView;
-            if (convertView == null) {
-                convertView =
-                        mInflater.inflate(R.layout.contact_select_list_item, parent, false);
-
-                text1 = (TextView) convertView.findViewById(R.id.applozic_group_member_info);
-                text2 = (TextView) convertView.findViewById(R.id.displayName);
-                checkBox = (AppCompatCheckBox) convertView.findViewById(R.id.checkbox);
-                checkBox.setVisibility(View.VISIBLE);
-                circleImageView = (CircleImageView) convertView.findViewById(R.id.contactImage);
-                convertView.setTag(new ContactViewHolder(text1, text2, checkBox, circleImageView));
-            } else {
-                ContactViewHolder viewHolder = (ContactViewHolder) convertView
-                        .getTag();
-                checkBox = viewHolder.getCheckBox();
-                text1 = viewHolder.getTextView1();
-                text2 = viewHolder.getTextView2();
-                circleImageView = viewHolder.getCircleImageView();
-            }
-            if (disableCheckBox) {
-                isUserPresnt = ChannelService.getInstance(ContactSelectionActivity.this).isUserAlreadyPresentInChannel(channel.getKey(), contact.getContactIds());
-                if (isUserPresnt) {
-                    text1.setVisibility(View.VISIBLE);
-                    text1.setTextColor(getResources().getColor(R.color.applozic_lite_black_color));
-                    text2.setTextColor(getResources().getColor(R.color.applozic_lite_black_color));
-                } else {
-                    text1.setVisibility(View.GONE);
-                    text2.setTextColor(getResources().getColor(R.color.black));
-                }
-                checkBox.setVisibility(View.GONE);
-            } else {
-                text2.setTextColor(getResources().getColor(R.color.black));
-            }
-
-            if (contact.isDrawableResources()) {
-                int drawableResourceId = context.getResources().getIdentifier(contact.getrDrawableName(), "drawable", context.getPackageName());
-                circleImageView.setImageResource(drawableResourceId);
-            } else {
-                mImageLoader.loadImage(contact, circleImageView);
-            }
-
-            checkBox.setTag(contact);
-            checkBox.setChecked(contact.isChecked());
-            checkBox.setOnCheckedChangeListener(myCheckChangList);
-            text2.setText(contact.getDisplayName());
-            return convertView;
-        }
-
-        List<Contact> getContacts() {
-            List<Contact> selectedContactList = new ArrayList<>();
-            for (Contact contact : contactList) {
-                if (contact.isChecked()) {
-                    selectedContactList.add(contact);
-
-                }
-            }
-            return selectedContactList;
-        }
-
-        List<String> getResult() {
-            List<String> membersList = new ArrayList<>();
-            for (Contact contact : getContacts()) {
-                if (contact.isChecked()) {
-                    membersList.add(contact.getContactIds());
-                }
-            }
-            return membersList;
-        }
-
-        /**
-         * An override of getCount that simplifies accessing the Cursor. If the Cursor is null,
-         * getCount returns zero. As a result, no test for Cursor == null is needed.
-         */
-        @Override
-        public int getCount() {
-            return contactList.size();
-        }
-
-        @Override
-        public Object getItem(int position) {
-            return contactList.get(position);
-        }
-
-        @Override
-        public long getItemId(int position) {
-            return 0;
-        }
-
-        Contact getContact(int position) {
-            return ((Contact) getItem(position));
-        }
-
+        return true;
     }
 
-    private class ContactViewHolder {
-        private AppCompatCheckBox checkBox;
-        private TextView textView1;
-        private CircleImageView circleImageView;
-        private TextView textView2;
+    public SearchListFragment getSearchListFragment() {
+        return searchListFragment;
+    }
 
+    public void setSearchListFragment(SearchListFragment searchListFragment) {
+        this.searchListFragment = searchListFragment;
+    }
 
-        public ContactViewHolder() {
-        }
-
-        public ContactViewHolder(TextView textView1, TextView textView2, AppCompatCheckBox checkBox, CircleImageView circleImageView) {
-            this.checkBox = checkBox;
-            this.textView1 = textView1;
-            this.textView2 = textView2;
-            this.circleImageView = circleImageView;
-        }
-
-        public AppCompatCheckBox getCheckBox() {
-            return checkBox;
-        }
-
-        public void setCheckBox(AppCompatCheckBox checkBox) {
-            this.checkBox = checkBox;
-        }
-
-        public CircleImageView getCircleImageView() {
-            return circleImageView;
-        }
-
-        public void setCircleImageView(CircleImageView circleImageView) {
-            this.circleImageView = circleImageView;
-        }
-
-        public TextView getTextView1() {
-            return textView1;
-        }
-
-        public void setTextView1(TextView textView2) {
-            this.textView1 = textView2;
-        }
-
-        public TextView getTextView2() {
-            return textView2;
-        }
-
-        public void setTextView2(TextView textView2) {
-            this.textView2 = textView2;
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        try {
+            if (connectivityReceiver != null) {
+                unregisterReceiver(connectivityReceiver);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
     }

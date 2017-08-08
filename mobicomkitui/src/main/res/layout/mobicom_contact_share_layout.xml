@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/contact_share_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/apploizc_transparent_color"
-    android:id="@+id/contact_share_layout"
     android:orientation="vertical">
 
 
@@ -35,9 +35,10 @@
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:layout_alignParentTop="true"
-            android:layout_gravity="right"
+            android:layout_gravity="end"
             android:layout_marginLeft="15dp"
             android:layout_marginStart="28dp"
+            android:layout_toEndOf="@+id/contact_share_image"
             android:layout_toRightOf="@+id/contact_share_image">
             <!--<TextView-->
             <!--android:layout_width="wrap_content"-->
@@ -54,25 +55,31 @@
                 android:layout_alignParentStart="true"
                 android:layout_weight="2.16"
                 android:text=""
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:textColor="@color/black" />
+                android:textDirection="locale"
+                android:textAlignment="gravity"
+                android:textColor="@color/black"
+                android:textSize="16sp" />
 
             <TextView
                 android:id="@+id/contact_share_tv_no"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textDirection="locale"
+                android:textAlignment="gravity"
                 android:layout_below="@+id/contact_share_tv_name"
                 android:layout_marginTop="5dp"
                 android:text=""
-                android:textAppearance="?android:attr/textAppearanceSmall" />
+                android:textSize="14sp" />
 
             <TextView
                 android:id="@+id/contact_share_emailId"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textDirection="locale"
+                android:textAlignment="gravity"
                 android:layout_below="@+id/contact_share_tv_no"
                 android:text=""
-                android:textAppearance="?android:attr/textAppearanceSmall" />
+                android:textSize="14sp" />
 
 
         </RelativeLayout>
@@ -94,7 +101,7 @@
         android:layout_alignRight="@+id/relativeLayout"
         android:layout_marginTop="3dp"
         android:background="@color/apploizc_transparent_color"
-        android:text="Add Contacts" />
+        android:text="@string/Add_Contacts" />
 
 
 </LinearLayout>

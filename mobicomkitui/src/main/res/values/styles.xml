@@ -19,14 +19,4 @@
         <!-- All customizations that are NOT specific to a particular API-level can go here. -->
     </style>
 
-    <style name="Animations" />
-
-    <style name="Animations.GrowFromTop">
-        <item name="@android:windowEnterAnimation">@anim/mobicom_multimedia_options_grow_from_top
-        </item>
-        <item name="@android:windowExitAnimation">
-            @anim/mobicom_multimedia_option_shrink_from_bottom
-        </item>
-    </style>
-
 </resources>

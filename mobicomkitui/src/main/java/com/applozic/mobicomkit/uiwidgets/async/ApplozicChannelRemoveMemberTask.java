@@ -34,9 +34,9 @@ public class ApplozicChannelRemoveMemberTask extends AsyncTask<Void, Void, Boole
         try {
             if (!TextUtils.isEmpty(userId) && userId.trim().length() != 0 && channelKey != null) {
                 removeResponse = channelService.removeMemberFromChannelProcess(channelKey, userId.trim());
-               if(!TextUtils.isEmpty(removeResponse)){
-                   return MobiComKitConstants.SUCCESS.equals(removeResponse);
-               }
+                if (!TextUtils.isEmpty(removeResponse)) {
+                    return MobiComKitConstants.SUCCESS.equals(removeResponse);
+                }
             } else {
                 throw new Exception(context.getString(R.string.applozic_userId_error_info_in_logs));
             }
@@ -55,11 +55,11 @@ public class ApplozicChannelRemoveMemberTask extends AsyncTask<Void, Void, Boole
         if (resultBoolean && channelRemoveMemberListener != null) {
             channelRemoveMemberListener.onSuccess(removeResponse, context);
         } else if (!resultBoolean && exception != null && channelRemoveMemberListener != null) {
-            channelRemoveMemberListener.onFailure(removeResponse,exception, context);
+            channelRemoveMemberListener.onFailure(removeResponse, exception, context);
         }
     }
 
-    public  interface ChannelRemoveMemberListener {
+    public interface ChannelRemoveMemberListener {
         void onSuccess(String response, Context context);
 
         void onFailure(String response, Exception e, Context context);

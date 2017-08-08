@@ -2,11 +2,11 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
+    android:layout_centerInParent="true"
     android:layout_gravity="center"
     android:clickable="false"
-    android:layout_centerInParent="true"
-    android:longClickable="false"
     android:gravity="center"
+    android:longClickable="false"
     android:orientation="horizontal"
     android:paddingBottom="15dp"
     android:paddingTop="15dp">
@@ -18,10 +18,9 @@
         android:layout_gravity="center_horizontal"
         android:gravity="center_horizontal"
         android:text="10"
-        android:textColor="#333"
         android:textSize="14sp"
         android:textStyle="bold"
-        android:visibility="gone"/>
+        android:visibility="gone" />
 
     <TextView
         android:id="@+id/chat_screen_date"
@@ -30,8 +29,8 @@
         android:layout_gravity="center_horizontal"
         android:gravity="center_horizontal"
         android:paddingLeft="10dp"
+        android:paddingStart="10dp"
         android:text=""
-        android:visibility="gone"
-        android:textColor="#333"
-        android:textSize="14sp" />
+        android:textSize="14sp"
+        android:visibility="gone" />
 </LinearLayout>

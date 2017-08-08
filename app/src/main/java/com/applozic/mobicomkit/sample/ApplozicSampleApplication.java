@@ -14,7 +14,7 @@ public class ApplozicSampleApplication extends MultiDexApplication {
     @Override
     public void onCreate() {
         super.onCreate();
-       /// Fabric.with(this, new Crashlytics());
+       Fabric.with(this, new Crashlytics());
     }
 
     @Override

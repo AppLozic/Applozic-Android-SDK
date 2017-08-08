@@ -28,7 +28,7 @@ public class Applozic {
 
     public static Applozic getInstance(Context context) {
         if (applozic == null) {
-            applozic = new Applozic(context);
+            applozic = new Applozic(context.getApplicationContext());
         }
         return applozic;
     }

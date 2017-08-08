@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-
-    <!-- On devices with a smallest width of 600dp or more in portrait orientation, the two-pane
-         layout should allocate equal space to each fragment. -->
-    <integer name="contact_list_percent">50</integer>
-    <integer name="contact_detail_percent">50</integer>
-
-</resources>

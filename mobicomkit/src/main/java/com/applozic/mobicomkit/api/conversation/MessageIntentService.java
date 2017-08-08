@@ -21,6 +21,9 @@ public class MessageIntentService extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
+        if (intent == null) {
+            return;
+        }
         messageClientService = new MessageClientService(MessageIntentService.this);
         final Message message = (Message) GsonUtils.getObjectFromJson(intent.getStringExtra(MobiComKitConstants.MESSAGE_JSON_INTENT), Message.class);
         Thread thread = new Thread(new MessageSender(message));

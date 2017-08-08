@@ -1,10 +1,9 @@
-<resources>
-    <string name="title_activity_login">Sign up</string>
-
-    <!-- Strings related to login -->
+<resources  xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="MissingTranslation">
     <string name="prompt_email">Email</string>
     <string name="prompt_user_id">UserId</string>
     <string name="prompt_phone_number">Phone Number</string>
+    <string name="prompt_display_name">Display Name</string>
     <string name="prompt_password">Password</string>
     <string name="action_sign_in">Login/Sign up</string>
     <string name="action_sign_in_short">Sign up</string>
@@ -18,6 +17,7 @@
     <string-array name="select_url">
         <item>https://apps.applozic.com</item>
         <item>https://staging.applozic.com</item>
+        <item>https://apps-test.applozic.com</item>
         <item>https://test.applozic.com</item>
         <item>https://applozic.appspot.com</item>
         <item>http://test.applozic.com</item>

@@ -38,11 +38,11 @@ public class MobiComUserPreference {
     private static String base_url = "base_url";
     private static String display_name = "display_name";
     private static String logged_in = "logged_in";
-    private static String lastSeenAtSyncTime ="lastSeenAtSyncTime";
-    private static String channelSyncTime ="channelSyncTime";
+    private static String lastSeenAtSyncTime = "lastSeenAtSyncTime";
+    private static String channelSyncTime = "channelSyncTime";
     private static String device_time_offset_from_UTC = "device_time_offset_from_UTC";
     private static String image_compression_enabled = "image_compression_enabled";
-    private static  String userBlockSyncTime = "user_block_Sync_Time";
+    private static String userBlockSyncTime = "user_block_Sync_Time";
     private static String max_compressed_image_size = "max_compressed_image_size";
     private static String image_link = "image_link";
     private static String registered_users_last_fetch_time = "registered_users_last_fetch_time";
@@ -53,6 +53,13 @@ public class MobiComUserPreference {
     private static String pricing_package = "pricing_package";
     private static String delete_channel = "delete_channel";
     private static String encryption_Key = "encryption_Key";
+    private static String enable_encryption = "enable_encryption";
+    private static String enable_auto_download_on_wifi = "enable_auto_download_on_wifi";
+    private static String enable_auto_download_on_cellular = "enable_auto_download_on_cellular";
+    private static String video_call_token = "video_call_token";
+    private static String user_type_id = "user_type_id";
+    private static String application_info_call_done = "application_info_call_done";
+    private static String notification_sound_fileName = "notificationSoundFileName";
 
     public SharedPreferences sharedPreferences;
     private Context context;
@@ -67,7 +74,7 @@ public class MobiComUserPreference {
 
     public static MobiComUserPreference getInstance(Context context) {
         if (userpref == null) {
-            userpref = new MobiComUserPreference(context);
+            userpref = new MobiComUserPreference(context.getApplicationContext());
         }
         return userpref;
     }
@@ -264,7 +271,7 @@ public class MobiComUserPreference {
     }
 
     public void setContactNumber(String contactNumber) {
-       // contactNumber = ContactNumberUtils.getPhoneNumber(contactNumber, getCountryCode());
+        // contactNumber = ContactNumberUtils.getPhoneNumber(contactNumber, getCountryCode());
         sharedPreferences.edit().putString(phone_number_key, contactNumber).commit();
     }
 
@@ -276,12 +283,12 @@ public class MobiComUserPreference {
         sharedPreferences.edit().putBoolean(call_history_display_within_messages_pref_key, enable).commit();
     }
 
-    public void setNewMessageFlag(boolean enable) {
-        sharedPreferences.edit().putBoolean(new_message_flag, enable).commit();
-    }
-
     public boolean getNewMessageFlag() {
         return sharedPreferences.getBoolean(new_message_flag, false);
+    }
+
+    public void setNewMessageFlag(boolean enable) {
+        sharedPreferences.edit().putBoolean(new_message_flag, enable).commit();
     }
 
     public long getDeviceTimeOffset() {
@@ -331,12 +338,12 @@ public class MobiComUserPreference {
         sharedPreferences.edit().putString(mqtt_broker_url, url).commit();
     }
 
-    public void setPricingPackage(int pricingPackage) {
-        sharedPreferences.edit().putInt(pricing_package, pricingPackage).commit();
-    }
-
     public int getPricingPackage() {
         return sharedPreferences.getInt(pricing_package, RegistrationResponse.PricingType.STARTER.getValue());
+    }
+
+    public void setPricingPackage(int pricingPackage) {
+        sharedPreferences.edit().putInt(pricing_package, pricingPackage).commit();
     }
 
     public String getDisplayName() {
@@ -367,14 +374,14 @@ public class MobiComUserPreference {
         sharedPreferences.edit().putString(channelSyncTime, syncChannelTime).commit();
     }
 
+    public int getCompressedImageSizeInMB() {
+        return sharedPreferences.getInt(max_compressed_image_size, 10);
+
+    }
+
     public void setCompressedImageSizeInMB(int maxSize) {
 
         sharedPreferences.edit().putInt(max_compressed_image_size, maxSize).commit();
-    }
-
-    public int getCompressedImageSizeInMB() {
-       return  sharedPreferences.getInt(max_compressed_image_size,10);
-
     }
 
     public String getUserBlockSyncTime() {
@@ -422,7 +429,7 @@ public class MobiComUserPreference {
     }
 
     public boolean isChannelDeleted() {
-        return sharedPreferences.getBoolean(delete_channel,false);
+        return sharedPreferences.getBoolean(delete_channel, false);
     }
 
     @Override
@@ -445,12 +452,12 @@ public class MobiComUserPreference {
 
     }
 
-    public void setImageCompressionEnabled(boolean imageCompressionEnabled) {
-        sharedPreferences.edit().putBoolean(image_compression_enabled, imageCompressionEnabled).commit();
-    }
-
     public boolean isImageCompressionEnabled() {
         return sharedPreferences.getBoolean(image_compression_enabled, true);
+    }
+
+    public void setImageCompressionEnabled(boolean imageCompressionEnabled) {
+        sharedPreferences.edit().putBoolean(image_compression_enabled, imageCompressionEnabled).commit();
     }
 
     public boolean getWasContactListServerCallAlreadyDone() {
@@ -467,5 +474,63 @@ public class MobiComUserPreference {
 
     public void setEncryptionKey(String encryptionKey) {
         sharedPreferences.edit().putString(encryption_Key, encryptionKey).commit();
+    }
+
+    public boolean isEncryptionEnabled() {
+        return sharedPreferences.getBoolean(enable_encryption, false);
+    }
+
+    public void enableEncryption(boolean enableEncryption) {
+        sharedPreferences.edit().putBoolean(enable_encryption, enableEncryption).commit();
+    }
+
+    public boolean getAutoDownloadOnWifi() {
+        return sharedPreferences.getBoolean(enable_auto_download_on_wifi, false);
+    }
+
+    public void setAutoDownloadOnWifi(boolean enable) {
+        sharedPreferences.edit().putBoolean(enable_auto_download_on_wifi, enable).commit();
+    }
+
+    public boolean getAutoDownloadOnCellular() {
+        return sharedPreferences.getBoolean(enable_auto_download_on_cellular, false);
+    }
+
+    public void setAutoDownloadOnCellular(boolean enable) {
+        sharedPreferences.edit().putBoolean(enable_auto_download_on_cellular, enable).commit();
+    }
+
+    public String getVideoCallToken() {
+        return sharedPreferences.getString(video_call_token, null);
+    }
+
+    public void setVideoCallToken(String token) {
+        sharedPreferences.edit().putString(video_call_token, token).commit();
+
+    }
+
+    public String getUserTypeId() {
+        return sharedPreferences.getString(user_type_id, null);
+    }
+
+    public void setUserTypeId(String userTypeId) {
+        sharedPreferences.edit().putString(user_type_id, userTypeId).commit();
+    }
+
+
+    public boolean getApplicationInfoCall() {
+        return sharedPreferences.getBoolean(application_info_call_done, false);
+    }
+
+    public  void setApplicationInfoCallDone(boolean customerResponse) {
+        sharedPreferences.edit().putBoolean(application_info_call_done,customerResponse).commit();
+    }
+
+    public String getNotificationSoundFilePath() {
+        return sharedPreferences.getString(notification_sound_fileName, null);
+    }
+
+    public void setNotificationSoundFilePath(String soundUri) {
+        sharedPreferences.edit().putString(notification_sound_fileName, soundUri).commit();
     }
 }

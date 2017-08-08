@@ -3,37 +3,32 @@ package com.applozic.mobicomkit.api.account.user;
 import android.content.Context;
 import android.os.AsyncTask;
 
+import com.applozic.mobicomkit.feed.ApiResponse;
 
-public class UserLogoutTask extends AsyncTask<Void,Void,Boolean> {
-
-    public interface TaskListener{
-        void onSuccess(Context context);
-        void onFailure(Exception exception);
-    }
+public class UserLogoutTask extends AsyncTask<Void, Void, Boolean> {
 
     private final TaskListener taskListener;
     private final Context context;
+    UserClientService userClientService;
     private Exception mException;
 
-
-
     public UserLogoutTask(TaskListener listener, Context context) {
-
         this.taskListener = listener;
         this.context = context;
-
+        userClientService = new UserClientService(context);
     }
 
     @Override
     protected Boolean doInBackground(Void... params) {
+        ApiResponse apiResponse = null;
         try {
-            new UserClientService(context).logout();
+            apiResponse = userClientService.logout();
+            return apiResponse != null && apiResponse.isSuccess();
         } catch (Exception e) {
             e.printStackTrace();
             mException = e;
             return false;
         }
-        return true;
     }
 
     @Override
@@ -45,5 +40,11 @@ public class UserLogoutTask extends AsyncTask<Void,Void,Boolean> {
         } else if (mException != null && this.taskListener != null) {
             this.taskListener.onFailure(mException);
         }
+    }
+
+    public interface TaskListener {
+        void onSuccess(Context context);
+
+        void onFailure(Exception exception);
     }
 }

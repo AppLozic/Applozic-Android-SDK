@@ -11,20 +11,11 @@ import com.applozic.mobicomkit.api.account.register.RegistrationResponse;
  */
 public class PushNotificationTask extends AsyncTask<Void, Void, Boolean> {
 
-    public interface TaskListener {
-
-        void onSuccess(RegistrationResponse registrationResponse);
-
-        void onFailure(RegistrationResponse registrationResponse, Exception exception);
-
-    }
-
     private final String pushNotificationId;
     private final TaskListener taskListener;
     private final Context context;
     private Exception mException;
     private RegistrationResponse registrationResponse;
-
 
     public PushNotificationTask(String pushNotificationId, TaskListener listener, Context context) {
         this.pushNotificationId = pushNotificationId;
@@ -53,5 +44,13 @@ public class PushNotificationTask extends AsyncTask<Void, Void, Boolean> {
         } else if (mException != null && this.taskListener != null) {
             this.taskListener.onFailure(registrationResponse, mException);
         }
+    }
+
+    public interface TaskListener {
+
+        void onSuccess(RegistrationResponse registrationResponse);
+
+        void onFailure(RegistrationResponse registrationResponse, Exception exception);
+
     }
 }

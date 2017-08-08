@@ -4,5 +4,5 @@
     <gradient
         android:angle="270"
         android:endColor="@color/applozic_theme_color_control_activated"
-        android:startColor="@color/applozic_theme_color_control_highlight"/>
+        android:startColor="@color/applozic_theme_color_control_highlight" />
 </shape>

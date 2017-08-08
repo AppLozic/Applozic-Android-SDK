@@ -1,11 +1,13 @@
 package com.applozic.mobicommons.people.channel;
 
+import com.applozic.mobicommons.json.JsonMarker;
+
 import java.io.Serializable;
 
 /**
  * Created by sunil on 28/12/15.
  */
-public class ChannelUserMapper implements Serializable {
+public class ChannelUserMapper extends JsonMarker {
 
     private Integer key;
     private String userKey;

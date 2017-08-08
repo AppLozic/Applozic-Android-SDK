@@ -1,6 +1,7 @@
 package com.applozic.mobicomkit.uiwidgets.people.fragment;
 
 import android.app.Activity;
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
@@ -14,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.applozic.mobicomkit.broadcast.BroadcastService;
 import com.applozic.mobicomkit.contact.AppContactService;
 import com.applozic.mobicomkit.uiwidgets.R;
 import com.applozic.mobicomkit.uiwidgets.alphanumbericcolor.AlphaNumberColorUtil;
@@ -41,10 +43,11 @@ public class UserProfileFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         baseContactService = new AppContactService(getActivity());
-        contactImageLoader = new ImageLoader(getContext(), ImageUtils.getLargestScreenDimension((Activity) getContext())) {
+        final Context context = getActivity().getApplicationContext();
+        contactImageLoader = new ImageLoader(context, ImageUtils.getLargestScreenDimension((Activity) getContext())) {
             @Override
             protected Bitmap processBitmap(Object data) {
-                return baseContactService.downloadContactImage(getContext(), (Contact) data);
+                return baseContactService.downloadContactImage(context, (Contact) data);
             }
         };
         contactImageLoader.setLoadingImage(R.drawable.applozic_ic_contact_picture_180_holo_light);
@@ -105,7 +108,7 @@ public class UserProfileFragment extends Fragment {
             if (!TextUtils.isEmpty(contact.getContactNumber())) {
                 phone_cardView.setVisibility(View.VISIBLE);
                 phone.setText(contact.getContactNumber());
-            }else {
+            } else {
                 phone_cardView.setVisibility(View.GONE);
             }
 
@@ -113,4 +116,56 @@ public class UserProfileFragment extends Fragment {
 
         return view;
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (contact != null) {
+            BroadcastService.currentUserProfileUserId = contact.getUserId();
+            refreshContactData();
+        }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        BroadcastService.currentUserProfileUserId = null;
+    }
+
+    public void refreshContactData() {
+        if (contact != null) {
+            Contact updateContact = baseContactService.getContactById(contact.getContactIds());
+            if (updateContact != null && (!TextUtils.isEmpty(contact.getImageURL())) && (!contact.getImageURL().equals(updateContact.getImageURL()))) {
+                contactImageLoader.loadImage(updateContact, contactImage);
+            }
+            if (!TextUtils.isEmpty(updateContact.getStatus())) {
+                status_cardView.setVisibility(View.VISIBLE);
+                status.setText(updateContact.getStatus());
+            }
+
+            if (!TextUtils.isEmpty(updateContact.getContactNumber())) {
+                phone_cardView.setVisibility(View.VISIBLE);
+                phone.setText(updateContact.getContactNumber());
+            }
+            if (updateContact != null && (!TextUtils.isEmpty(contact.getDisplayName())) && (!contact.getDisplayName().equals(updateContact.getDisplayName()))) {
+                name_cardView.setVisibility(View.VISIBLE);
+                name.setText(updateContact.getDisplayName());
+                reload();
+            }
+        }
+    }
+
+    void reload() {
+        StringBuffer stringBufferTitle = new StringBuffer();
+        if (contact != null) {
+            Contact updatedInfoContact = baseContactService.getContactById(contact.getContactIds());
+            if (updatedInfoContact != null && (!TextUtils.isEmpty(contact.getDisplayName())) && (!contact.getDisplayName().equals(updatedInfoContact.getDisplayName()))) {
+                stringBufferTitle.append(updatedInfoContact.getDisplayName());
+            }
+        }
+        if (stringBufferTitle != null) {
+            ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(stringBufferTitle.toString());
+        }
+    }
+
 }

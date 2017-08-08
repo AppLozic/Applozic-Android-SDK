@@ -17,6 +17,7 @@
         android:gravity="center"
         android:textColor="#ffffff"
         android:textSize="20sp"
+        android:layout_marginStart="8dp"
         android:visibility="gone" />
 
     <de.hdodenhof.circleimageview.CircleImageView
@@ -53,8 +54,11 @@
                     android:layout_height="wrap_content"
                     android:paddingBottom="5dp"
                     android:paddingLeft="20dp"
+                    android:paddingStart="20dp"
                     android:paddingTop="10dp"
-                    android:text="Name"
+                    android:textAlignment="gravity"
+                    android:textDirection="locale"
+                    android:text="@string/name"
                     android:textColor="@color/black"
                     android:textSize="18sp" />
 
@@ -63,7 +67,10 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingBottom="10dp"
+                    android:textAlignment="gravity"
+                    android:textDirection="locale"
                     android:paddingLeft="20dp"
+                    android:paddingStart="20dp"
                     android:textColor="#7F000000"
                     android:textSize="14sp" />
             </LinearLayout>
@@ -91,8 +98,11 @@
                     android:layout_height="wrap_content"
                     android:paddingBottom="5dp"
                     android:paddingLeft="20dp"
+                    android:paddingStart="20dp"
+                    android:textAlignment="gravity"
+                    android:textDirection="locale"
                     android:paddingTop="10dp"
-                    android:text="Status"
+                    android:text="@string/status"
                     android:textColor="@color/black"
                     android:textSize="18sp" />
 
@@ -102,6 +112,9 @@
                     android:layout_height="wrap_content"
                     android:paddingBottom="10dp"
                     android:paddingLeft="20dp"
+                    android:textAlignment="gravity"
+                    android:textDirection="locale"
+                    android:paddingStart="20dp"
                     android:textColor="#7F000000"
                     android:textSize="14sp" />
             </LinearLayout>
@@ -127,8 +140,11 @@
                     android:layout_height="wrap_content"
                     android:paddingBottom="5dp"
                     android:paddingLeft="20dp"
+                    android:paddingStart="20dp"
+                    android:textAlignment="gravity"
+                    android:textDirection="locale"
                     android:paddingTop="10dp"
-                    android:text="Email"
+                    android:text="@string/email"
                     android:textColor="@color/black"
                     android:textSize="18sp" />
 
@@ -137,7 +153,10 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingBottom="10dp"
+                    android:textAlignment="gravity"
+                    android:textDirection="locale"
                     android:paddingLeft="20dp"
+                    android:paddingStart="20dp"
                     android:textColor="#7F000000"
                     android:textSize="14sp" />
             </LinearLayout>
@@ -163,9 +182,12 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingBottom="5dp"
+                    android:textAlignment="gravity"
+                    android:textDirection="locale"
                     android:paddingLeft="20dp"
+                    android:paddingStart="20dp"
                     android:paddingTop="10dp"
-                    android:text="Phone"
+                    android:text="@string/phone"
                     android:textColor="@color/black"
                     android:textSize="18sp" />
 
@@ -174,7 +196,10 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingBottom="10dp"
+                    android:textAlignment="gravity"
+                    android:textDirection="locale"
                     android:paddingLeft="20dp"
+                    android:paddingStart="20dp"
                     android:textColor="#7F000000"
                     android:textSize="14sp" />
             </LinearLayout>

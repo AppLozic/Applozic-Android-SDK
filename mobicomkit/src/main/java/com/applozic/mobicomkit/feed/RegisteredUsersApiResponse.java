@@ -11,7 +11,7 @@ import java.util.Set;
  */
 public class RegisteredUsersApiResponse extends JsonMarker {
 
-    private Set<UserDetail> users ;
+    private Set<UserDetail> users;
     private long lastFetchTime;
     private Integer totalUnreadCount;
 

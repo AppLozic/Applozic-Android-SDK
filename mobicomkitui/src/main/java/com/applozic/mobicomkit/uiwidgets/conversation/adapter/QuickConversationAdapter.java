@@ -5,28 +5,35 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.GradientDrawable;
 import android.support.v4.app.FragmentActivity;
+import android.text.Html;
+import android.text.SpannableString;
 import android.text.TextUtils;
+import android.text.style.TextAppearanceSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AlphabetIndexer;
 import android.widget.BaseAdapter;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.applozic.mobicomkit.api.account.user.MobiComUserPreference;
 import com.applozic.mobicomkit.api.conversation.Message;
 import com.applozic.mobicomkit.api.conversation.database.MessageDatabaseService;
+import com.applozic.mobicomkit.api.notification.VideoCallNotificationHelper;
 import com.applozic.mobicomkit.channel.database.ChannelDatabaseService;
+import com.applozic.mobicomkit.channel.service.ChannelService;
 import com.applozic.mobicomkit.contact.AppContactService;
 import com.applozic.mobicomkit.contact.BaseContactService;
-import com.applozic.mobicomkit.uiwidgets.ApplozicSetting;
+import com.applozic.mobicomkit.uiwidgets.AlCustomizationSettings;
 import com.applozic.mobicomkit.uiwidgets.R;
 import com.applozic.mobicomkit.uiwidgets.alphanumbericcolor.AlphaNumberColorUtil;
 import com.applozic.mobicomkit.uiwidgets.conversation.ConversationUIService;
 import com.applozic.mobicomkit.uiwidgets.conversation.activity.MobiComKitActivityInterface;
 import com.applozic.mobicomkit.uiwidgets.instruction.InstructionUtil;
 import com.applozic.mobicommons.commons.core.utils.DateUtils;
-import com.applozic.mobicommons.commons.core.utils.Support;
 import com.applozic.mobicommons.commons.image.ImageLoader;
 import com.applozic.mobicommons.commons.image.ImageUtils;
 import com.applozic.mobicommons.emoticon.EmojiconHandler;
@@ -35,9 +42,11 @@ import com.applozic.mobicommons.people.channel.Channel;
 import com.applozic.mobicommons.people.channel.ChannelUtils;
 import com.applozic.mobicommons.people.contact.Contact;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -45,7 +54,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 /**
  * Created by adarsh on 4/7/15.
  */
-public class QuickConversationAdapter extends BaseAdapter {
+public class QuickConversationAdapter extends BaseAdapter implements Filterable {
 
     private static Map<Short, Integer> messageTypeColorMap = new HashMap<Short, Integer>();
 
@@ -59,13 +68,22 @@ public class QuickConversationAdapter extends BaseAdapter {
         messageTypeColorMap.put(Message.MessageType.CALL_OUTGOING.getValue(), R.color.message_type_outgoing_call);
     }
 
-    public ImageLoader contactImageLoader,channelImageLoader;
+    public ImageLoader contactImageLoader, channelImageLoader;
+    public String searchString = null;
+    TextView messageTextView;
+    ImageView attachmentIcon;
+    TextView alphabeticTextView;
+    CircleImageView contactImage;
     private Context context;
     private MessageDatabaseService messageDatabaseService;
     private List<Message> messageList;
     private BaseContactService contactService;
     private EmojiconHandler emojiconHandler;
     private long deviceTimeOffset = 0;
+    private List<Message> originalList;
+    private AlphabetIndexer mAlphabetIndexer;
+    private TextAppearanceSpan highlightTextSpan;
+    private AlCustomizationSettings alCustomizationSettings;
 
     public QuickConversationAdapter(final Context context, List<Message> messageList, EmojiconHandler emojiconHandler) {
         this.context = context;
@@ -89,8 +107,14 @@ public class QuickConversationAdapter extends BaseAdapter {
         };
         channelImageLoader.addImageCache(((FragmentActivity) context).getSupportFragmentManager(), 0.1f);
         channelImageLoader.setImageFadeIn(false);
+        final String alphabet = context.getString(R.string.alphabet);
+        mAlphabetIndexer = new AlphabetIndexer(null, 1, alphabet);
+        highlightTextSpan = new TextAppearanceSpan(context, R.style.searchTextHiglight);
     }
 
+    public void setAlCustomizationSettings(AlCustomizationSettings alCustomizationSettings) {
+        this.alCustomizationSettings = alCustomizationSettings;
+    }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
@@ -101,17 +125,16 @@ public class QuickConversationAdapter extends BaseAdapter {
         smTime.setVisibility(View.GONE);
         final Message message = getItem(position);
         if (message != null) {
-
             TextView smReceivers = (TextView) customView.findViewById(R.id.smReceivers);
             TextView createdAtTime = (TextView) customView.findViewById(R.id.createdAtTime);
-            TextView messageTextView = (TextView) customView.findViewById(R.id.message);
+            messageTextView = (TextView) customView.findViewById(R.id.message);
             //ImageView contactImage = (ImageView) customView.findViewById(R.id.contactImage);
-            CircleImageView contactImage = (CircleImageView) customView.findViewById(R.id.contactImage);
-            TextView alphabeticTextView = (TextView) customView.findViewById(R.id.alphabeticImage);
+            contactImage = (CircleImageView) customView.findViewById(R.id.contactImage);
+            alphabeticTextView = (TextView) customView.findViewById(R.id.alphabeticImage);
             TextView onlineTextView = (TextView) customView.findViewById(R.id.onlineTextView);
             ImageView sentOrReceived = (ImageView) customView.findViewById(R.id.sentOrReceivedIcon);
             TextView attachedFile = (TextView) customView.findViewById(R.id.attached_file);
-            final ImageView attachmentIcon = (ImageView) customView.findViewById(R.id.attachmentIcon);
+            attachmentIcon = (ImageView) customView.findViewById(R.id.attachmentIcon);
             TextView unReadCountTextView = (TextView) customView.findViewById(R.id.unreadSmsCount);
             List<String> items = null;
             List<String> userIds = null;
@@ -139,48 +162,34 @@ public class QuickConversationAdapter extends BaseAdapter {
             if (message.getGroupId() == null) {
                 contactImageLoader.setLoadingImage(R.drawable.applozic_ic_contact_picture_holo_light);
             } else {
-                channelImageLoader.setLoadingImage(R.drawable.applozic_group_icon);
-            }
-            String contactNumber = "";
-            char firstLetter = 0;
-            if (channel != null && message.getGroupId() != null) {
-                smReceivers.setText(ChannelUtils.getChannelTitleName(channel, MobiComUserPreference.getInstance(context).getUserId()));
-                if (!TextUtils.isEmpty(channel.getImageUrl())) {
-                    channelImageLoader.loadImage(channel, contactImage);
-                }else if(channel.isBroadcastMessage()){
-                    contactImage.setImageResource(R.drawable.applozic_ic_applozic_broadcast);
-                }else {
+                if (Channel.GroupType.GROUPOFTWO.getValue().equals(channel.getType())) {
+                    contactImageLoader.setLoadingImage(R.drawable.applozic_ic_contact_picture_holo_light);
+                } else {
                     channelImageLoader.setLoadingImage(R.drawable.applozic_group_icon);
                 }
-            } else if (contactReceiver != null) {
-                contactNumber = contactReceiver.getDisplayName().toUpperCase();
-                firstLetter = contactReceiver.getDisplayName().toUpperCase().charAt(0);
-
-                if (contactReceiver != null) {
-                    if (firstLetter != '+') {
-                        alphabeticTextView.setText(String.valueOf(firstLetter));
-                    } else if (contactNumber.length() >= 2) {
-                        alphabeticTextView.setText(String.valueOf(contactNumber.charAt(1)));
-                    }
-                    Character colorKey = AlphaNumberColorUtil.alphabetBackgroundColorMap.containsKey(firstLetter) ? firstLetter : null;
-                /*alphabeticTextView.setTextColor(context.getResources().getColor(AlphaNumberColorUtil.alphabetTextColorMap.get(colorKey)));
-                alphabeticTextView.setBackgroundResource(AlphaNumberColorUtil.alphabetBackgroundColorMap.get(colorKey));*/
-                    GradientDrawable bgShape = (GradientDrawable) alphabeticTextView.getBackground();
-                    bgShape.setColor(context.getResources().getColor(AlphaNumberColorUtil.alphabetBackgroundColorMap.get(colorKey)));
-                }
-                if (contactReceiver.isDrawableResources()) {
-                    int drawableResourceId = context.getResources().getIdentifier(contactReceiver.getrDrawableName(), "drawable", context.getPackageName());
-                    contactImage.setImageResource(drawableResourceId);
-                } else {
-                    if(TextUtils.isEmpty(contactReceiver.getImageURL())){
-                        alphabeticTextView.setVisibility(View.VISIBLE);
-                        contactImage.setVisibility(View.GONE);
-                    }else {
-                        contactImageLoader.loadImage(contactReceiver, contactImage, alphabeticTextView);
-                    }
-                }
             }
-            if (ApplozicSetting.getInstance(context).isOnlineStatusInMasterListVisible()) {
+            if (channel != null && message.getGroupId() != null) {
+                if (Channel.GroupType.GROUPOFTWO.getValue().equals(channel.getType())) {
+                    Contact withUserContact = contactService.getContactById(ChannelService.getInstance(context).getGroupOfTwoReceiverUserId(channel.getKey()));
+                    if (withUserContact != null) {
+                        smReceivers.setText(withUserContact.getDisplayName());
+                        processContactImage(withUserContact);
+                    }
+                } else {
+                    smReceivers.setText(ChannelUtils.getChannelTitleName(channel, MobiComUserPreference.getInstance(context).getUserId()));
+                    if (!TextUtils.isEmpty(channel.getImageUrl())) {
+                        channelImageLoader.loadImage(channel, contactImage);
+                    } else if (channel.isBroadcastMessage()) {
+                        contactImage.setImageResource(R.drawable.applozic_ic_applozic_broadcast);
+                    } else {
+                        channelImageLoader.setLoadingImage(R.drawable.applozic_group_icon);
+                    }
+                }
+            } else if (contactReceiver != null) {
+                processContactImage(contactReceiver);
+            }
+
+            if (alCustomizationSettings.isOnlineStatusMasterList()) {
                 onlineTextView.setVisibility(contactReceiver != null && contactReceiver.isOnline() ? View.VISIBLE : View.GONE);
             }
 
@@ -188,7 +197,7 @@ public class QuickConversationAdapter extends BaseAdapter {
                 @Override
                 public void onClick(View view) {
                     InstructionUtil.hideInstruction(context, R.string.instruction_open_conversation_thread);
-                    ((MobiComKitActivityInterface) context).onQuickConversationFragmentItemClick(view, contactReceiver, channel,message.getConversationId());
+                    ((MobiComKitActivityInterface) context).onQuickConversationFragmentItemClick(view, contactReceiver, channel, message.getConversationId(), searchString);
                 }
             });
 
@@ -210,9 +219,11 @@ public class QuickConversationAdapter extends BaseAdapter {
             } else if (attachmentIcon != null && message.getContentType() == Message.ContentType.LOCATION.getValue()) {
                 attachmentIcon.setVisibility(View.VISIBLE);
                 attachmentIcon.setImageResource(R.drawable.mobicom_notification_location_icon);
-                messageTextView.setText("Location");
+                messageTextView.setText(context.getString(R.string.Location));
             } else if (message.getContentType() == Message.ContentType.PRICE.getValue()) {
                 messageTextView.setText(EmoticonUtils.getSmiledText(context, ConversationUIService.FINAL_PRICE_TEXT + message.getMessage(), emojiconHandler));
+            } else if (message.getContentType() == Message.ContentType.TEXT_HTML.getValue()) {
+                messageTextView.setText(Html.fromHtml(message.getMessage()));
             } else {
                 messageTextView.setText(EmoticonUtils.getSmiledText(context, message.getMessage(), emojiconHandler));
             }
@@ -246,6 +257,24 @@ public class QuickConversationAdapter extends BaseAdapter {
             } else {
                 unReadCountTextView.setVisibility(View.GONE);
             }
+
+            int startIndex = indexOfSearchQuery(message.getMessage());
+            if (startIndex != -1) {
+
+                final SpannableString highlightedName = new SpannableString(message.getMessage());
+
+                // Sets the span to start at the starting point of the match and end at "length"
+                // characters beyond the starting point
+                highlightedName.setSpan(highlightTextSpan, startIndex,
+                        startIndex + searchString.toString().length(), 0);
+
+                messageTextView.setText(highlightedName);
+            }
+
+            if (message.isVideoCallMessage()) {
+                createVideoCallView(message);
+            }
+
         }
 
 
@@ -270,6 +299,107 @@ public class QuickConversationAdapter extends BaseAdapter {
 
     public int getItemViewType(int position) {
         return getItem(position).isTypeOutbox() ? 1 : 0;
+    }
+
+
+    private int indexOfSearchQuery(String message) {
+        if (!TextUtils.isEmpty(searchString)) {
+            return message.toLowerCase(Locale.getDefault()).indexOf(
+                    searchString.toString().toLowerCase(Locale.getDefault()));
+        }
+        return -1;
+    }
+
+    @Override
+    public Filter getFilter() {
+        return new Filter() {
+            @Override
+            protected FilterResults performFiltering(CharSequence constraint) {
+
+                final FilterResults oReturn = new FilterResults();
+                final List<Message> results = new ArrayList<Message>();
+                if (originalList == null)
+                    originalList = messageList;
+                if (constraint != null) {
+                    searchString = constraint.toString();
+                    if (originalList != null && originalList.size() > 0) {
+                        for (final Message message : originalList) {
+                            if (message.getMessage().toLowerCase()
+                                    .contains(constraint.toString())) {
+                                results.add(message);
+                            }
+                        }
+                    }
+                    oReturn.values = results;
+                } else {
+                    oReturn.values = originalList;
+                }
+                return oReturn;
+            }
+
+            @SuppressWarnings("unchecked")
+            @Override
+            protected void publishResults(CharSequence constraint,
+                                          FilterResults results) {
+                messageList = (ArrayList<Message>) results.values;
+                notifyDataSetChanged();
+            }
+        };
+    }
+
+    public void createVideoCallView(Message message) {
+
+        if (message.getMetadata() == null || message.getMetadata().isEmpty()) {
+
+            attachmentIcon.setImageResource(R.drawable.ic_videocam_white_24px);
+            attachmentIcon.setColorFilter(R.color.applozic_green_color);
+            return;
+        }
+        messageTextView.setText(VideoCallNotificationHelper.getStatus(message.getMetadata()));
+        attachmentIcon.setVisibility(View.VISIBLE);
+
+        if (VideoCallNotificationHelper.isMissedCall(message)) {
+            attachmentIcon.setImageResource(R.drawable.ic_communication_call_missed);
+        } else if (VideoCallNotificationHelper.isAudioCall(message)) {
+            attachmentIcon.setImageResource(R.drawable.applozic_ic_action_call_holo_light);
+        } else {
+            attachmentIcon.setImageResource(R.drawable.ic_videocam_white_24px);
+            attachmentIcon.setColorFilter(R.color.applozic_green_color);
+        }
+
+    }
+
+    private void processContactImage(Contact contact) {
+        try {
+            String contactNumber = "";
+            char firstLetter = 0;
+            contactNumber = contact.getDisplayName().toUpperCase();
+            firstLetter = contact.getDisplayName().toUpperCase().charAt(0);
+
+            if (contact != null) {
+                if (firstLetter != '+') {
+                    alphabeticTextView.setText(String.valueOf(firstLetter));
+                } else if (contactNumber.length() >= 2) {
+                    alphabeticTextView.setText(String.valueOf(contactNumber.charAt(1)));
+                }
+                Character colorKey = AlphaNumberColorUtil.alphabetBackgroundColorMap.containsKey(firstLetter) ? firstLetter : null;
+                GradientDrawable bgShape = (GradientDrawable) alphabeticTextView.getBackground();
+                bgShape.setColor(context.getResources().getColor(AlphaNumberColorUtil.alphabetBackgroundColorMap.get(colorKey)));
+            }
+            if (contact.isDrawableResources()) {
+                int drawableResourceId = context.getResources().getIdentifier(contact.getrDrawableName(), "drawable", context.getPackageName());
+                contactImage.setImageResource(drawableResourceId);
+            } else {
+                if (TextUtils.isEmpty(contact.getImageURL())) {
+                    alphabeticTextView.setVisibility(View.VISIBLE);
+                    contactImage.setVisibility(View.GONE);
+                } else {
+                    contactImageLoader.loadImage(contact, contactImage, alphabeticTextView);
+                }
+            }
+        } catch (Exception e) {
+
+        }
     }
 
 }

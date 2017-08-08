@@ -3,6 +3,7 @@ package com.applozic.mobicomkit.api.conversation;
 import android.content.Context;
 import android.text.TextUtils;
 
+import com.applozic.mobicomkit.api.notification.VideoCallNotificationHelper;
 import com.applozic.mobicommons.json.JsonMarker;
 import com.applozic.mobicomkit.api.account.user.MobiComUserPreference;
 import com.applozic.mobicomkit.api.attachment.FileMeta;
@@ -54,8 +55,9 @@ public class Message extends JsonMarker {
     private boolean connected = false;
     private short contentType = ContentType.DEFAULT.getValue();
     private Map<String, String> metadata = new HashMap<>();
-
     private short status = Status.READ.getValue();
+    private boolean hidden;
+    private int replyMessage;
 
     public Message() {
 
@@ -133,7 +135,7 @@ public class Message extends JsonMarker {
     }
 
     public boolean isAttachmentUploadInProgress() {
-        return filePaths != null && !filePaths.isEmpty() && !sentToServer;
+        return filePaths != null && !filePaths.isEmpty() && FileUtils.isFileExist(filePaths.get(0))&& !sentToServer;
     }
 
     public boolean isAttachmentDownloaded() {
@@ -410,7 +412,7 @@ public class Message extends JsonMarker {
     }
 
     public String getCurrentId() {
-        return getGroupId() != null ? String.valueOf(getGroupId()): getContactIds();
+        return getGroupId() != null ? String.valueOf(getGroupId()) : getContactIds();
     }
 
     public Integer getGroupId() {
@@ -518,33 +520,36 @@ public class Message extends JsonMarker {
         return type.equals(MessageType.DATE_TEMP.value);
     }
 
-    public boolean isCustom() {
-        return contentType == ContentType.CUSTOM.value;
-    }
-
-    public boolean isChannelCustomMessage(){
-        return contentType == ContentType.CHANNEL_CUSTOM_MESSAGE.getValue();
-    }
-
     public void setTempDateType(short tempDateType) {
         this.type = tempDateType;
     }
 
+    public boolean isCustom() {
+        return contentType == ContentType.CUSTOM.value;
+    }
+
+    public boolean isChannelCustomMessage() {
+        return contentType == ContentType.CHANNEL_CUSTOM_MESSAGE.getValue();
+    }
+
     public boolean isDeliveredAndRead() {
-        return Status.DELIVERED_AND_READ.getValue().shortValue() == getStatus();
+        return Message.Status.DELIVERED_AND_READ.getValue().shortValue() == getStatus();
     }
 
     public boolean isReadStatus() {
-        return Status.READ.getValue()== getStatus();
+        return Status.READ.getValue() == getStatus();
     }
 
-
-    public boolean isContactMessage(){
-        return ContentType.CONTACT_MSG.getValue().equals( getContentType());
+    public boolean isReadStatusForUpdate() {
+        return Status.READ.getValue() == getStatus() || isTypeOutbox();
     }
 
-    public boolean isLocationMessage(){
-        return ContentType.LOCATION.getValue().equals( getContentType());
+    public boolean isContactMessage() {
+        return ContentType.CONTACT_MSG.getValue().equals(getContentType());
+    }
+
+    public boolean isLocationMessage() {
+        return ContentType.LOCATION.getValue().equals(getContentType());
     }
 
     public Map<String, String> getMetadata() {
@@ -556,7 +561,7 @@ public class Message extends JsonMarker {
     }
 
     public boolean isGroupMessage() {
-        return ( this.groupId != null );
+        return (this.groupId != null);
     }
 
     public String getClientGroupId() {
@@ -565,6 +570,58 @@ public class Message extends JsonMarker {
 
     public void setClientGroupId(String clientGroupId) {
         this.clientGroupId = clientGroupId;
+    }
+
+    public String getMetaDataValueForKey(String key) {
+        return getMetadata() != null ? getMetadata().get(key) : null;
+    }
+
+    public boolean isUpdateMessage() {
+        return !Message.ContentType.HIDDEN.getValue().equals(contentType)
+                && !Message.MetaDataType.ARCHIVE.getValue().equals(getMetaDataValueForKey(Message.MetaDataType.KEY.getValue()))
+                && !isVideoNotificationMessage();
+
+    }
+
+    public boolean isVideoNotificationMessage() {
+        return ContentType.VIDEO_CALL_NOTIFICATION_MSG.getValue().equals(getContentType());
+    }
+
+    public boolean isVideoCallMessage() {
+        return ContentType.VIDEO_CALL_STATUS_MSG.getValue().equals(getContentType());
+    }
+
+    public boolean isVideoOrAudioCallMessage() {
+        String msgType = getMetaDataValueForKey(VideoCallNotificationHelper.MSG_TYPE);
+        return (VideoCallNotificationHelper.CALL_STARTED.equals(msgType)
+                || VideoCallNotificationHelper.CALL_REJECTED.equals(msgType)
+                || VideoCallNotificationHelper.CALL_CANCELED.equals(msgType)
+                || VideoCallNotificationHelper.CALL_ANSWERED.equals(msgType)
+                || VideoCallNotificationHelper.CALL_END.equals(msgType)
+                || VideoCallNotificationHelper.CALL_DIALED.equals(msgType)
+                || VideoCallNotificationHelper.CALL_ANSWERED.equals(msgType)
+                || VideoCallNotificationHelper.CALL_MISSED.equals(msgType));
+    }
+
+    public boolean isConsideredForCount() {
+        return (!Message.ContentType.HIDDEN.getValue().equals(getContentType()) &&
+                !ContentType.VIDEO_CALL_NOTIFICATION_MSG.getValue().equals(getContentType()) && !isReadStatus() && !isHidden());
+    }
+
+    public boolean isHidden() {
+        return GroupMessageMetaData.TRUE.getValue().equals(getMetaDataValueForKey(GroupMessageMetaData.HIDE_KEY.getValue())) || Message.ContentType.HIDDEN.getValue().equals(getContentType());
+    }
+
+    public void setHidden(boolean hidden) {
+        hidden = hidden;
+    }
+
+    public int isReplyMessage() {
+        return replyMessage;
+    }
+
+    public void setReplyMessage(int replyMessage) {
+        this.replyMessage = replyMessage;
     }
 
     @Override
@@ -643,8 +700,8 @@ public class Message extends JsonMarker {
     public enum ContentType {
 
         DEFAULT(Short.valueOf("0")), ATTACHMENT(Short.valueOf("1")), LOCATION(Short.valueOf("2")),
-        TEXT_HTML(Short.valueOf("3")), PRICE(Short.valueOf("4")), TEXT_URL(Short.valueOf("5")),CONTACT_MSG(Short.valueOf("7")),AUDIO_MSG(Short.valueOf("8"))
-        ,VIDEO_MSG(Short.valueOf("9")),CHANNEL_CUSTOM_MESSAGE(Short.valueOf("10")), CUSTOM(Short.valueOf("101")),HIDDEN(Short.valueOf("11"));
+        TEXT_HTML(Short.valueOf("3")), PRICE(Short.valueOf("4")), TEXT_URL(Short.valueOf("5")), CONTACT_MSG(Short.valueOf("7")), AUDIO_MSG(Short.valueOf("8")), VIDEO_MSG(Short.valueOf("9")), CHANNEL_CUSTOM_MESSAGE(Short.valueOf("10")), CUSTOM(Short.valueOf("101")), HIDDEN(Short.valueOf("11")), VIDEO_CALL_NOTIFICATION_MSG(Short.valueOf("102")),
+        VIDEO_CALL_STATUS_MSG(Short.valueOf("103"));
         private Short value;
 
         ContentType(Short value) {
@@ -667,6 +724,53 @@ public class Message extends JsonMarker {
         }
 
         public Short getValue() {
+            return value;
+        }
+    }
+
+    public enum MetaDataType {
+        KEY("category"),
+        HIDDEN("HIDDEN"),
+        PUSHNOTIFICATION("PUSHNOTIFICATION"),
+        ARCHIVE("ARCHIVE"), AL_REPLY("AL_REPLY");
+        private String value;
+
+        MetaDataType(String value) {
+            this.value = value;
+        }
+
+        public String getValue() {
+            return value;
+        }
+    }
+
+    public enum GroupMessageMetaData {
+        KEY("show"),
+        HIDE_KEY("hide"),
+        FALSE("false"),
+        TRUE("true");
+        private String value;
+
+        GroupMessageMetaData(String value) {
+            this.value = value;
+        }
+
+        public String getValue() {
+            return value;
+        }
+    }
+
+    public enum ReplyMessage{
+        NON_HIDDEN(0),
+        REPLY_MESSAGE(1),
+        HIDE_MESSAGE(2);
+        private Integer value;
+
+        ReplyMessage(Integer value) {
+            this.value = value;
+        }
+
+        public Integer getValue() {
             return value;
         }
     }

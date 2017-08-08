@@ -17,13 +17,13 @@ public class TimeChangeBroadcastReceiver extends BroadcastReceiver {
     public void onReceive(final Context context, Intent intent) {
 
         new Thread(new Runnable() {
-           @Override
-           public void run() {
-               Log.i("TimeChange :: ", "This has been called on date change" );
-               long diff = DateUtils.getTimeDiffFromUtc();
-               MobiComUserPreference.getInstance(context).setDeviceTimeOffset(diff);
-           }
-       }).start();
+            @Override
+            public void run() {
+                Log.i("TimeChange :: ", "This has been called on date change");
+                long diff = DateUtils.getTimeDiffFromUtc();
+                MobiComUserPreference.getInstance(context).setDeviceTimeOffset(diff);
+            }
+        }).start();
 
     }
 }

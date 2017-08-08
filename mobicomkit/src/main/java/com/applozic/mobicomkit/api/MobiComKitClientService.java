@@ -20,15 +20,14 @@ import java.net.URLConnection;
  */
 public class MobiComKitClientService {
 
-    protected Context context;
     public static final String BASE_URL_METADATA = "com.applozic.server.url";
     public static final String MQTT_BASE_URL_METADATA = "com.applozic.mqtt.server.url";
+    public static final String FILE_URL = "/rest/ws/aws/file/";
     public static String APPLICATION_KEY_HEADER = "Application-Key";
     public static String APP_MOUDLE_NAME_KEY_HEADER = "App-Module-Name";
     public static String APPLICATION_KEY_HEADER_VALUE_METADATA = "com.applozic.application.key";
-    public static String APP_MODULE_NAME_META_DATA_KEY= "com.applozic.module.key";
-
-    public static final String FILE_URL = "/rest/ws/aws/file/";
+    public static String APP_MODULE_NAME_META_DATA_KEY = "com.applozic.module.key";
+    protected Context context;
     protected String DEFAULT_URL = "https://apps.applozic.com";
     protected String FILE_BASE_URL = "https://applozic.appspot.com";
     protected String DEFAULT_MQTT_URL = "tcp://apps.applozic.com:1883";
@@ -38,7 +37,21 @@ public class MobiComKitClientService {
     }
 
     public MobiComKitClientService(Context context) {
-        this.context = context;
+        this.context = context.getApplicationContext();
+    }
+
+    public static String getApplicationKey(Context context) {
+        String applicationKey = Applozic.getInstance(context).getApplicationKey();
+        if (!TextUtils.isEmpty(applicationKey)) {
+            return applicationKey;
+        }
+        return Utils.getMetaDataValue(context.getApplicationContext(), APPLICATION_KEY_HEADER_VALUE_METADATA);
+    }
+
+    public static String getAppModuleName(Context context) {
+
+        return Utils.getMetaDataValue(context.getApplicationContext(), APP_MODULE_NAME_META_DATA_KEY);
+
     }
 
     protected String getBaseUrl() {
@@ -47,7 +60,7 @@ public class MobiComKitClientService {
         if (!TextUtils.isEmpty(SELECTED_BASE_URL)) {
             return SELECTED_BASE_URL;
         }
-        String BASE_URL = Utils.getMetaDataValue(context, BASE_URL_METADATA);
+        String BASE_URL = Utils.getMetaDataValue(context.getApplicationContext(), BASE_URL_METADATA);
         if (!TextUtils.isEmpty(BASE_URL)) {
             return BASE_URL;
         }
@@ -56,11 +69,11 @@ public class MobiComKitClientService {
     }
 
     protected String getMqttBaseUrl() {
-        String MQTT_BROKER_URL =  MobiComUserPreference.getInstance(context).getMqttBrokerUrl();
-        if(!TextUtils.isEmpty(MQTT_BROKER_URL)){
+        String MQTT_BROKER_URL = MobiComUserPreference.getInstance(context).getMqttBrokerUrl();
+        if (!TextUtils.isEmpty(MQTT_BROKER_URL)) {
             return MQTT_BROKER_URL;
         }
-        String MQTT_BASE_URL = Utils.getMetaDataValue(context, MQTT_BASE_URL_METADATA);
+        String MQTT_BASE_URL = Utils.getMetaDataValue(context.getApplicationContext(), MQTT_BASE_URL_METADATA);
         if (!TextUtils.isEmpty(MQTT_BASE_URL)) {
             return MQTT_BASE_URL;
         }
@@ -74,6 +87,7 @@ public class MobiComKitClientService {
         }
         return new PasswordAuthentication(userPreferences.getUserId(), userPreferences.getDeviceKeyString().toCharArray());
     }
+
     public HttpURLConnection openHttpConnection(String urlString) throws IOException {
         HttpURLConnection httpConn;
 
@@ -111,21 +125,6 @@ public class MobiComKitClientService {
         }
         return httpConn;
     }
-
-    public static String getApplicationKey(Context context) {
-        String applicationKey = Applozic.getInstance(context).getApplicationKey();
-        if(!TextUtils.isEmpty(applicationKey)){
-            return applicationKey;
-        }
-        return Utils.getMetaDataValue(context, APPLICATION_KEY_HEADER_VALUE_METADATA);
-    }
-
-    public static String getAppModuleName(Context context) {
-
-        return Utils.getMetaDataValue(context, APP_MODULE_NAME_META_DATA_KEY);
-
-    }
-
 
     public String getFileUrl() {
         return FILE_BASE_URL + FILE_URL;

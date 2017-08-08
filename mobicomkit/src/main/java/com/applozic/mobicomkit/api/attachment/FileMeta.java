@@ -102,7 +102,7 @@ public class FileMeta extends JsonMarker {
     @Override
     public String toString() {
         return "FileMeta{" +
-                "key='" + key+ '\'' +
+                "key='" + key + '\'' +
                 ", userKey='" + userKey + '\'' +
                 ", blobKey='" + blobKey + '\'' +
                 ", url=" + url +

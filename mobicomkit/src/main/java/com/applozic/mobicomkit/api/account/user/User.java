@@ -2,6 +2,8 @@ package com.applozic.mobicomkit.api.account.user;
 
 import com.applozic.mobicommons.json.JsonMarker;
 
+import java.util.List;
+
 /**
  * Created by devashish on 22/12/14.
  */
@@ -21,10 +23,21 @@ public class User extends JsonMarker {
     private String roleName = "USER";
     private Short deviceType;
     private String imageLink;
+    private boolean enableEncryption;
     private Short authenticationTypeId = AuthenticationType.CLIENT.getValue();
     private String displayName;
-
     private String appModuleName;
+    private Short userTypeId;
+    private List<String> features;
+    private String notificationSoundFilePath;
+
+    public List<String> getFeatures() {
+        return features;
+    }
+
+    public void setFeatures(List<String> features) {
+        this.features = features;
+    }
 
     public String getUserId() {
         return userId;
@@ -162,6 +175,30 @@ public class User extends JsonMarker {
         this.imageLink = imageLink;
     }
 
+    public boolean isEnableEncryption() {
+        return enableEncryption;
+    }
+
+    public void setEnableEncryption(boolean enableEncryption) {
+        this.enableEncryption = enableEncryption;
+    }
+
+    public Short getUserTypeId() {
+        return userTypeId;
+    }
+
+    public void setUserTypeId(Short userTypeId) {
+        this.userTypeId = userTypeId;
+    }
+
+    public String getNotificationSoundFilePath() {
+        return notificationSoundFilePath;
+    }
+
+    public void setNotificationSoundFilePath(String notificationSoundFilePath) {
+        this.notificationSoundFilePath = notificationSoundFilePath;
+    }
+
     public enum AuthenticationType {
 
         CLIENT(Short.valueOf("0")), APPLOZIC(Short.valueOf("1")), FACEBOOK(Short.valueOf("2"));
@@ -172,6 +209,20 @@ public class User extends JsonMarker {
         }
 
         public Short getValue() {
+            return value;
+        }
+    }
+
+    public enum Features {
+
+        IP_AUDIO_CALL("100"), IP_VIDEO_CALL("101");
+        private String value;
+
+        Features(String c) {
+            value = c;
+        }
+
+        public String getValue() {
             return value;
         }
     }

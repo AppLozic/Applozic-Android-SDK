@@ -1,14 +1,14 @@
 apply plugin: 'com.android.library'
 
 android {
-    compileSdkVersion 23
-    buildToolsVersion "23.0.2"
+    compileSdkVersion 25
+    buildToolsVersion "25.0.2"
 
     defaultConfig {
-        minSdkVersion 10
-        targetSdkVersion 23
+        minSdkVersion 14
+        targetSdkVersion 25
         versionCode 1
-        versionName "4.59"
+        versionName "4.96"
     }
     buildTypes {
         release {
@@ -25,12 +25,16 @@ android {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.android.support:appcompat-v7:23.1.1'
+    compile 'com.android.support:appcompat-v7:25.3.1'
     compile 'com.google.code.gson:gson:2.2.4'
     //compile 'com.googlecode.libphonenumber:libphonenumber:7.0.1'
 }
 
+
+
+
 /*
+
 ext {
     // Where you will see your artifact in Bintray's web interface
     // The "bintrayName" should match the name of the Bintray repro.
@@ -45,7 +49,7 @@ ext {
     artifact = 'mobicommons'
 
     libraryDescription = 'Applozic MobiFramekwork mobicommons library for utilities'
-    libraryVersion = '4.59'
+    libraryVersion = '4.96'
     developerId = 'devashish'
     developerName = 'Applozic'
     developerEmail = 'devashish.mamgain@gmail.com'
@@ -54,6 +58,7 @@ ext {
 
 apply from: 'https://raw.githubusercontent.com/attwellBrian/JCenter/master/installv1.gradle'
 apply from: 'https://raw.githubusercontent.com/attwellBrian/JCenter/master/bintrayv1.gradle'
+
 */
 
 

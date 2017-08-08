@@ -33,13 +33,13 @@ public class ResultFeed implements Serializable {
         return code;
     }
 
+    public void setCode(int code) {
+        this.code = code;
+    }
+
     public void setRestAPICode(RestAPICodes apiCode) {
         this.code = apiCode.code;
         this.message = apiCode.message;
-    }
-
-    public void setCode(int code) {
-        this.code = code;
     }
 
     public String getMessage() {

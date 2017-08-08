@@ -101,7 +101,6 @@ public class LoginActivity extends Activity implements ActivityCompat.OnRequestP
 
         // Set up the login form.
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
-        populateAutoComplete();
 
         mPhoneNumberView = (EditText) findViewById(R.id.phoneNumber);
         mUserIdView = (EditText) findViewById(R.id.userId);
@@ -146,7 +145,7 @@ public class LoginActivity extends Activity implements ActivityCompat.OnRequestP
                     touchCount = 0;
 
                 } else {
-                    Toast.makeText(getApplicationContext(), "Click more  " + Integer.toString(5 - touchCount), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), getBaseContext().getString(R.string.click_more) + Integer.toString(5 - touchCount), Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -218,7 +217,7 @@ public class LoginActivity extends Activity implements ActivityCompat.OnRequestP
         // Store values at the time of the login attempt.
         String email = mEmailView.getText().toString();
         String phoneNumber = mPhoneNumberView.getText().toString();
-        String userId = mUserIdView.getText().toString();
+        String userId = mUserIdView.getText().toString().trim();
         String password = mPasswordView.getText().toString();
         String displayName = mDisplayName.getText().toString();
 
@@ -231,7 +230,7 @@ public class LoginActivity extends Activity implements ActivityCompat.OnRequestP
             cancel = true;
         }
         // Check for a valid password, if the user entered one.
-        if ((TextUtils.isEmpty(mPasswordView.getText().toString())||mPasswordView.getText().toString().trim().length() == 0) && !isPasswordValid(mPasswordView.getText().toString())) {
+        if ((TextUtils.isEmpty(mPasswordView.getText().toString()) || mPasswordView.getText().toString().trim().length() == 0) && !isPasswordValid(mPasswordView.getText().toString())) {
             mPasswordView.setError(getString(R.string.error_invalid_password));
             focusView = mPasswordView;
             cancel = true;
@@ -265,15 +264,9 @@ public class LoginActivity extends Activity implements ActivityCompat.OnRequestP
                 public void onSuccess(RegistrationResponse registrationResponse, final Context context) {
                     mAuthTask = null;
                     showProgress(false);
-                    ApplozicSetting.getInstance(context).showStartNewButton().showPriceOption();
 
                     //Basic settings...
 
-                    //ApplozicSetting.getInstance(context).hideConversationContactImage().hideStartNewButton().hideStartNewFloatingActionButton();
-                    ApplozicSetting.getInstance(context).showStartNewGroupButton()
-                            .setCompressedImageSizeInMB(5)
-                            .enableImageCompression()
-                            .setMaxAttachmentAllowed(5);
                     ApplozicClient.getInstance(context).setContextBasedChat(true).setHandleDial(true);
 
                     Map<ApplozicSetting.RequestCode, String> activityCallbacks = new HashMap<ApplozicSetting.RequestCode, String>();
@@ -287,7 +280,7 @@ public class LoginActivity extends Activity implements ActivityCompat.OnRequestP
 
                     //Start GCM registration....
 
-                    PushNotificationTask.TaskListener pushNotificationTaskListener=  new PushNotificationTask.TaskListener() {
+                    PushNotificationTask.TaskListener pushNotificationTaskListener = new PushNotificationTask.TaskListener() {
                         @Override
                         public void onSuccess(RegistrationResponse registrationResponse) {
 
@@ -298,8 +291,8 @@ public class LoginActivity extends Activity implements ActivityCompat.OnRequestP
 
                         }
                     };
-                    PushNotificationTask pushNotificationTask = new PushNotificationTask(Applozic.getInstance(context).getDeviceRegistrationId(),pushNotificationTaskListener,context);
-                    pushNotificationTask.execute((Void)null);
+                    PushNotificationTask pushNotificationTask = new PushNotificationTask(Applozic.getInstance(context).getDeviceRegistrationId(), pushNotificationTaskListener, context);
+                    pushNotificationTask.execute((Void) null);
 
                     buildContactData();
 
@@ -307,8 +300,8 @@ public class LoginActivity extends Activity implements ActivityCompat.OnRequestP
                     Intent mainActvity = new Intent(context, MainActivity.class);
                     startActivity(mainActvity);
                     Intent intent = new Intent(context, ConversationActivity.class);
-                    if(ApplozicClient.getInstance(LoginActivity.this).isContextBasedChat()){
-                        intent.putExtra(ConversationUIService.CONTEXT_BASED_CHAT,true);
+                    if (ApplozicClient.getInstance(LoginActivity.this).isContextBasedChat()) {
+                        intent.putExtra(ConversationUIService.CONTEXT_BASED_CHAT, true);
                     }
                     startActivity(intent);
                     finish();
@@ -323,7 +316,7 @@ public class LoginActivity extends Activity implements ActivityCompat.OnRequestP
                     AlertDialog alertDialog = new AlertDialog.Builder(LoginActivity.this).create();
                     alertDialog.setTitle(getString(R.string.text_alert));
                     alertDialog.setMessage(exception.toString());
-                    alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(android.R.string.ok),
+                    alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.ok_alert),
                             new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int which) {
                                     dialog.dismiss();
@@ -426,7 +419,7 @@ public class LoginActivity extends Activity implements ActivityCompat.OnRequestP
         if (exit) {
             finish();
         } else {
-            Toast.makeText(this, "Press Back again to Exit.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, this.getString(R.string.press_back_again_to_exit), Toast.LENGTH_SHORT).show();
             exit = true;
 
             new Handler().postDelayed(new Runnable() {
@@ -511,7 +504,7 @@ public class LoginActivity extends Activity implements ActivityCompat.OnRequestP
 
             Snackbar.make(layout, R.string.contact_permission,
                     Snackbar.LENGTH_INDEFINITE)
-                    .setAction(android.R.string.ok, new View.OnClickListener() {
+                    .setAction(R.string.ok_alert, new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
                             ActivityCompat
