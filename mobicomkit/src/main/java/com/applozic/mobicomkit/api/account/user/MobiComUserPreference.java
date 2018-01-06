@@ -62,6 +62,7 @@ public class MobiComUserPreference {
     private static String user_type_id = "user_type_id";
     private static String application_info_call_done = "application_info_call_done";
     private static String notification_sound_fileName = "notificationSoundFileName";
+    private static String notification_sound_enabled = "notification_sound_enabled";
     private static String CONTACTS_GROUP_ID = "CONTACTS_GROUP_ID";
     private static String CONTACT_GROUP_ID_LISTS = "contactGroupIdLists";
     private static String IS_CONTACT_GROUP_NAME_LIST = "isContactGroupNameList";
@@ -550,6 +551,14 @@ public class MobiComUserPreference {
         sharedPreferences.edit().putString(notification_sound_fileName, soundUri).commit();
     }
 
+    public boolean getNotificationSoundEnabled() {
+        return sharedPreferences.getBoolean(notification_sound_enabled, true);
+    }
+
+    public void setNotificationSoundEnabled(boolean notification_sound_enabled) {
+        sharedPreferences.edit().putBoolean(this.notification_sound_enabled, notification_sound_enabled).commit();
+    }
+
     public String getContactsGroupId() {
         return sharedPreferences.getString(CONTACTS_GROUP_ID, null);
     }
@@ -586,7 +595,7 @@ public class MobiComUserPreference {
         sharedPreferences.edit().putInt(USER_ROLE_TYPE, roleType).commit();
     }
 
-    public Short getUserRoleType(){
-        return Short.valueOf((short) sharedPreferences.getInt(USER_ROLE_TYPE,0));
+    public Short getUserRoleType() {
+        return Short.valueOf((short) sharedPreferences.getInt(USER_ROLE_TYPE, 0));
     }
 }

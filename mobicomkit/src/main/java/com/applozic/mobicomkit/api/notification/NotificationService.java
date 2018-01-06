@@ -127,7 +127,9 @@ public class NotificationService {
                         .setCategory(NotificationCompat.CATEGORY_MESSAGE)
                         .setPriority(NotificationCompat.PRIORITY_MAX)
                         .setWhen(System.currentTimeMillis());
-        mBuilder.setSound(TextUtils.isEmpty(MobiComUserPreference.getInstance(context).getNotificationSoundFilePath()) ? RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION) : Uri.parse(MobiComUserPreference.getInstance(context).getNotificationSoundFilePath()));
+        if (MobiComUserPreference.getInstance(context).getNotificationSoundEnabled()) {
+            mBuilder.setSound(TextUtils.isEmpty(MobiComUserPreference.getInstance(context).getNotificationSoundFilePath()) ? RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION) : Uri.parse(MobiComUserPreference.getInstance(context).getNotificationSoundFilePath()));
+        }
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
             mBuilder.setGroup(GROUP_KEY);
             mBuilder.setGroupSummary(true);
@@ -354,14 +356,16 @@ public class NotificationService {
 
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context, MobiComKitConstants.AL_PUSH_NOTIFICATION);
 
-        mBuilder.setSmallIcon(smallIconResourceId)
-                .setLargeIcon(ApplozicClient.getInstance(context).isShowAppIconInNotification() ? BitmapFactory.decodeResource(context.getResources(), iconResourceId) : notificationIconBitmap != null ? notificationIconBitmap : BitmapFactory.decodeResource(context.getResources(), context.getResources().getIdentifier(channel != null && !Channel.GroupType.GROUPOFTWO.getValue().equals(channel.getType()) ? applozicClient.getDefaultChannelImage() : applozicClient.getDefaultContactImage(), "drawable", context.getPackageName())))
-                .setCategory(NotificationCompat.CATEGORY_MESSAGE)
-                .setPriority(NotificationCompat.PRIORITY_MAX)
-                .setWhen(System.currentTimeMillis())
-                .setContentTitle(title)
-                .setContentText(channel != null && !Channel.GroupType.GROUPOFTWO.getValue().equals(channel.getType()) ? displayNameContact.getDisplayName() + ": " + notificationText : notificationText)
-                .setSound(TextUtils.isEmpty(MobiComUserPreference.getInstance(context).getNotificationSoundFilePath()) ? RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION) : Uri.parse(MobiComUserPreference.getInstance(context).getNotificationSoundFilePath()));
+        mBuilder.setSmallIcon(smallIconResourceId);
+        mBuilder.setLargeIcon(ApplozicClient.getInstance(context).isShowAppIconInNotification() ? BitmapFactory.decodeResource(context.getResources(), iconResourceId) : notificationIconBitmap != null ? notificationIconBitmap : BitmapFactory.decodeResource(context.getResources(), context.getResources().getIdentifier(channel != null && !Channel.GroupType.GROUPOFTWO.getValue().equals(channel.getType()) ? applozicClient.getDefaultChannelImage() : applozicClient.getDefaultContactImage(), "drawable", context.getPackageName())));
+        mBuilder.setCategory(NotificationCompat.CATEGORY_MESSAGE);
+        mBuilder.setPriority(NotificationCompat.PRIORITY_MAX);
+        mBuilder.setWhen(System.currentTimeMillis());
+        mBuilder.setContentTitle(title);
+        mBuilder.setContentText(channel != null && !Channel.GroupType.GROUPOFTWO.getValue().equals(channel.getType()) ? displayNameContact.getDisplayName() + ": " + notificationText : notificationText);
+        if (MobiComUserPreference.getInstance(context).getNotificationSoundEnabled()) {
+            mBuilder.setSound(TextUtils.isEmpty(MobiComUserPreference.getInstance(context).getNotificationSoundFilePath()) ? RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION) : Uri.parse(MobiComUserPreference.getInstance(context).getNotificationSoundFilePath()));
+        }
         mBuilder.setContentIntent(pendingIntent);
         mBuilder.setAutoCancel(true);
         if (ApplozicClient.getInstance(context).isUnreadCountBadgeEnabled()) {
