@@ -235,33 +235,45 @@ public class UserService {
         return updateDisplayNameORImageLink(displayName, profileImageLink, status, null);
     }
 
-    public String updateDisplayNameORImageLink(String displayName, String profileImageLink, String localURL, String status, String contactNumber) {
+    public String updateUserDetails(Contact contact) {
 
-        ApiResponse response = userClientService.updateDisplayNameORImageLink(displayName, profileImageLink, status, contactNumber);
+        ApiResponse response = userClientService.updateUserDeatils(contact);
 
         if (response == null) {
             return null;
         }
         if (response != null && response.isSuccess()) {
-            Contact contact = baseContactService.getContactById(MobiComUserPreference.getInstance(context).getUserId());
-            if (!TextUtils.isEmpty(displayName)) {
-                contact.setFullName(displayName);
+            Contact contactDB = baseContactService.getContactById(MobiComUserPreference.getInstance(context).getUserId());
+            if (!TextUtils.isEmpty(contact.getDisplayName())) {
+                contactDB.setFullName(contact.getDisplayName());
             }
-            if (!TextUtils.isEmpty(profileImageLink)) {
-                contact.setImageURL(profileImageLink);
+            if (!TextUtils.isEmpty(contact.getImageURL())) {
+                contactDB.setImageURL(contact.getImageURL());
             }
-            contact.setLocalImageUrl(localURL);
-            if (!TextUtils.isEmpty(status)) {
-                contact.setStatus(status);
+            if (!TextUtils.isEmpty(contact.getStatus())) {
+                contactDB.setStatus(contact.getStatus());
             }
-            if (!TextUtils.isEmpty(contactNumber)) {
-                contact.setContactNumber(contactNumber);
+            if (!TextUtils.isEmpty(contact.getContactNumber())) {
+                contactDB.setContactNumber(contact.getContactNumber());
             }
-            baseContactService.upsert(contact);
+            if (!TextUtils.isEmpty(contact.getEmailId())) {
+                contactDB.setEmailId(contact.getEmailId());
+            }
+            baseContactService.upsert(contactDB);
             Contact contact1 = baseContactService.getContactById(MobiComUserPreference.getInstance(context).getUserId());
-            Utils.printLog(context, "UserService", contact1.getImageURL() + ", " + contact1.getDisplayName() + "," + contact1.getStatus() + "," + contact1.getStatus());
+            Utils.printLog(context, "UserService", contact1.getImageURL() + ", " + contact1.getDisplayName() + "," + contact1.getStatus() + "," + contact1.getContactNumber() + "," + contact1.getEmailId());
         }
         return response.getStatus();
+    }
+
+    public String updateDisplayNameORImageLink(String displayName, String profileImageLink, String localURL, String status, String contactNumber) {
+        Contact contact = new Contact();
+        contact.setFullName(displayName);
+        contact.setImageURL(profileImageLink);
+        contact.setLocalImageUrl(localURL);
+        contact.setStatus(status);
+        contact.setContactNumber(contactNumber);
+        return updateUserDetails(contact);
     }
 
 

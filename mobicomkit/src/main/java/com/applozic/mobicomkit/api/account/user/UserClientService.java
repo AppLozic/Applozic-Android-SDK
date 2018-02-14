@@ -18,6 +18,7 @@ import com.applozic.mobicomkit.feed.SyncBlockUserApiResponse;
 import com.applozic.mobicomkit.feed.UserDetailListFeed;
 import com.applozic.mobicommons.commons.core.utils.Utils;
 import com.applozic.mobicommons.json.GsonUtils;
+import com.applozic.mobicommons.people.contact.Contact;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -477,6 +478,35 @@ public class UserClientService extends MobiComKitClientService {
             e.printStackTrace();
         }
         return response;
+    }
+
+    public ApiResponse updateUserDeatils(Contact contact) {
+        JSONObject jsonFromObject = new JSONObject();
+        try {
+            if (!TextUtils.isEmpty(contact.getDisplayName())) {
+                jsonFromObject.put("displayName", contact.getDisplayName());
+            }
+            if (!TextUtils.isEmpty(contact.getImageURL())) {
+                jsonFromObject.put("imageLink", contact.getImageURL());
+            }
+            if (!TextUtils.isEmpty(contact.getStatus())) {
+                jsonFromObject.put("statusMessage", contact.getStatus());
+            }
+            if (!TextUtils.isEmpty(contact.getContactNumber())) {
+                jsonFromObject.put("phoneNumber", contact.getContactNumber());
+            }
+            if (!TextUtils.isEmpty(contact.getEmailId())) {
+                jsonFromObject.put("email", contact.getEmailId());
+            }
+            String response = httpRequestUtils.postData(getUserProfileUpdateUrl(), "application/json", "application/json", jsonFromObject.toString());
+            Utils.printLog(context, TAG, response);
+            return ((ApiResponse) GsonUtils.getObjectFromJson(response, ApiResponse.class));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     public ApiResponse updateDisplayNameORImageLink(String displayName, String profileImageLink, String status, String contactNumber) {
