@@ -39,7 +39,7 @@ public class HttpRequestUtils {
 
 
     public HttpRequestUtils(Context context) {
-        this.context = context.getApplicationContext();
+            this.context = context.getApplicationContext();
     }
 
     private void log(String message) {
@@ -96,6 +96,10 @@ public class HttpRequestUtils {
                 e.printStackTrace();
             } catch (Exception e) {
                 e.printStackTrace();
+            } finally {
+                if (br != null) {
+                    br.close();
+                }
             }
             Utils.printLog(context, TAG, "Response : " + sb.toString());
             if (!TextUtils.isEmpty(sb.toString())) {
@@ -151,6 +155,10 @@ public class HttpRequestUtils {
             e.printStackTrace();
         } catch (Throwable e) {
 
+        } finally {
+            if (br != null) {
+                br.close();
+            }
         }
         Utils.printLog(context, TAG, "Response: " + sb.toString());
         return sb.toString();
@@ -204,6 +212,10 @@ public class HttpRequestUtils {
                 }
             } catch (Exception e) {
                 e.printStackTrace();
+            } finally {
+                if (br != null) {
+                    br.close();
+                }
             }
 
             Utils.printLog(context, TAG, "Response :" + sb.toString());

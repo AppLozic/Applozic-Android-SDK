@@ -30,7 +30,7 @@ public class S3URLService implements URLService {
     @Override
     public HttpURLConnection getAttachmentConnection(Message message) throws IOException {
 
-        String response = httpRequestUtils.getResponse(mobiComKitClientService.getBaseUrl() + GET_SIGNED_URL + message.getFileMetas().getBlobKeyString(), "application/json", "application/json");
+        String response = httpRequestUtils.getResponse(mobiComKitClientService.getBaseUrl() + GET_SIGNED_URL + message.getFileMetas().getBlobKeyString(), "application/json", "application/json",true);
         if (TextUtils.isEmpty(response)) {
             return null;
         } else {
@@ -40,7 +40,7 @@ public class S3URLService implements URLService {
 
     @Override
     public String getThumbnailURL(Message message) throws IOException {
-        return httpRequestUtils.getResponse(mobiComKitClientService.getBaseUrl() + GET_SIGNED_URL + message.getFileMetas().getThumbnailBlobKey(), "application/json", "application/json");
+        return httpRequestUtils.getResponse(mobiComKitClientService.getBaseUrl() + GET_SIGNED_URL + message.getFileMetas().getThumbnailBlobKey(), "application/json", "application/json",true);
 
     }
 

@@ -81,6 +81,7 @@ public class AttachmentView extends ImageView {
      */
     public AttachmentView(Context context, AttributeSet attributeSet) {
         super(context, attributeSet);
+        this.context = context;
 
         // Gets attributes associated with the attribute set
         //getAttributes(attributeSet);
@@ -95,6 +96,7 @@ public class AttachmentView extends ImageView {
      */
     public AttachmentView(Context context, AttributeSet attributeSet, int defaultStyle) {
         super(context, attributeSet, defaultStyle);
+        this.context = context;
 
     }
 

@@ -151,11 +151,11 @@ class AttachmentDownloader extends MobiComKitClientService implements Runnable {
 
     public void loadAttachmentImage(Message message, Context context) {
         File file = null;
+        HttpURLConnection connection = null;
         try {
             InputStream inputStream = null;
             FileMeta fileMeta = message.getFileMetas();
             String contentType = fileMeta.getContentType();
-            HttpURLConnection connection = null;
             String fileName = null;
             if (message.getContentType() == Message.ContentType.AUDIO_MSG.getValue()) {
                 fileName = fileMeta.getName();
@@ -237,6 +237,10 @@ class AttachmentDownloader extends MobiComKitClientService implements Runnable {
             }
             ex.printStackTrace();
             Utils.printLog(context, TAG, "Exception fetching file from server");
+        } finally {
+            if (connection != null) {
+                connection.disconnect();
+            }
         }
     }
 

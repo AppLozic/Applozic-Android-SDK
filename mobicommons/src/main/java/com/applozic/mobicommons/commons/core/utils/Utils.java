@@ -18,6 +18,7 @@ import android.os.Environment;
 import android.os.PowerManager;
 import android.os.StrictMode;
 import android.provider.ContactsContract;
+import android.provider.Settings;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
 import android.util.Log;
@@ -266,6 +267,14 @@ public class Utils {
             return null;
         }
         return null;
+    }
+
+    public static boolean isAutomaticTimeEnabled(Context context, boolean isTimeZone) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            return Settings.Global.getInt(context.getContentResolver(), (isTimeZone ? Settings.Global.AUTO_TIME_ZONE : Settings.Global.AUTO_TIME), 0) == 1;
+        } else {
+            return android.provider.Settings.System.getInt(context.getContentResolver(), (isTimeZone ? Settings.System.AUTO_TIME_ZONE : Settings.System.AUTO_TIME), 0) == 1;
+        }
     }
 
     public static int getLauncherIcon(Context context) {

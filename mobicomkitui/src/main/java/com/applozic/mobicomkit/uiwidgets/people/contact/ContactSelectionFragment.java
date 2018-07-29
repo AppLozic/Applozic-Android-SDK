@@ -232,6 +232,14 @@ public class ContactSelectionFragment extends ListFragment implements SearchList
                 getActivity().setResult(getActivity().RESULT_OK, intent);
                 getActivity().finish();
             }
+        } else {
+            AppCompatCheckBox checkBox = (AppCompatCheckBox) view.findViewById(R.id.checkbox);
+            checkBox.toggle();
+            if (checkBox.isChecked()) {
+                userIdList.add(contact.getContactIds());
+            } else if (!checkBox.isChecked()) {
+                userIdList.remove(contact.getContactIds());
+            }
         }
     }
 
@@ -243,7 +251,7 @@ public class ContactSelectionFragment extends ListFragment implements SearchList
         getListView().setOnItemClickListener(this);
         getListView().setFastScrollEnabled(true);
         getListView().setOnScrollListener(new EndlessScrollListener());
-        if(footerView != null){
+        if (footerView != null) {
             getListView().addFooterView(footerView);
         }
 
@@ -675,16 +683,6 @@ public class ContactSelectionFragment extends ListFragment implements SearchList
             } else {
                 holder.contactNumberTextView.setText("");
             }
-            holder.checkBox.setOnClickListener(new View.OnClickListener() {
-                public void onClick(View v) {
-                    AppCompatCheckBox checkBox = (AppCompatCheckBox) v;
-                    if (checkBox.isChecked()) {
-                        userIdList.add(contact.getContactIds());
-                    } else if (!checkBox.isChecked()) {
-                        userIdList.remove(contact.getContactIds());
-                    }
-                }
-            });
 
             // If the selected items contains the current item, set the checkbox to be checked
 

@@ -48,7 +48,7 @@ public class SyncCallService {
         this.messageDatabaseService = new MessageDatabaseService(context);
     }
 
-    public synchronized static SyncCallService getInstance(Context context) {
+    public static SyncCallService getInstance(Context context) {
         if (syncCallService == null) {
             syncCallService = new SyncCallService(context.getApplicationContext());
         }
@@ -63,7 +63,6 @@ public class SyncCallService {
     public synchronized void updateReadStatus(String key) {
         mobiComMessageService.updateDeliveryStatus(key, true);
         refreshView = true;
-
     }
 
     public synchronized List<Message> getLatestMessagesGroupByPeople(String searchString) {

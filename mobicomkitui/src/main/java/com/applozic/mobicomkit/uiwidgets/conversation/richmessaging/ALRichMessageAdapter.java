@@ -536,12 +536,20 @@ public class ALRichMessageAdapter extends RecyclerView.Adapter {
 
     private void bindSingleTextItem(SingleTextViewHolder holder, final int position) {
         if (model.getTemplateId() == 3) {
-            holder.singleTextItem.setText(payloadList.get(position).getName().trim());
+            if (payloadList.get(position).getName() != null) {
+                holder.singleTextItem.setText(payloadList.get(position).getName().trim());
+            }else{
+                holder.singleTextItem.setText("");
+            }
            /* ViewGroup.LayoutParams params = holder.rootLayout.getLayoutParams();
             params.width = LinearLayout.LayoutParams.MATCH_PARENT;
             holder.rootLayout.setLayoutParams(params);*/
         } else {
-            holder.singleTextItem.setText(payloadList.get(position).getTitle().trim());
+            if (payloadList.get(position).getTitle() != null) {
+                holder.singleTextItem.setText(payloadList.get(position).getTitle().trim());
+            }else{
+                holder.singleTextItem.setText("");
+            }
         }
     }
 

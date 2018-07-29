@@ -8,7 +8,7 @@ android {
         minSdkVersion 14
         targetSdkVersion 25
         versionCode 1
-        versionName "5.9"
+        versionName "5.9.1"
     }
     buildTypes {
         release {
@@ -46,7 +46,8 @@ dependencies {
 }
 
 
-/*ext {
+/*
+ext {
     // Where you will see your artifact in Bintray's web interface
     // The "bintrayName" should match the name of the Bintray repro.
     bintrayRepo = 'maven'
@@ -60,7 +61,7 @@ dependencies {
     artifact = 'mobicommons'
 
     libraryDescription = 'Applozic MobiFramekwork mobicommons library for utilities'
-    libraryVersion = '5.9'
+    libraryVersion = '5.9.1'
     developerId = 'devashish'
     developerName = 'Applozic'
     developerEmail = 'devashish.mamgain@gmail.com'
@@ -68,7 +69,8 @@ dependencies {
 
 
 apply from: 'https://raw.githubusercontent.com/attwellBrian/JCenter/master/installv1.gradle'
-apply from: 'https://raw.githubusercontent.com/attwellBrian/JCenter/master/bintrayv1.gradle'*/
+apply from: 'https://raw.githubusercontent.com/attwellBrian/JCenter/master/bintrayv1.gradle'
+*/
 
 
 

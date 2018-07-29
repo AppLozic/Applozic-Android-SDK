@@ -274,6 +274,7 @@ public class MessageClientService extends MobiComKitClientService {
             String createdAt = messageResponse.getCreatedAtTime();
             message.setSentMessageTimeAtServer(Long.parseLong(createdAt));
             message.setKeyString(keyString);
+            message.setSentToServer(true);
 
         /*recentMessageSentToServer.add(message);*/
 

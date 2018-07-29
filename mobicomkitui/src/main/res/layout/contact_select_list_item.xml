@@ -136,6 +136,7 @@
         android:layout_centerVertical="true"
         android:layout_marginLeft="5dp"
         android:layout_marginRight="5dp"
+        android:focusable="false"
         android:padding="10dp"
         app:buttonTint="#b2b2b2"
         android:layout_alignParentEnd="true"

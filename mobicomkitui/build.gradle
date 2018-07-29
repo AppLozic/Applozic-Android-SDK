@@ -8,7 +8,7 @@ android {
         minSdkVersion 14
         targetSdkVersion 25
         versionCode 1
-        versionName "5.9"
+        versionName "5.9.1"
     }
     buildTypes {
         release {
@@ -48,14 +48,14 @@ dependencies {
     api 'com.google.android.gms:play-services-maps:15.0.1'
     api 'com.google.android.gms:play-services-location:15.0.1'
     implementation 'de.hdodenhof:circleimageview:2.2.0'
-    api 'com.android.support:design:27.1.1'
+    implementation 'com.android.support:design:27.1.1'
     implementation 'com.theartofdev.edmodo:android-image-cropper:2.7.0'
     implementation 'com.github.bumptech.glide:glide:4.7.1'
     implementation 'com.android.support:cardview-v7:27.1.1'
     implementation 'com.android.support.constraint:constraint-layout:1.1.2'
     api project(':mobicomkit')
     //Note: use this for customization
-    //api 'com.applozic.communication.message:mobicomkit:5.9' //Note: use this in case customization is not required
+    //api 'com.applozic.communication.message:mobicomkit:5.9.1' //Note: use this in case customization is not required
 }
 
 /* ext {
@@ -72,7 +72,7 @@ dependencies {
     artifact = 'mobicomkitui'
 
     libraryDescription = 'Applozic Communication UI Widget'
-    libraryVersion = '5.9'
+    libraryVersion = '5.9.1'
 
     developerId = 'devashish'
     developerName = 'Applozic'
