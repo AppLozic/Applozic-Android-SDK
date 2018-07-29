@@ -6,7 +6,7 @@ android {
 
     defaultConfig {
         minSdkVersion 14
-        targetSdkVersion 27
+        targetSdkVersion 25
         versionCode 1
         versionName "5.9"
     }
@@ -15,6 +15,21 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+        ci {
+            initWith(release)
+        }
+
+        staging {
+            initWith(release)
+        }
+
+        debug {
+            initWith(release)
+        }
+
+        superLogger {
+            initWith(release)
         }
     }
     lintOptions {
@@ -47,6 +62,7 @@ dependencies {
     implementation 'org.eclipse.paho:org.eclipse.paho.android.service:1.1.1'
     implementation 'com.android.support:appcompat-v7:27.1.1'
     implementation 'com.google.code.gson:gson:2.8.5'
+    implementation 'com.android.support:support-compat:27.1.1'
     api project(':mobicommons')
     //Note: use this for customization
     //implementation 'com.applozic.mobiframework:mobicommons:5.9' //Note: use this in case customization is not required

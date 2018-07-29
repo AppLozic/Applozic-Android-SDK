@@ -184,9 +184,10 @@ public class UserClientService extends MobiComKitClientService {
         MessageDatabaseService.recentlyAddedMessage.clear();
         MobiComDatabaseHelper.getInstance(context).delDatabase();
         mobiComUserPreference.setUrl(url);
-        Intent intent = new Intent(context, ApplozicMqttIntentService.class);
+        Intent intent = new Intent();
         intent.putExtra(ApplozicMqttIntentService.USER_KEY_STRING, userKeyString);
         intent.putExtra(ApplozicMqttIntentService.DEVICE_KEY_STRING, deviceKeyString);
+
         ApplozicMqttIntentService.enqueueWork(context, intent);
     }
 

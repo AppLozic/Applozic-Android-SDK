@@ -147,8 +147,17 @@ public class MobiComQuickConversationFragment extends Fragment implements Search
         recyclerView.addItemDecoration(dividerItemDecoration);
         recyclerView.setAdapter(recyclerAdapter);
         //recyclerView.addItemDecoration(new FooterItemDecoration(getContext(), recyclerView, R.layout.mobicom_message_list_header_footer));
-        toolbar = (Toolbar) getActivity().findViewById(R.id.my_toolbar);
-        toolbar.setClickable(false);
+
+        /**
+         * WishTrip custom code
+         **/
+//        toolbar = (Toolbar) getActivity().findViewById(R.id.my_toolbar);
+//        toolbar.setClickable(false);
+        /**
+         * WishTrip custom code -- END
+         **/
+
+
         fabButton = (ImageButton) list.findViewById(R.id.fab_start_new);
         loading = true;
         LinearLayout individualMessageSendLayout = (LinearLayout) list.findViewById(R.id.individual_message_send_layout);
@@ -202,28 +211,35 @@ public class MobiComQuickConversationFragment extends Fragment implements Search
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
 
+        /**
+         * WishTrip custom code
+         **/
 
-        if (alCustomizationSettings.isStartNewButton() || ApplozicSetting.getInstance(getContext()).isStartNewButtonVisible()) {
-            menu.findItem(R.id.start_new).setVisible(true);
-        }
-        if (alCustomizationSettings.isStartNewGroup() || ApplozicSetting.getInstance(getContext()).isStartNewGroupButtonVisible()) {
-            menu.findItem(R.id.conversations).setVisible(true);
-        }
-        if (alCustomizationSettings.isRefreshOption()) {
-            menu.findItem(R.id.refresh).setVisible(true);
-        }
-        if (alCustomizationSettings.isProfileOption()) {
-            menu.findItem(R.id.applozicUserProfile).setVisible(true);
-        }
-        if (alCustomizationSettings.isMessageSearchOption()) {
-            menu.findItem(R.id.menu_search).setVisible(true);
-        }
-        if (alCustomizationSettings.isBroadcastOption()) {
-            menu.findItem(R.id.broadcast).setVisible(true);
-        }
-        if (alCustomizationSettings.isLogoutOption()) {
-            menu.findItem(R.id.logout).setVisible(true);
-        }
+//        if (alCustomizationSettings.isStartNewButton() || ApplozicSetting.getInstance(getContext()).isStartNewButtonVisible()) {
+//            menu.findItem(R.id.start_new).setVisible(true);
+//        }
+//        if (alCustomizationSettings.isStartNewGroup() || ApplozicSetting.getInstance(getContext()).isStartNewGroupButtonVisible()) {
+//            menu.findItem(R.id.conversations).setVisible(true);
+//        }
+//        if (alCustomizationSettings.isRefreshOption()) {
+//            menu.findItem(R.id.refresh).setVisible(true);
+//        }
+//        if (alCustomizationSettings.isProfileOption()) {
+//            menu.findItem(R.id.applozicUserProfile).setVisible(true);
+//        }
+//        if (alCustomizationSettings.isMessageSearchOption()) {
+//            menu.findItem(R.id.menu_search).setVisible(true);
+//        }
+//        if (alCustomizationSettings.isBroadcastOption()) {
+//            menu.findItem(R.id.broadcast).setVisible(true);
+//        }
+//        if (alCustomizationSettings.isLogoutOption()) {
+//            menu.findItem(R.id.logout).setVisible(true);
+//        }
+
+        /**
+         * WishTrip custom code -- END
+         **/
     }
 
     public void addMessage(final Message message) {
@@ -514,8 +530,18 @@ public class MobiComQuickConversationFragment extends Fragment implements Search
     @Override
     public void onResume() {
         //Assigning to avoid notification in case if quick conversation fragment is opened....
-        toolbar.setTitle(getResources().getString(R.string.chats));
-        toolbar.setSubtitle("");
+
+        /**
+         * WishTrip custom code
+         **/
+
+//        toolbar.setTitle(getResources().getString(R.string.chats));
+//        toolbar.setSubtitle("");
+
+        /**
+         *  WishTrip custom code -- END
+         **/
+
         BroadcastService.selectMobiComKitAll();
         super.onResume();
         if (recyclerView != null) {

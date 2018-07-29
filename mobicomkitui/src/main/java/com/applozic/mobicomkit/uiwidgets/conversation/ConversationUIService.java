@@ -113,23 +113,34 @@ public class ConversationUIService {
     private Contact contact;
     private NotificationManager notificationManager;
 
+    /**
+     * WishTrip custom code
+     **/
+
+    MobiComQuickConversationFragment mobiComQuickConversationFragment;
+
+    public ConversationUIService(FragmentActivity fragmentActivity,MobiComQuickConversationFragment mobiComQuickConversationFragment) {
+        this.fragmentActivity = fragmentActivity;
+        this.mobiComQuickConversationFragment = mobiComQuickConversationFragment;
+        this.baseContactService = new AppContactService(fragmentActivity);
+        this.notificationManager  = (NotificationManager) fragmentActivity.getSystemService(Context.NOTIFICATION_SERVICE);
+        this.userPreference = MobiComUserPreference.getInstance(fragmentActivity);
+    }
+
+    public MobiComQuickConversationFragment getQuickConversationFragment() {
+        return mobiComQuickConversationFragment;
+    }
+
+    /**
+     * WishTrip custom code -- END
+     **/
+
     public ConversationUIService(FragmentActivity fragmentActivity) {
         this.fragmentActivity = fragmentActivity;
         this.baseContactService = new AppContactService(fragmentActivity);
         this.userPreference = MobiComUserPreference.getInstance(fragmentActivity);
         this.notificationManager = (NotificationManager) fragmentActivity.getSystemService(Context.NOTIFICATION_SERVICE);
         this.fileClientService = new FileClientService(fragmentActivity);
-    }
-
-    public MobiComQuickConversationFragment getQuickConversationFragment() {
-
-        MobiComQuickConversationFragment quickConversationFragment = (MobiComQuickConversationFragment) UIService.getFragmentByTag(fragmentActivity, QUICK_CONVERSATION_FRAGMENT);
-
-        if (quickConversationFragment == null) {
-            quickConversationFragment = new MobiComQuickConversationFragment();
-            ConversationActivity.addFragment(fragmentActivity, quickConversationFragment, QUICK_CONVERSATION_FRAGMENT);
-        }
-        return quickConversationFragment;
     }
 
     public ConversationFragment getConversationFragment() {
@@ -421,22 +432,46 @@ public class ConversationUIService {
         }
     }
 
+    /**
+     * WishTrip custom code
+     **/
+
+//    public void addMessage(Message message) {
+//        if (message.isUpdateMessage()) {
+//            if (!BroadcastService.isQuick()) {
+//                return;
+//            }
+//
+//            MobiComQuickConversationFragment fragment = (MobiComQuickConversationFragment) UIService.getFragmentByTag(fragmentActivity, QUICK_CONVERSATION_FRAGMENT);
+//            if (fragment != null) {
+//                if (message.isHidden()) {
+//                    fragment.refreshView();
+//                } else {
+//                    fragment.addMessage(message);
+//                }
+//            }
+//        }
+//    }
+
     public void addMessage(Message message) {
         if (message.isUpdateMessage()) {
             if (!BroadcastService.isQuick()) {
                 return;
             }
 
-            MobiComQuickConversationFragment fragment = (MobiComQuickConversationFragment) UIService.getFragmentByTag(fragmentActivity, QUICK_CONVERSATION_FRAGMENT);
-            if (fragment != null) {
-                if (message.isHidden()) {
-                    fragment.refreshView();
-                } else {
-                    fragment.addMessage(message);
+            if (mobiComQuickConversationFragment != null) {
+                if(message.isHidden()){
+                    mobiComQuickConversationFragment.refreshView();
+                }else {
+                    mobiComQuickConversationFragment.addMessage(message);
                 }
             }
         }
     }
+
+    /**
+     * WishTrip custom code -- END
+     **/
 
     public void updateLastMessage(String keyString, String userId) {
         if (!BroadcastService.isQuick()) {

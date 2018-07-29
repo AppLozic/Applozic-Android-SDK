@@ -27,6 +27,11 @@ public class MobiComKitBroadcastReceiver extends BroadcastReceiver {
     private ConversationUIService conversationUIService;
     private BaseContactService baseContactService;
 
+    public MobiComKitBroadcastReceiver(FragmentActivity fragmentActivity,ConversationUIService conversationUIService) {
+        this.conversationUIService = conversationUIService;
+        this.baseContactService = new AppContactService(fragmentActivity);
+    }
+
     public MobiComKitBroadcastReceiver(FragmentActivity fragmentActivity) {
         this.conversationUIService = new ConversationUIService(fragmentActivity);
         this.baseContactService = new AppContactService(fragmentActivity);
