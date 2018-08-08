@@ -3,6 +3,7 @@ package com.applozic.mobicomkit.api.account.user;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -316,7 +317,7 @@ public class UserClientService extends MobiComKitClientService {
     }
 
     public void updateUserDisplayName(final String userId, final String displayName) {
-        Thread thread = new Thread(new Runnable() {
+        AsyncTask.THREAD_POOL_EXECUTOR.execute(new Runnable() {
             @Override
             public void run() {
                 String parameters = "";
@@ -336,8 +337,6 @@ public class UserClientService extends MobiComKitClientService {
 
             }
         });
-        thread.setPriority(android.os.Process.THREAD_PRIORITY_BACKGROUND);
-        thread.start();
     }
 
     public ApiResponse userBlock(String userId, boolean block) {

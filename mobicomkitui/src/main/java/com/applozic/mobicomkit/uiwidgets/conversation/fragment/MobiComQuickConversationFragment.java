@@ -112,14 +112,12 @@ public class MobiComQuickConversationFragment extends Fragment implements Search
         conversationUIService = new ConversationUIService(getActivity());
         baseContactService = new AppContactService(getActivity());
         messageDatabaseService = new MessageDatabaseService(getActivity());
-        Thread thread = new Thread(new Runnable() {
+        AsyncTask.THREAD_POOL_EXECUTOR.execute(new Thread(new Runnable() {
             @Override
             public void run() {
                 MobiComUserPreference.getInstance(getActivity()).setDeviceTimeOffset(DateUtils.getTimeDiffFromUtc());
             }
-        });
-        thread.setPriority(Process.THREAD_PRIORITY_BACKGROUND);
-        thread.start();
+        }));
         setHasOptionsMenu(true);
         BroadcastService.lastIndexForChats = 0;
     }

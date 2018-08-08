@@ -1,6 +1,7 @@
 package com.applozic.mobicomkit.api;
 
 import android.content.Context;
+import android.os.AsyncTask;
 import android.os.Process;
 import android.text.TextUtils;
 
@@ -216,7 +217,7 @@ public class ApplozicMqttService extends MobiComKitClientService implements Mqtt
                 String isTypingStatus = typingResponse[2];
                 BroadcastService.sendUpdateTypingBroadcast(context, BroadcastService.INTENT_ACTIONS.UPDATE_TYPING_STATUS.toString(), applicationId, userId, isTypingStatus);
             } else {
-                Thread thread = new Thread(new Runnable() {
+                AsyncTask.THREAD_POOL_EXECUTOR.execute(new Runnable() {
                     @Override
                     public void run() {
                         try {
@@ -399,8 +400,6 @@ public class ApplozicMqttService extends MobiComKitClientService implements Mqtt
 
                     }
                 });
-                thread.setPriority(Process.THREAD_PRIORITY_BACKGROUND);
-                thread.start();
             }
 
         } catch (Exception e) {

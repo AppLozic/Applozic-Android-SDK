@@ -486,8 +486,8 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
         ImageView closeAttachmentLayout = (ImageView) attachmentLayout.findViewById(R.id.close_attachment_layout);
 
         swipeLayout = (SwipeRefreshLayout) list.findViewById(R.id.swipe_container);
-        swipeLayout.setColorScheme(android.R.color.holo_blue_bright,
-                android.R.color.holo_green_light,
+        swipeLayout.setColorScheme(android.R.color.holo_orange_light,
+                android.R.color.holo_red_light,
                 android.R.color.holo_orange_light,
                 android.R.color.holo_red_light);
         //listView.setMessageEditText(messageEditText);

@@ -1,6 +1,7 @@
 package com.applozic.mobicomkit;
 
 import android.content.Context;
+import android.os.AsyncTask;
 import android.os.Process;
 import android.text.TextUtils;
 
@@ -47,7 +48,7 @@ public class ConversationRunnables {
     }
 
     public void startSync() {
-        Thread syncThread = new Thread(new Runnable() {
+        AsyncTask.THREAD_POOL_EXECUTOR.execute(new Runnable() {
             @Override
             public void run() {
                 if (isMutedList) {
@@ -79,9 +80,6 @@ public class ConversationRunnables {
                 }
             }
         });
-
-        syncThread.setPriority(Process.THREAD_PRIORITY_BACKGROUND);
-        syncThread.start();
     }
 
     private void syncConversation() {
