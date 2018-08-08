@@ -185,10 +185,10 @@ public class MobiComQuickConversationFragment extends Fragment implements Search
         fabButton.setVisibility(alCustomizationSettings.isStartNewFloatingButton() ? View.VISIBLE : View.GONE);
 
         swipeLayout = (SwipeRefreshLayout) list.findViewById(R.id.swipe_container);
-        swipeLayout.setColorScheme(android.R.color.holo_blue_bright,
-                android.R.color.holo_green_light,
+        swipeLayout.setColorScheme(android.R.color.holo_orange_light,
+                android.R.color.black,
                 android.R.color.holo_orange_light,
-                android.R.color.holo_red_light);
+                android.R.color.black);
 
         recyclerView.setLongClickable(true);
         registerForContextMenu(recyclerView);
