@@ -438,6 +438,16 @@ public class QuickConversationAdapter extends RecyclerView.Adapter implements Fi
             attachedFile = (TextView) itemView.findViewById(R.id.attached_file);
             attachmentIcon = (ImageView) itemView.findViewById(R.id.attachmentIcon);
             unReadCountTextView = (TextView) itemView.findViewById(R.id.unreadSmsCount);
+            if (android.os.Build.VERSION.SDK_INT >= 17) {
+
+                messageTextView.setLayoutDirection(View.LAYOUT_DIRECTION_LTR);
+                messageTextView.setTextDirection(View.TEXT_DIRECTION_LTR);
+                messageTextView.setTextAlignment(View.TEXT_ALIGNMENT_VIEW_START);
+
+                smReceivers.setLayoutDirection(View.LAYOUT_DIRECTION_LTR);
+                smReceivers.setTextDirection(View.TEXT_DIRECTION_LTR);
+                smReceivers.setTextAlignment(View.TEXT_ALIGNMENT_VIEW_START);
+            }
             smTime = (TextView) itemView.findViewById(R.id.smTime);
             itemView.setOnClickListener(this);
             itemView.setOnCreateContextMenuListener(this);

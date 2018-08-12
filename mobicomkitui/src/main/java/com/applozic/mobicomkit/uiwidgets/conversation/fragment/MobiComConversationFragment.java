@@ -380,7 +380,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
         }
 
         if (MobiComUserPreference.getInstance(getContext()).getPricingPackage() == 1) {
-            applozicLabel.setVisibility(VISIBLE);
+//            applozicLabel.setVisibility(VISIBLE);
         }
 
         if (alCustomizationSettings.isPoweredByApplozic()) {
@@ -699,16 +699,18 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
 
         });
 
-        messageEditText.setOnKeyListener(new View.OnKeyListener() {
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
-                if ((event.getAction() == KeyEvent.ACTION_DOWN) &&
-                        (keyCode == KeyEvent.KEYCODE_ENTER)) {
-                    Utils.toggleSoftKeyBoard(getActivity(), true);
-                    return true;
-                }
-                return false;
-            }
-        });
+//          wish-trip custom code
+//
+//        messageEditText.setOnKeyListener(new View.OnKeyListener() {
+//            public boolean onKey(View v, int keyCode, KeyEvent event) {
+//                if ((event.getAction() == KeyEvent.ACTION_DOWN) &&
+//                        (keyCode == KeyEvent.KEYCODE_ENTER)) {
+//                    Utils.toggleSoftKeyBoard(getActivity(), true);
+//                    return true;
+//                }
+//                return false;
+//            }
+//        });
 
 
         recordButton.setOnClickListener(new View.OnClickListener() {
@@ -862,16 +864,20 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
                         }
                     }
                 } else {
-                    if (alCustomizationSettings.isUserProfileFragment()) {
-                        UserProfileFragment userProfileFragment = (UserProfileFragment) UIService.getFragmentByTag(getActivity(), ConversationUIService.USER_PROFILE_FRAMENT);
-                        if (userProfileFragment == null) {
-                            userProfileFragment = new UserProfileFragment();
-                            Bundle bundle = new Bundle();
-                            bundle.putSerializable(ConversationUIService.CONTACT, contact);
-                            userProfileFragment.setArguments(bundle);
-                            ConversationActivity.addFragment(getActivity(), userProfileFragment, ConversationUIService.USER_PROFILE_FRAMENT);
-                        }
-                    }
+
+                    /*WishTrip code*/
+//                    long userID = Long.parseLong(contact.getMetadata().get("id"));
+                    WishTripBridge.openProfileActivity(getContext(), 33l);
+//                    if (alCustomizationSettings.isUserProfileFragment()) {
+//                        UserProfileFragment userProfileFragment = (UserProfileFragment) UIService.getFragmentByTag(getActivity(), ConversationUIService.USER_PROFILE_FRAMENT);
+//                        if (userProfileFragment == null) {
+//                            userProfileFragment = new UserProfileFragment();
+//                            Bundle bundle = new Bundle();
+//                            bundle.putSerializable(ConversationUIService.CONTACT, contact);
+//                            userProfileFragment.setArguments(bundle);
+//                            ConversationActivity.addFragment(getActivity(), userProfileFragment, ConversationUIService.USER_PROFILE_FRAMENT);
+//                        }
+//                    }
 
                 }
             }
