@@ -16,10 +16,6 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
 
-        ci {
-            initWith(release)
-        }
-
         staging {
             initWith(release)
         }
@@ -33,6 +29,10 @@ android {
         }
 
         ci_production {
+            initWith(release)
+        }
+
+        ci {
             initWith(release)
         }
     }

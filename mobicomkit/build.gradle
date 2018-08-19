@@ -16,9 +16,6 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
-        ci {
-            initWith(release)
-        }
 
         staging {
             initWith(release)
@@ -29,6 +26,10 @@ android {
         }
 
         superLogger {
+            initWith(release)
+        }
+
+        ci{
             initWith(release)
         }
 
