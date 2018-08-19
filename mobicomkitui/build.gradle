@@ -31,6 +31,10 @@ android {
         superLogger {
             initWith(release)
         }
+
+        ci_production {
+            initWith(release)
+        }
     }
     lintOptions {
 
