@@ -867,8 +867,8 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
                 } else {
 
                     /*WishTrip code*/
-//                    long userID = Long.parseLong(contact.getMetadata().get("id"));
-                    WishTripBridge.openProfileActivity(getContext(), 33l);
+                    long userID = Long.parseLong(contact.getMetadata().get("wt_user_id"));
+                    WishTripBridge.openProfileActivity(getContext(), userID);
 //                    if (alCustomizationSettings.isUserProfileFragment()) {
 //                        UserProfileFragment userProfileFragment = (UserProfileFragment) UIService.getFragmentByTag(getActivity(), ConversationUIService.USER_PROFILE_FRAMENT);
 //                        if (userProfileFragment == null) {
