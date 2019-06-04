@@ -98,7 +98,7 @@ public class NotificationService  {
             public void run() {
                 super.run();
                 try {
-                    Thread.sleep(5000);//休眠3秒
+                    Thread.sleep(5000);
                     vibrator.cancel();
                 } catch (InterruptedException e) {
                     e.printStackTrace();
