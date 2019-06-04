@@ -1,11 +1,20 @@
 package com.applozic.mobicomkit.broadcast;
 
+import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
+import android.os.Bundle;
+import android.os.Looper;
+import android.os.Vibrator;
 import android.support.v4.content.LocalBroadcastManager;
+import android.view.LayoutInflater;
 
 import com.applozic.mobicomkit.ApplozicClient;
+import com.applozic.mobicomkit.R;
 import com.applozic.mobicomkit.api.MobiComKitConstants;
 import com.applozic.mobicomkit.api.account.user.MobiComUserPreference;
 import com.applozic.mobicomkit.api.conversation.Message;
@@ -22,7 +31,7 @@ import com.applozic.mobicommons.people.contact.Contact;
 /**
  * Created by devashish on 24/1/15.
  */
-public class BroadcastService {
+public class BroadcastService extends Activity{
 
     private static final String TAG = "BroadcastService";
     private static final String PACKAGE_NAME = "com.package.name";
@@ -38,6 +47,14 @@ public class BroadcastService {
     public static int lastIndexForChats = 0;
     private static boolean contextBasedChatEnabled = false;
     public static String currentUserProfileUserId = null;
+    public static SharedPreferences MarkList;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        LayoutInflater inflater = getLayoutInflater();
+
+    }
 
     public static void selectMobiComKitAll() {
         currentUserId = MOBICOMKIT_ALL;
@@ -140,18 +157,44 @@ public class BroadcastService {
                 Contact contact = null;
                 if (message.getConversationId() != null) {
                     ConversationService.getInstance(context).getConversation(message.getConversationId());
+                    MarkList =context.getSharedPreferences("MarkList", Context.MODE_PRIVATE);
+                    String MarkID=MarkList.getString("Mark_ID",null);
+                    if(message.getContactIds().equals(MarkID)){
+                        notificationService.warn();
+                    }
+
                 }
+
                 if (message.getGroupId() == null) {
                     contact = new AppContactService(context).getContactById(message.getContactIds());
+                    MarkList =context.getSharedPreferences("MarkList", Context.MODE_PRIVATE);
+                    String MarkID=MarkList.getString("Mark_ID",null);
+                    if(message.getContactIds().equals(MarkID)){
+                        notificationService.warn();
+                    }
+
                 }
                 if (ApplozicClient.getInstance(context).isNotificationStacking()) {
                     notificationService.notifyUser(contact, channel, message, index);
+                    MarkList =context.getSharedPreferences("MarkList", Context.MODE_PRIVATE);
+                    String MarkID=MarkList.getString("Mark_ID",null);
+                    if(message.getContactIds().equals(MarkID)){
+                        notificationService.warn();
+                    }
+
                 } else {
+                    MarkList =context.getSharedPreferences("MarkList", Context.MODE_PRIVATE);
+                    String MarkID=MarkList.getString("Mark_ID",null);
                     notificationService.notifyUserForNormalMessage(contact, channel, message, index);
+                    if(message.getContactIds().equals(MarkID)){
+                        notificationService.warn();
+                    }
+
                 }
             }
         }
     }
+
 
 
     public static void sendUpdateLastSeenAtTimeBroadcast(Context context, String action, String contactId) {

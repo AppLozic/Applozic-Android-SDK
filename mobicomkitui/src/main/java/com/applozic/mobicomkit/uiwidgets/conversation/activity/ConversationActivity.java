@@ -3,7 +3,9 @@ package com.applozic.mobicomkit.uiwidgets.conversation.activity;
 import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.content.ActivityNotFoundException;
 import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -24,6 +26,7 @@ import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.provider.MediaStore;
 import android.provider.Settings;
+import android.speech.RecognizerIntent;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.DialogFragment;
@@ -114,6 +117,7 @@ import com.theartofdev.edmodo.cropper.CropImageView;
 import java.io.File;
 import java.lang.ref.WeakReference;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -124,7 +128,7 @@ import java.util.Set;
  * Created by devashish on 6/25/2015.
  */
 public class ConversationActivity extends AppCompatActivity implements MessageCommunicator, MobiComKitActivityInterface, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener, ActivityCompat.OnRequestPermissionsResultCallback, MobicomkitUriListener, SearchView.OnQueryTextListener, OnClickReplyInterface, ALStoragePermissionListener, CustomToolbarListener {
-
+    protected static final int RESULT_SPEECH = 1;
     public static final int LOCATION_SERVICE_ENABLE = 1001;
     public static final String TAKE_ORDER = "takeOrder";
     public static final String CONTACT = "contact";
@@ -646,6 +650,37 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
                 }
                 return;
             }
+            switch (requestCode) {
+                case RESULT_SPEECH: {
+                    if (resultCode == RESULT_OK && data != null) {
+                        //返回结果是一个list，我们一般取的是第一个最匹配的结果
+                        final ArrayList<String> text = data
+                                .getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+                        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                        builder.setTitle("Identify_Result")
+                                .setMessage(text.get(0))
+                                .setPositiveButton("Copy", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog,
+                                                        int which) {
+                                        ClipboardManager cm = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+                                        ClipData mClipData = ClipData.newPlainText("Label", text.get(0));
+                                        cm.setPrimaryClip(mClipData);
+                                        Toast.makeText(getApplicationContext(),"Copy Successfully !",Toast.LENGTH_LONG).show();
+
+                                    }
+                                })
+                                .setNegativeButton("Retry", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog,
+                                                        int which) {
+                                        SpeechToWord();
+                                    }
+                                })
+                                .show();
+
+                }
+                    break;}}
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -1228,6 +1263,25 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
             startActivityForResult(contactIntent, MultimediaOptionFragment.REQUEST_CODE_CONTACT_SHARE);
         }
     }
+  public void SpeechToWord(){
+      Intent intent = new Intent(
+              RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+      //设置模式，目前设置的是自由识别模式
+      intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+      //提示语言开始文字，就是效果图上面的文字
+      intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Please start your voice");
+      try {
+          startActivityForResult(intent, RESULT_SPEECH);
+          Toast.makeText(this,"",Toast.LENGTH_LONG).show();
+      } catch (ActivityNotFoundException a) {
+          Toast t = Toast.makeText(this,
+                  "Opps! Your device doesn't support Speech to Text",
+                  Toast.LENGTH_SHORT);
+          t.show();
+      }
+
+  }
+
 
     public void imageCapture() {
         try {

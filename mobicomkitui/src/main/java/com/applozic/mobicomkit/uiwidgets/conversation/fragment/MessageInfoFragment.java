@@ -2,6 +2,7 @@ package com.applozic.mobicomkit.uiwidgets.conversation.fragment;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.drawable.GradientDrawable;
 import android.os.AsyncTask;
@@ -43,6 +44,7 @@ import com.applozic.mobicomkit.contact.VCFContactData;
 import com.applozic.mobicomkit.uiwidgets.R;
 import com.applozic.mobicomkit.uiwidgets.alphanumbericcolor.AlphaNumberColorUtil;
 import com.applozic.mobicomkit.uiwidgets.conversation.activity.ConversationActivity;
+import com.applozic.mobicomkit.uiwidgets.conversation.adapter.QuickConversationAdapter;
 import com.applozic.mobicommons.commons.core.utils.DateUtils;
 import com.applozic.mobicommons.commons.core.utils.LocationUtils;
 import com.applozic.mobicommons.commons.core.utils.Utils;
@@ -70,7 +72,7 @@ public class MessageInfoFragment extends Fragment {
     private BaseContactService contactService;
     private FileClientService fileClientService;
     private String geoApiKey;
-
+    public SharedPreferences MarkList;
     public MessageInfoFragment() {
     }
 
@@ -81,6 +83,9 @@ public class MessageInfoFragment extends Fragment {
         contactService = new AppContactService(getContext());
         fileClientService = new FileClientService(getContext());
         geoApiKey = Utils.getMetaDataValue(getContext().getApplicationContext(), ConversationActivity.GOOGLE_API_KEY_META_DATA);
+        MarkList = MessageInfoFragment.this.getContext().getSharedPreferences("MarkList", Context.MODE_PRIVATE);
+        String MarkID=MarkList.getString("Mark_ID",null);
+
     }
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,

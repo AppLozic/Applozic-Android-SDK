@@ -1,25 +1,33 @@
 package com.applozic.mobicomkit.uiwidgets.conversation;
 
+import android.app.Activity;
+import android.content.ActivityNotFoundException;
+import android.content.Intent;
 import android.net.Uri;
+import android.speech.RecognizerIntent;
 import android.support.v4.app.FragmentActivity;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.PopupWindow;
+import android.widget.Toast;
 
 import com.applozic.mobicomkit.uiwidgets.R;
 import com.applozic.mobicomkit.uiwidgets.conversation.activity.ConversationActivity;
 import com.applozic.mobicomkit.uiwidgets.uilistener.ALStoragePermission;
 import com.applozic.mobicomkit.uiwidgets.uilistener.ALStoragePermissionListener;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import static com.applozic.mobicomkit.uiwidgets.conversation.fragment.MultimediaOptionFragment.RESULT_OK;
 
 /**
  * Created by reytum on 19/3/16.
  */
-public class MultimediaOptionsGridView {
+public class MultimediaOptionsGridView  extends Activity {
     public PopupWindow showPopup;
-    FragmentActivity context;
+    public FragmentActivity context;
     GridView multimediaOptions;
     private Uri capturedImageUri;
     private ALStoragePermissionListener storagePermissionListener;
@@ -132,7 +140,13 @@ public class MultimediaOptionsGridView {
             }
         } else if (key.equals(context.getString(R.string.al_price))) {
             new ConversationUIService(context).sendPriceMessage();
+        } else if (key.equals(context.getString(R.string.al_speak))){
+            ((ConversationActivity) context).SpeechToWord();
+
         }
         multimediaOptions.setVisibility(View.GONE);
     }
+
+
+
 }

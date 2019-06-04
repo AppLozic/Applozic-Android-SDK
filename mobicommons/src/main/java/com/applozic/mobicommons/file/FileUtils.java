@@ -123,7 +123,7 @@ public class FileUtils {
         }
     };
 
-    private FileUtils() {
+    public FileUtils() {
     } //private constructor to enforce Singleton pattern
 
     /**

@@ -1,8 +1,10 @@
 package com.applozic.mobicomkit.uiwidgets.conversation.fragment;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
+import android.speech.RecognizerIntent;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -30,10 +32,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import static com.applozic.mobicomkit.uiwidgets.conversation.fragment.MultimediaOptionFragment.RESULT_OK;
+
 
 public class ConversationFragment extends MobiComConversationFragment implements SearchListFragment {
 
-    public static final int ATTCHMENT_OPTIONS = 6;
+    public static final int ATTCHMENT_OPTIONS = 7;
     private static final String TAG = "ConversationFragment";
     private final static String CONTACT = "CONTACT";
     private final static String CHANNEL = "CHANNEL";
@@ -45,7 +49,6 @@ public class ConversationFragment extends MobiComConversationFragment implements
     private List<String> attachmentKey = new ArrayList<>();
     private List<String> attachmentText = new ArrayList<>();
     private List<String> attachmentIcon = new ArrayList<>();
-
     public static ConversationFragment newInstance(Contact contact, Channel channel, Integer conversationId, String searchString) {
         ConversationFragment f = new ConversationFragment();
         Bundle args = new Bundle();
@@ -78,6 +81,7 @@ public class ConversationFragment extends MobiComConversationFragment implements
             }
         }
     }
+
 
     public void attachLocation(Location mCurrentLocation) {
         String address = LocationUtils.getAddress(getActivity(), mCurrentLocation);

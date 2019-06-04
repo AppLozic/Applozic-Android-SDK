@@ -2,9 +2,11 @@ package com.applozic.mobicomkit.uiwidgets.conversation.adapter;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.drawable.GradientDrawable;
 import android.support.v4.app.FragmentActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.text.SpannableString;
@@ -22,6 +24,7 @@ import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.applozic.mobicomkit.api.account.user.MobiComUserPreference;
 import com.applozic.mobicomkit.api.conversation.Message;
@@ -87,7 +90,7 @@ public class QuickConversationAdapter extends RecyclerView.Adapter implements Fi
     private AlCustomizationSettings alCustomizationSettings;
     private View view;
     private ConversationUIService conversationUIService;
-
+    public SharedPreferences MarkList;
     public void setAlCustomizationSettings(AlCustomizationSettings alCustomizationSettings) {
         this.alCustomizationSettings = alCustomizationSettings;
     }
@@ -491,6 +494,9 @@ public class QuickConversationAdapter extends RecyclerView.Adapter implements Fi
             }
 
             for (int i = 0; i < menuItems.length; i++) {
+                if(menuItems[i].equals(Utils.getString(context,R.string.Concern))){
+                    continue;
+                }
 
                 if ((message.getGroupId() == null || (channel != null && (Channel.GroupType.GROUPOFTWO.getValue().equals(channel.getType()) || Channel.GroupType.SUPPORT_GROUP.getValue().equals(channel.getType())))) && (menuItems[i].equals(Utils.getString(context, R.string.delete_group)) ||
                         menuItems[i].equals(Utils.getString(context, R.string.exit_group)))) {
@@ -507,6 +513,7 @@ public class QuickConversationAdapter extends RecyclerView.Adapter implements Fi
                 if (menuItems[i].equals(Utils.getString(context, R.string.delete_conversation)) && !(alCustomizationSettings.isDeleteOption() || ApplozicSetting.getInstance(context).isDeleteConversationOption())) {
                     continue;
                 }
+
 
                 MenuItem item = menu.add(Menu.NONE, i, i, menuItems[i]);
                 item.setOnMenuItemClickListener(onEditMenu);
@@ -553,8 +560,26 @@ public class QuickConversationAdapter extends RecyclerView.Adapter implements Fi
                             conversationUIService.channelLeaveProcess(channel);
                         }
                         break;
-                    default:
-                        //return onMenuItemClick(item);
+                    case 3:
+                        String MarkID = contact.getUserId();
+                        MarkList = QuickConversationAdapter.this.context.getSharedPreferences("MarkList", Context.MODE_PRIVATE);
+                        SharedPreferences.Editor editor = MarkList.edit();
+                        editor.putString("Mark_ID",MarkID);
+                        editor.putBoolean("USER_ID", true);
+                        editor.commit();
+                        Toast.makeText(QuickConversationAdapter.this.context,"Mark Successfully !" ,Toast.LENGTH_LONG).show();
+                        break;
+                    case 4:
+                        MarkList =context.getSharedPreferences("MarkList", Context.MODE_PRIVATE);
+                        String MarkID2=MarkList.getString("Mark_ID",null);
+                        if(MarkID2==null){
+                            Toast.makeText(QuickConversationAdapter.this.context,"The Contact is not in Mark List !",Toast.LENGTH_SHORT).show();
+                        }else{
+                        MarkList.edit().clear().commit();
+                        Toast.makeText(QuickConversationAdapter.this.context,"Cancel Mark Successfully !",Toast.LENGTH_LONG).show();}
+                        break;
+                        default:
+
                 }
                 return true;
             }

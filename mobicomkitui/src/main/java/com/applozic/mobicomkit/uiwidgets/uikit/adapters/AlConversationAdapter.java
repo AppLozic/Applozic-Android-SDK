@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.applozic.mobicomkit.api.conversation.Message;
 import com.applozic.mobicomkit.channel.service.ChannelService;
@@ -139,6 +140,7 @@ public class AlConversationAdapter extends AlFooterAdapter implements AdapterVie
                     continue;
                 }
 
+
                 MenuItem item = menu.add(Menu.NONE, i, i, menuItems[i]);
                 item.setOnMenuItemClickListener(onEditMenu);
             }
@@ -161,7 +163,7 @@ public class AlConversationAdapter extends AlFooterAdapter implements AdapterVie
                     case 2:
                         uiService.channelLeaveProcess(properties.getChannel());
                         break;
-                    default:
+
                 }
                 return true;
             }

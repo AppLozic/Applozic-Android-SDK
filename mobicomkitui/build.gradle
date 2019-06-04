@@ -50,6 +50,9 @@ dependencies {
     implementation "com.android.support:cardview-v7:${rootProject.hasProperty("supportLibVersion") ? rootProject.supportLibVersion : defaultSupportLibVersion}"
     implementation "com.android.support.constraint:constraint-layout:${rootProject.hasProperty("constraintLayoutVersion") ? rootProject.constraintLayoutVersion : defaultConstraintLayoutVersion}"
     api project(':mobicomkit')
+
+
+    //implementation project (':mobicomkit')
     //Note: use this for customization
     //api 'com.applozic.communication.message:mobicomkit:5.46' //Note: use this in case customization is not required
 }

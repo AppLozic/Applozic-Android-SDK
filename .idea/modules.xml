@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/Android-SDK-Dev.iml" filepath="$PROJECT_DIR$/Android-SDK-Dev.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Applozic-Android-SDK.iml" filepath="$PROJECT_DIR$/Applozic-Android-SDK.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/mobicomkit/mobicomkit.iml" filepath="$PROJECT_DIR$/mobicomkit/mobicomkit.iml" />
       <module fileurl="file://$PROJECT_DIR$/mobicomkitui/mobicomkitui.iml" filepath="$PROJECT_DIR$/mobicomkitui/mobicomkitui.iml" />

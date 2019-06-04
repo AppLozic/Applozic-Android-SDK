@@ -31,12 +31,15 @@
         <item>Info</item>
         <item>Share</item>
         <item>Reply</item>
+        <item>Identify</item>
     </string-array>
 
     <string-array name="conversation_options_menu">
         <item>Delete conversation</item>
         <item>Delete group</item>
         <item>Exit group</item>
+        <item>Bookmark</item>
+        <item>Cancel Bookmark</item>
     </string-array>
 
     <!--Group member list menu -->
@@ -88,6 +91,7 @@
         <item>Audio</item>
         <item>Video</item>
         <item>Contact</item>
+        <item>Speak</item>
     </string-array>
 
     <string-array name="multimediaOptions_without_price_key">
@@ -97,6 +101,7 @@
         <item>:audio</item>
         <item>:video</item>
         <item>:contact</item>
+        <item>:speak</item>
     </string-array>
 
     <string-array name="multimediaOptionIcons_without_price">
@@ -106,6 +111,7 @@
         <item>&#xf130;</item>
         <item>&#xf03d;</item>
         <item>&#xf007;</item>
+        <item>&#xf170;</item>
     </string-array>
 
     <string-array name="notification_texts">

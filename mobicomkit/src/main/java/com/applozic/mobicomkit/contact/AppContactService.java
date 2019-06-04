@@ -1,7 +1,10 @@
 package com.applozic.mobicomkit.contact;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Bitmap;
+import android.os.Vibrator;
 import android.text.TextUtils;
 
 import com.applozic.mobicomkit.Applozic;
@@ -35,6 +38,7 @@ public class AppContactService implements BaseContactService {
         this.contactDatabase = new ContactDatabase(context);
         this.fileClientService = new FileClientService(context);
     }
+
 
     @Override
     public void add(Contact contact) {

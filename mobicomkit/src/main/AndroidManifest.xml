@@ -13,6 +13,8 @@
         android:name="android.permission.INTERNET"
         tools:node="merge" />
 
+    <uses-permission android:name="android.permission.VIBRATE" />
+
     <application>
         <meta-data
             android:name="main_folder_name"

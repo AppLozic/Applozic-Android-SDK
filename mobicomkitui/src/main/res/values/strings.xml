@@ -159,6 +159,7 @@
     <string name="al_video">:video</string>
     <string name="al_contact">:contact</string>
     <string name="al_price">:price</string>
+    <string name="al_speak">:speak</string>
     <string name="current_location">Current Location</string>
     <string name="price">Price</string>
     <string name="status">status</string>

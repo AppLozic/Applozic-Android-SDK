@@ -178,4 +178,5 @@ public class AlUIService {
         toast.setGravity(Gravity.CENTER, 0, 0);
         toast.show();
     }
+
 }

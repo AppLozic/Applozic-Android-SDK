@@ -68,6 +68,7 @@
     <string name="verification_success">Your phone number got verified successfully</string>
     <string name="launch_mobitexter_app">LAUNCH_MOBITEXTER</string>
     <string name="delete_conversation">Delete conversation</string>
+    <string name="Concern">Concern</string>
     <string name="sync_messages_from_server">Syncing with the server…</string>
 
     <string name="incoming_call">Received call</string>

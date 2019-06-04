@@ -11,6 +11,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
+import com.googlecode.tesseract.android.TessBaseAPI;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -27,6 +28,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.os.Environment;
 import android.os.Vibrator;
 import android.provider.OpenableColumns;
 import android.support.design.widget.FloatingActionButton;
@@ -164,8 +166,12 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Type;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.net.URLConnection;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -189,6 +195,9 @@ import static java.util.Collections.disjoint;
 abstract public class MobiComConversationFragment extends Fragment implements View.OnClickListener, GestureDetector.OnGestureListener, ContextMenuClickListener, ALRichMessageListener {
 
     //Todo: Increase the file size limit
+    private String path = Environment.getExternalStorageDirectory().toString() + "/Applozic/image";
+    public String filename;
+    public String fileURL;
     public static final int MAX_ALLOWED_FILE_SIZE = 10 * 1024 * 1024;
     private static final String TAG = "MobiComConversation";
     private static int count;
@@ -1755,8 +1764,63 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
 
                 }
                 break;
-        }
+
+            case 7:
+                if(message.hasAttachment()){
+                FileMeta fileMeta = message.getFileMetas();
+                if (fileMeta.getContentType().contains("image")) {
+                    filename= fileMeta.getName();
+                    fileMeta.getCreatedAtTime();
+                    fileURL=fileMeta.getThumbnailUrl();
+                TessBaseAPI tessBaseAPI = new TessBaseAPI();
+                tessBaseAPI.setDebug(true);
+                tessBaseAPI.init("/sdcard/", "eng");
+                String path = "/sdcard/Applozic/image/"+filename;
+                tessBaseAPI.setImage(GetBitmap(path));
+                final String result = tessBaseAPI.getUTF8Text();
+                tessBaseAPI.end();
+                AlertDialog.Builder builder = new AlertDialog.Builder(MobiComConversationFragment.this.getContext());
+                builder.setTitle("Identify Result")
+                        .setMessage(result)
+                        .setPositiveButton("Copy", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog,
+                                                int which) {
+                                android.text.ClipboardManager clipboard = (android.text.ClipboardManager) ApplozicService.getContext(getContext()).getSystemService(Context.CLIPBOARD_SERVICE);
+                                clipboard.setText(result);
+                            }
+                        })
+                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog,
+                                                int which) {
+                            }
+                        })
+                        .show();
+
+        }}
+        else {
+                    Toast.makeText(MobiComConversationFragment.this.getContext(),"Only Photo can identify",Toast.LENGTH_LONG).show();
+                }}
+
         return true;
+    }
+
+
+    public static Bitmap GetBitmap(String path) {
+        BitmapFactory.Options opts = new BitmapFactory.Options();
+        opts.inJustDecodeBounds = true;
+        opts.inPreferredConfig = Bitmap.Config.ARGB_8888;
+        BitmapFactory.decodeFile(path, opts);
+        int width = opts.outWidth+20;
+        int height = opts.outHeight+30;
+        float scaleWidth = 0.f, scaleHeight = 0.f;
+        opts.inJustDecodeBounds = false;
+        float scale = Math.max(scaleWidth, scaleHeight);
+        opts.inSampleSize = (int) scale;
+        WeakReference<Bitmap> weak = new WeakReference<Bitmap>(
+                BitmapFactory.decodeFile(path, opts));
+        return Bitmap.createScaledBitmap(weak.get(), width, height, true);
     }
 
     public void loadConversation(final Contact contact, final Channel channel, final Integer conversationId, final String searchString) {

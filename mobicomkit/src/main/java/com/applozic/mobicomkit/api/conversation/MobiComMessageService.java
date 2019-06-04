@@ -1,5 +1,6 @@
 package com.applozic.mobicomkit.api.conversation;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -47,7 +48,7 @@ import java.util.Timer;
 /**
  * Created by devashish on 24/3/15.
  */
-public class MobiComMessageService {
+public class MobiComMessageService extends Activity {
 
     public static final long DELAY = 60000L;
     private static final String TAG = "MobiComMessageService";

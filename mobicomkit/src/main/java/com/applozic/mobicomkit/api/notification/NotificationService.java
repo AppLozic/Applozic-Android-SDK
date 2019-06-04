@@ -1,14 +1,20 @@
 package com.applozic.mobicomkit.api.notification;
 
+import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.PendingIntent;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Looper;
+import android.os.Vibrator;
 import android.support.v4.app.NotificationCompat;
+import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
 import android.text.Spanned;
 import android.text.TextUtils;
@@ -41,7 +47,7 @@ import java.util.List;
  * Date: 17/3/13
  * Time: 7:36 PM
  */
-public class NotificationService {
+public class NotificationService  {
     public static final int NOTIFICATION_ID = 1000;
     private static final String TAG = "NotificationService";
     private static final String NOTIFICATION_SMALL_ICON_METADATA = "com.applozic.mobicomkit.notification.smallIcon";
@@ -61,6 +67,8 @@ public class NotificationService {
     private NotificationChannels notificationChannels;
     private String[] constArray = {MobiComKitConstants.LOCATION, MobiComKitConstants.AUDIO, MobiComKitConstants.VIDEO, MobiComKitConstants.ATTACHMENT};
     private String notificationFilePath;
+    Vibrator vibrator;
+    AlertDialog.Builder builder;
 
     public NotificationService(int iconResourceID, Context context, int wearable_action_label, int wearable_action_title, int wearable_send_icon) {
         this.context = context;
@@ -76,11 +84,29 @@ public class NotificationService {
         this.notificationFilePath = Applozic.getInstance(context).getCustomNotificationSound();
 
         notificationChannels = new NotificationChannels(context, notificationFilePath);
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             notificationChannels.prepareNotificationChannels();
         }
     }
+
+    public void warn(){
+        vibrator = (Vibrator)context.getSystemService(Context.VIBRATOR_SERVICE);
+        long[] pattern = {100, 400, 100, 400};
+        vibrator.vibrate(pattern, 2);
+        new Thread() {
+            @Override
+            public void run() {
+                super.run();
+                try {
+                    Thread.sleep(5000);//休眠3秒
+                    vibrator.cancel();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }.start();
+
+     }
 
     public void notifyUser(Contact contact, Channel channel, Message message, int index) {
         if (ApplozicClient.getInstance(context).isNotificationDisabled()) {

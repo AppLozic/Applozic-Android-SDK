@@ -1,8 +1,17 @@
 package com.applozic.mobicomkit.api.conversation.service;
 
+import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.os.Bundle;
+import android.os.Vibrator;
+import android.app.Service;
+import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.view.LayoutInflater;
 
+import com.applozic.mobicomkit.R;
 import com.applozic.mobicomkit.api.conversation.database.ConversationDatabaseService;
 import com.applozic.mobicomkit.channel.service.ChannelService;
 import com.applozic.mobicomkit.feed.ChannelFeed;
@@ -16,12 +25,14 @@ import java.util.List;
 /**
  * Created by sunil on 18/2/16.
  */
-public class ConversationService {
+public class ConversationService  {
 
     private static ConversationService conversationService;
     private Context context;
     private ConversationDatabaseService conversationDatabaseService;
     private ConversationClientService conversationClientService;
+   Vibrator vibrator;
+
 
     private ConversationService(Context context) {
         this.context = context;
@@ -29,7 +40,6 @@ public class ConversationService {
         conversationClientService = ConversationClientService.getInstance(context);
 
     }
-
     public synchronized static ConversationService getInstance(Context context) {
         if (conversationService == null) {
             conversationService = new ConversationService(ApplozicService.getContext(context));
@@ -117,4 +127,6 @@ public class ConversationService {
     public void updateTopicLocalImageUri(String imageUri, Integer conversationId) {
         conversationDatabaseService.updateTopicLocalImageUri(imageUri, conversationId);
     }
+
+
 }
