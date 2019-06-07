@@ -653,7 +653,6 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
             switch (requestCode) {
                 case RESULT_SPEECH: {
                     if (resultCode == RESULT_OK && data != null) {
-                        //返回结果是一个list，我们一般取的是第一个最匹配的结果
                         final ArrayList<String> text = data
                                 .getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
                         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -1263,12 +1262,11 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
             startActivityForResult(contactIntent, MultimediaOptionFragment.REQUEST_CODE_CONTACT_SHARE);
         }
     }
+
   public void SpeechToWord(){
       Intent intent = new Intent(
               RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
-      //设置模式，目前设置的是自由识别模式
       intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
-      //提示语言开始文字，就是效果图上面的文字
       intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Please start your voice");
       try {
           startActivityForResult(intent, RESULT_SPEECH);
