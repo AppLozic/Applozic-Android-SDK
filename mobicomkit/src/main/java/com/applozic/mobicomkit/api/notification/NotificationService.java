@@ -55,7 +55,7 @@ public class NotificationService  {
     MessageDatabaseService messageDatabaseService;
     List<Message> unReadMessageList = new ArrayList<>();
     long[] pattern = {0, 100, 1000, 300, 200, 100, 500, 200, 100};
-    private Context context;
+    private static Context context;
     private int iconResourceId;
     private int wearable_action_title;
     private int wearable_action_label;
@@ -67,7 +67,7 @@ public class NotificationService  {
     private NotificationChannels notificationChannels;
     private String[] constArray = {MobiComKitConstants.LOCATION, MobiComKitConstants.AUDIO, MobiComKitConstants.VIDEO, MobiComKitConstants.ATTACHMENT};
     private String notificationFilePath;
-    Vibrator vibrator;
+    static Vibrator vibrator;
     AlertDialog.Builder builder;
 
     public NotificationService(int iconResourceID, Context context, int wearable_action_label, int wearable_action_title, int wearable_send_icon) {
@@ -89,7 +89,7 @@ public class NotificationService  {
         }
     }
 
-    public void warn(){
+    public static void warn(){
         vibrator = (Vibrator)context.getSystemService(Context.VIBRATOR_SERVICE);
         long[] pattern = {100, 400, 100, 400};
         vibrator.vibrate(pattern, 2);
@@ -105,7 +105,6 @@ public class NotificationService  {
                 }
             }
         }.start();
-
      }
 
     public void notifyUser(Contact contact, Channel channel, Message message, int index) {

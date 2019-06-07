@@ -36,7 +36,7 @@ public class BroadcastService extends Activity{
     private static final String TAG = "BroadcastService";
     private static final String PACKAGE_NAME = "com.package.name";
     private static final String MOBICOMKIT_ALL = "MOBICOMKIT_ALL";
-
+    Context context = this;
     public static String currentUserId = null;
     public static Integer parentGroupKey = null;
     public static Integer currentConversationId = null;
@@ -160,7 +160,7 @@ public class BroadcastService extends Activity{
                     MarkList =context.getSharedPreferences("MarkList", Context.MODE_PRIVATE);
                     String MarkID=MarkList.getString("Mark_ID",null);
                     if(message.getContactIds().equals(MarkID)){
-                        notificationService.warn();
+                        NotificationService.warn();
                     }
 
                 }
@@ -170,7 +170,7 @@ public class BroadcastService extends Activity{
                     MarkList =context.getSharedPreferences("MarkList", Context.MODE_PRIVATE);
                     String MarkID=MarkList.getString("Mark_ID",null);
                     if(message.getContactIds().equals(MarkID)){
-                        notificationService.warn();
+                        NotificationService.warn();
                     }
 
                 }
@@ -179,22 +179,21 @@ public class BroadcastService extends Activity{
                     MarkList =context.getSharedPreferences("MarkList", Context.MODE_PRIVATE);
                     String MarkID=MarkList.getString("Mark_ID",null);
                     if(message.getContactIds().equals(MarkID)){
-                        notificationService.warn();
+                        NotificationService.warn();
                     }
-
                 } else {
                     MarkList =context.getSharedPreferences("MarkList", Context.MODE_PRIVATE);
                     String MarkID=MarkList.getString("Mark_ID",null);
                     notificationService.notifyUserForNormalMessage(contact, channel, message, index);
                     if(message.getContactIds().equals(MarkID)){
-                        notificationService.warn();
+                        NotificationService.warn();
                     }
 
                 }
             }
         }
-    }
 
+    }
 
 
     public static void sendUpdateLastSeenAtTimeBroadcast(Context context, String action, String contactId) {
