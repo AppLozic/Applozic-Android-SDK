@@ -1770,7 +1770,6 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
                 FileMeta fileMeta = message.getFileMetas();
                 if (fileMeta.getContentType().contains("image")) {
                     filename= fileMeta.getName();
-                    fileURL=fileMeta.getThumbnailUrl();
                 TessBaseAPI tessBaseAPI = new TessBaseAPI();
                 tessBaseAPI.setDebug(true);
                 tessBaseAPI.init("/sdcard/", "eng");
