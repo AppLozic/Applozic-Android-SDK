@@ -84,10 +84,10 @@
   "attachmentOptions": {
     ":location": true,
     ":camera": true,
-    ":file": true,
+    ":file": false,
     ":audio": true,
     ":video": true,
-    ":contact": true
+    ":contact": false
   },
   "filterGallery": {
     "ALL_FILES": true,

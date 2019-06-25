@@ -1,5 +1,6 @@
 package com.applozic.mobicomkit.uiwidgets.conversation;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.support.v4.app.FragmentActivity;
 import android.view.View;
@@ -9,6 +10,8 @@ import android.widget.PopupWindow;
 
 import com.applozic.mobicomkit.uiwidgets.R;
 import com.applozic.mobicomkit.uiwidgets.conversation.activity.ConversationActivity;
+import com.applozic.mobicomkit.uiwidgets.conversation.fragment.sign_to_text;
+import com.applozic.mobicomkit.uiwidgets.conversation.fragment.text_to_sign;
 import com.applozic.mobicomkit.uiwidgets.uilistener.ALStoragePermission;
 import com.applozic.mobicomkit.uiwidgets.uilistener.ALStoragePermissionListener;
 
@@ -132,6 +135,12 @@ public class MultimediaOptionsGridView {
             }
         } else if (key.equals(context.getString(R.string.al_price))) {
             new ConversationUIService(context).sendPriceMessage();
+        }else if (key.equals(":SL2T")){
+            Intent intent = new Intent(context, sign_to_text.class);
+            context.startActivity(intent);
+        }else if (key.equals(":T2SL")){
+            Intent intent = new Intent(context, text_to_sign.class);
+            context.startActivity(intent);
         }
         multimediaOptions.setVisibility(View.GONE);
     }

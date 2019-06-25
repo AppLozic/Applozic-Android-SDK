@@ -2,9 +2,9 @@
 <resources>
 
     <color name="whitesmoke">#f5f5f5</color>
-    <color name="contact_name">#ff0099cc</color>
-    <color name="mobitexter_main_color">#ff33B5E5</color>
-    <color name="primary_dark_color">#ff178ab4</color>
+    <color name="contact_name">#2fa9e1</color>
+    <color name="mobitexter_main_color">#2fa9e1</color>
+    <color name="primary_dark_color">#2fa9e1</color>
 
     <color name="instruction_color">#ff337ab7</color>
     <color name="empty_conversation_text_color">#838b83</color>
@@ -12,7 +12,7 @@
 
     <color name="sent_message_text_color">#ffffffff</color>
     <color name="message_text_color">#ff000000</color>
-    <color name="sent_message_bg_color">#ff33B5E5</color>
+    <color name="sent_message_bg_color">#2fa9e1</color>
     <!--<color name="received_message_bg_color">#ffffffff</color>-->
     <color name="received_message_bg_color">#ffffffff</color>
 

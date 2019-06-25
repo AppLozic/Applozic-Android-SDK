@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+
+    <!-- Editext for Search -->
+    <EditText android:id="@+id/inputText"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:hint="Ecrire votre message.."
+        android:inputType="textVisiblePassword"
+        android:layout_marginTop="10dp"
+       />
+
+    <!-- List View -->
+   <!--<ListView
+        android:id="@+id/list_view"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        />-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        >
+
+        <VideoView
+            android:id="@+id/videoView"
+            android:layout_width="fill_parent"
+            android:layout_height="250dp"
+            android:layout_centerInParent="true"
+            android:layout_gravity="center"
+            android:layout_marginTop="50dp"></VideoView>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#fff"
+
+        android:layout_alignParentBottom="true">
+        <FrameLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_gravity="bottom"
+            android:gravity="bottom">
+
+            <EditText
+                android:id="@+id/inputResult"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_alignParentBottom="true"
+                android:layout_gravity="bottom"
+                android:layout_marginBottom="0dp"
+                android:gravity="bottom"
+                android:enabled="false"
+                android:hint="Ecrire votre message.."
+                android:inputType="textVisiblePassword" />
+        <ImageButton
+            android:id="@+id/conversation_send"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_gravity="bottom|end"
+            android:layout_margin="10dp"
+            android:background="@drawable/button_circle"
+            android:clickable="true"
+            android:gravity="center"
+            android:scaleType="center"
+            android:src="@drawable/mobicom_ic_action_send"
+            android:visibility="visible" />
+        </FrameLayout>
+
+    </LinearLayout>
+</RelativeLayout>

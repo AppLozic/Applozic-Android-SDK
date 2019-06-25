@@ -1,0 +1,554 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
+
+    <string name="internet_connection_not_available">Pas de connexion Internet</string>
+    <string name="you_need_network_access_for_delete">Vous devez avoir un accès réseau pour supprimer Conversation</string>
+    <string name="applozic_server_error">Vous avez eu une erreur, réessayez plus tard</string>
+    <string name="you_need_network_access_for_block_or_unblock">Vous devez avoir un accès réseau pour bloquer / débloquer un utilisateur</string>
+    <string name="internet_connection_for_group_name_info">Votre téléphone a besoin d\'une connexion Internet pour changer le nom du groupe.</string>
+    <string name="you_dont_have_any_network_access_info">Vous n\'avez pas d\'accès au réseau maintenant</string>
+    <string name="failed_to_leave_group">Impossible de quitter le groupe</string>
+    <string name="user_is_already_exists">L\'utilisateur existe déjà dans le groupe</string>
+    <string name="delete_conversation_failed">La suppression a échoué</string>
+    <string name="menu_search">Rechercher</string>
+    <string name="menu_add_contact">Créer un nouveau contact</string>
+    <string name="menu_edit_contact">Modifier le contact</string>
+    <string name="no_contacts">Aucun contact trouvé</string>
+    <string name="no_contact_selected">Aucun contact sélectionné</string>
+    <string name="search_hint">Recherche...</string>
+    <string name="activity_contacts_list">MobiTexter</string>
+    <string name="activity_contacts_title">Sélectionnez un contact</string>
+    <string name="activity_contact_detail">Détail du contact</string>
+    <string name="contacts_list_search_results_title">Recherche de contact pour \"%s\"</string>
+    <string name="contactsListActivity">Liste de contact</string>
+    <string name="phone_number_not_present">Le numéro de téléphone n\'est pas présent</string>
+    <string name="mobiframework_title_device">Appareil</string>
+    <string name="mobiframework_title_group">Groupe</string>
+    <string name="zero_friends_on_phone">Aucun contact correspondant trouvé dans les contacts du téléphone, mais vous pouvez toujours envoyer un message en entrant l\'adresse électronique, l\'identifiant utilisateur ou le numéro de téléphone</string>
+    <string name="contact_sync_in_progress">La synchronisation des contacts est en cours, peut prendre quelques minutes</string>
+    <string name="zero_friends_on_app">Contacts non trouvés</string>
+    <string name="zero_groups_on_app">Groupes non trouvés</string>
+    <string name="delete_thread_text">Suppression....</string>
+    <string name="search_title">Recherche</string>
+    <string name="applozic_user_already_in_a_group">Déjà ajouté à la [groupType]</string>
+    <string name="applozic_contacts_loading_info">Chargement, veuillez patienter...</string>
+    <string name="applozic_contacts_loading_error">Vous devez avoir un accès réseau pour charger les contacts</string>
+    <string name="applozic_enter_group_name">Veuillez entrer un nom de groupe pour continuer..</string>
+    <string name="snap_text">Oh Snap!</string>
+    <string name="account_disconnection_message">Nous sommes désolés, mais la messagerie n’est pas \ disponible pour le moment. \ Veuillez contacter le support pour plus de détails.</string>
+    <string name="failed_to_load_contact">Impossible de charger les contacts : Response : </string>
+    <string name="rupee_symbol">\u20B9</string>
+
+
+    <!--
+         Used for the AlphabetIndexer in ContactsListFragment to provide quick navigation by
+         alphabet using ListView fast scroll.
+    -->
+    <string name="alphabet">ABCDEFGHIJKLMNOPQRSTUVWXYZ</string>
+
+    <!--
+         When using ContactsContract.Contacts#CONTENT_FILTER_URI to search contacts, a match occurs
+         when using a number of different fields, such as name, e-mail address, address, phone
+         number, etc. When a match occurs that is not the name, there is currently no way to tell
+         which other field was matched. This string is displayed in the secondary display text in
+         ContactsListFragment when a search query match occurs that is not the display name.
+    -->
+    <string name="search_match_other">Utilise un autre classé</string>
+    <string name="invite">Invite vos amis</string>
+    <array name="alphabet_color">
+        <item>#f16364</item>
+        <item>#f58559</item>
+        <item>#f9a43e</item>
+        <item>#e4c62e</item>
+        <item>#67bf74</item>
+        <item>#59a2be</item>
+        <item>#2093cd</item>
+        <item>#ad62a7</item>
+    </array>
+    <dimen name="tile_letter_font_size">250dp</dimen>
+    <!-- The deafult tile size -->
+    <dimen name="letter_tile_size">64dp</dimen>
+
+    <string name="contact_permission">Une autorisation de contact est nécessaire pour accéder</string>
+    <string name="storage_permission">Autorisation de stockage sont nécessaires pour accéder</string>
+    <string name="read_sms_permission">Lire les autorisations sms sont nécessaires pour accéder</string>
+    <string name="location_permission">La permission de position est nécessaire pour accéder</string>
+    <string name="phone_state_permisssion">Une autorisation d\'état du téléphone est nécessaire pour accéder</string>
+    <string name="phone_call_permission">La permission d\'appeler est nécessaire pour accéder</string>
+    <string name="phone_camera_permission">La permission de la caméra est nécessaire pour accéder</string>
+    <string name="record_audio">Autorisation d\'enregistrement audio nécessaire</string>
+    <string name="camera_audio_permission">Une autorisation audio de l\'appareil photo et de l\'enregistrement est nécessaire pour accéder</string>
+
+    <string name="contact_permission_not_granted">L\'autorisation n\'a pas été accordée pour Contact</string>
+    <string name="storage_permission_not_granted">Les autorisations n\'ont pas été accordées pour le stockage</string>
+    <string name="read_sms_permission_not_granted">Les autorisations n\'ont pas été accordées pour Lire</string>
+    <string name="location_permission_not_granted">Les autorisations n\'ont pas été accordées pour Position</string>
+    <string name="phone_state_permission_not_granted">Les autorisations n\'ont pas été accordées pour l\'état du téléphone</string>
+    <string name="phone_call_permission_not_granted">L\'autorisation n\'a pas été accordée pour un appel téléphonique</string>
+    <string name="phone_camera_permission_not_granted">L\'autorisation n\'a pas été accordée pour la caméra</string>
+    <string name="record_audio_permission_not_granted">Les autorisations n\'ont pas été accordées pour l'enregistrement audio</string>
+    <string name="audio_or_camera_permission_not_granted">L\'autorisation n\'a pas été accordée pour l\'enregistrement vidéo ou audio</string>
+
+    <string name="contact_permission_granted">Contacts La permission a été accordée</string>
+    <string name="storage_permission_granted">Les autorisations de stockage ont été accordées</string>
+    <string name="read_sms_permission_granted">Lire sms les autorisations ont été accordées</string>
+    <string name="location_permission_granted">Les autorisations de localisation ont été accordées</string>
+    <string name="phone_state_permission_granted">Etat du téléphone Autorisations accordées</string>
+    <string name="phone_call_permission_granted">Appel téléphonique La permission a été accordée</string>
+    <string name="phone_camera_permission_granted">La permission de la caméra a été accordée</string>
+    <string name="record_audio_permission_granted">Les autorisations d\'enregistrement audio ont été accordées</string>
+    <string name="phone_camera_and_audio_permission_granted">Les autorisations caméra et audio ont été accordées</string>
+    <string name="mobicom_max_attachment_warning">Limite d\'attachement maximale atteinte</string>
+    <string name="mobicom_select_attachment_text">Sélectionnez au moins une pièce jointe</string>
+    <string name="audio_recording_send_text">Tapez sur Démarrer pour enregistrer l\'audio</string>
+    <string name="applozic_audio_permission_missing">Impossible de lancer l\'enregistreur audio.</string>
+    <string name="applozic_message_info">Message Info</string>
+    <string name="applozic_message_info_no_network">Impossible de récupérer les informations du message.</string>
+    <string name="applozic_user_profile_heading">Profil</string>
+    <string name="send_message_to">Envoyer à..</string>
+    <string name="info_attachment_max_allowed_file_size_exceeded">Impossible d’envoyer la limite maximale de taille de fichier de téléchargement </string>
+    <string name="group_members_limit_exceeds">Limite atteinte, supprimez d\'abord quelqu\'un du groupe</string>
+    <string name="please_wait_creating_group_of_two">S\'il vous plaît, attendez...</string>
+    <string name="sort_contacts_by_lastSeenAt">Sort by lastSeen</string>
+    <string name="sort_contacts_by_recent_chats">Sort by recent chats</string>
+    <string name="chats">Conversations</string>
+    <string name="refresh">Rafraîchir</string>
+    <string name="start_New">Commencer une nouvelle</string>
+    <string name="dial">Cadran</string>
+    <string name="next">Suivant</string>
+    <string name="done">Terminé</string>
+    <string name="gallery">Galerie</string>
+    <string name="camera_option">Camera</string>
+    <string name="logout">Logout</string>
+    <string name="send_logs">Envoyer des journaux</string>
+    <string name="log_email_subject">- HearMe android SDK texte  journaux</string>
+    <string name="select_email_app_chooser_title">Sélectionnez l\'application pour envoyer des journaux</string>
+    <string name="copy">Copie</string>
+    <string name="forward">Transférer</string>
+    <string name="resend">Renvoyer</string>
+    <string name="delete">Effacer</string>
+    <string name="info">Info</string>
+    <string name="share">Partager</string>
+    <string name="reply">Répondre</string>
+    <string name="self_destruct">Auto-destruction</string>
+    <string name="off">éteint</string>
+    <string name="one_min">1 min</string>
+    <string name="two_min">2 min</string>
+    <string name="five_min">5 min</string>
+    <string name="ten_min">10 min</string>
+    <string name="sms">SMS</string>
+    <string name="mt">MT</string>
+    <string name="Delete_conversation">Supprimer la conversation</string>
+    <string name="delete_group">Supprimer le groupe</string>
+    <string name="exit_group">groupe de sortie</string>
+    <string name="message">Message</string>
+    <string name="remove">Retirer</string>
+    <string name="make_group_admin">Faire un groupe d\'administrateur</string>
+    <string name="take_photo">Prendre des photos</string>
+    <string name="attach_file">Pièce jointe</string>
+    <string name="audio_message">Message audio</string>
+    <string name="video_message">Message video</string>
+    <string name="share_contact">Partager le contact</string>
+    <string name="attach_price">Fixer le prix</string>
+    <string name="al_location">:location</string>
+    <string name="al_file">:file</string>
+    <string name="al_audio">:audio</string>
+    <string name="al_camera">:camera</string>
+    <string name="al_video">:video</string>
+    <string name="al_contact">:contact</string>
+    <string name="al_price">:price</string>
+    <string name="current_location">Position actuelle</string>
+    <string name="price">Prix</string>
+    <string name="status">Statut</string>
+    <string name="name">Prénom</string>
+    <string name="phone">Téléphone</string>
+    <string name="Group">GROUPE</string>
+    <string name="Contact">CONTACT</string>
+    <string name="participants">Participants</string>
+    <string name="cancel">Annuler</string>
+    <string name="Add_caption">Ajouter une légende...</string>
+    <string name="New_Attachment">Nouvelle pièce jointe</string>
+    <string name="send_location">Envoyer emplacement</string>
+    <string name="send_your_current_location">Envoyez votre position actuelle</string>
+    <string name="Add_Contacts">Ajouter des contacts</string>
+    <string name="stop">ARRÊTEZ</string>
+    <string name="profile_status">Statut du profil</string>
+    <string name="no_status">Pas de statut</string>
+    <string name="online">en ligne</string>
+    <string name="notifications">Notifications</string>
+    <string name="push_notifications">pousser Notifications</string>
+    <string name="sales_manager">Directeur commercial</string>
+    <string name="display_name">Nom</string>
+    <string name="today">Aujourd\'hui</string>
+    <string name="kb45">45kb</string>
+    <string name="message_text">Texte du message</string>
+    <string name="read">Lire</string>
+    <string name="delivered">Livré</string>
+    <string name="file_name_will_come_here_for_attachment">nom de fichier viendra ici pour pièce jointe</string>
+    <string name="mb_10">10 MB</string>
+    <string name="mobile_number">numéro de portable</string>
+    <string name="schedule">Programme</string>
+    <string name="delivery_status">statut de livraison</string>
+    <string name="testTime">testTime</string>
+    <string name="created_at_time">créé à </string>
+    <string name="edit_group_name">Editer le nom du groupe</string>
+    <string name="add_member">Ajouter un membre</string>
+    <string name="group_not_exist">Le groupe n\'existe pas</string>
+    <string name="no_groups">Aucun groupe</string>
+    <string name="contacts_not_found">Aucun contact trouvé</string>
+    <string name="remove_image">Supprimer l\'image</string>
+    <string name="applozic_failed_to_load_contact">Impossible de charger le contact</string>
+    <string name="applozic_Cropping_failed">Le recadrage a échoué</string>
+    <string name="applozic_resending_attachment">Renvoi d\'une pièce jointe....</string>
+    <string name="Location">Emplacement</string>
+    <string name="processing_please_wait">Traitement en cours ... Veuillez patienter</string>
+    <string name="success">Succès</string>
+    <string name="error">Erreur</string>
+    <string name="mute_group_for">Groupe muet pour..</string>
+    <string name="mute_user_for">Muet utilisateur pour..</string>
+    <string name="eight_Hours">8 Heures</string>
+    <string name="one_week">1 semaine</string>
+    <string name="one_year"> 1 Année</string>
+    <string name="file_does_not_exist">fichier n\'existe pas</string>
+    <string name="copied_message">Message copié</string>
+    <string name="data_usage">L\'utilisation de données</string>
+    <string name="missed">Manqué</string>
+    <string name="hold_to_record_release_to_send">Tenir pour enregistrer, relâcher pour envoyer</string>
+    <string name="slide_to_cancel">Glisser pour annuler</string>
+    <string name="tap_on_mic_button_to_record_audio">Appuyez sur le bouton micro pour démarrer l\'enregistrement audio</string>
+    <string name="profile_contact">pas de numéro de contact</string>
+    <string name="profile_contact_number">Numéro de contact</string>
+    <string name="user_name">Nom d\'utilisateur</string>
+    <string name="powered_by_applozic">Alimenté par HearMe</string>
+    <string name="spellchecker_name">Simple correction</string>
+    <string name="subtype_generic" translatable="false">%s</string>
+    <string name="sample_settings">Simple paramètres</string>
+    <string name="sample_preference">Simple préférence</string>
+
+
+    <!-- xml mobicom_array-->
+    <string-array name="secret_message_timer_array">
+        <item>Auto-destruction</item>
+        <item>éteint</item>
+        <item>1 min</item>
+        <item>2 mins</item>
+        <item>5 mins</item>
+        <item>10 mins</item>
+    </string-array>
+
+    <string-array name="send_type_options">
+        <item>SMS</item>
+        <item>MT</item>
+    </string-array>
+
+    <!-- Scheduled Message strings -->
+
+    <string-array name="schedule_menu">
+        <item>Copie</item>
+        <item>Annuler</item>
+    </string-array>
+
+    <string-array name="menu">
+        <item>Copie</item>
+        <item>Transféré</item>
+        <item>Renvoyer</item>
+        <item>Effacer</item>
+        <item>Info</item>
+        <item>Partager</item>
+        <item>Répondre</item>
+    </string-array>
+
+    <string-array name="conversation_options_menu">
+        <item>Supprimer la conversation</item>
+        <item>Supprimer le groupe</item>
+        <item>Sortie du groupe</item>
+    </string-array>
+
+    <!--Group member list menu -->
+    <string-array name="channel_users_menu_option">
+        <item>Message</item>
+        <item>Retirer</item>
+        <item>Faire un groupe d'administrateur</item>
+    </string-array>
+
+    <!--Multimedia options -->
+    <string-array name="multimediaOptions_sms">
+        <item>Localisation actuelle</item>
+    </string-array>
+
+    <string-array name="multimediaOptions_mt">
+        <item>Localisation actuelle</item>
+        <item>Prendre une photo</item>
+        <item>Pièce jointe</item>
+        <item>Message audio</item>
+        <item>Message vidéo</item>
+        <item>Partager le contact</item>
+    </string-array>
+
+    <string-array name="multimediaOptions_with_price">
+        <item>Localisation actuelle</item>
+        <item>Prendre une photo</item>
+        <item>Pièce jointe</item>
+        <item>Message audio</item>
+        <item>Message vidéo</item>
+        <item>Partager le contact</item>
+        <item>Attacher prix</item>
+    </string-array>
+
+    <string-array name="multimediaOptions_with_price_text">
+        <item>Position</item>
+        <item>Caméra</item>
+        <item>Fichier</item>
+        <item>Audio</item>
+        <item>Vidéo</item>
+        <item>Contact</item>
+        <item>Prix</item>
+    </string-array>
+
+    <string-array name="multimediaOptions_without_price_text">
+        <item>Position</item>
+        <item>Caméra</item>
+        <item>Fichier</item>
+        <item>Audio</item>
+        <item>Vidéo</item>
+        <item>Contact</item>
+        <item>SL2T</item>
+        <item>T2SL</item>
+    </string-array>
+
+    <string-array name="multimediaOptions_without_price_key">
+        <item>:location</item>
+        <item>:camera</item>
+        <item>:file</item>
+        <item>:audio</item>
+        <item>:video</item>
+        <item>:contact</item>
+        <item>:SL2T</item>
+        <item>:T2SL</item>
+
+    </string-array>
+
+    <string-array name="multimediaOptionIcons_without_price">
+        <item>&#xf041;</item>
+        <item>&#xf030;</item>
+        <item>&#xf0c6;</item>
+        <item>&#xf130;</item>
+        <item>&#xf03d;</item>
+        <item>&#xf007;</item>
+        <item>&#xf007;</item>
+        <item>&#xf007;</item>
+
+    </string-array>
+
+    <string-array name="notification_texts">
+        <item>Position</item>
+        <item>Audio</item>
+        <item>Video</item>
+        <item>Attachement</item>
+    </string-array>
+
+    <!-- mobicom_Strings-->
+    <string name="app_name">Applozic</string>
+    <string name="conversations">Conversations</string>
+    <string name="channel_create_title">Nouveau groupe</string>
+    <string name="channel_members_title">Ajouter des membres</string>
+    <string name="select_at_least">Au moins 1 contact doit être sélectionné</string>
+    <string name="group_name_hint">Nom du groupe</string>
+    <string name="empty_conversations">Pas de conversations!</string>
+    <string name="enter_message_hint">Écrire un message…</string>
+    <string name="send_text">ENVOYER</string>
+    <string name="cancel_text">ANNULER</string>
+    <string name="ok_text">D\'accord</string>
+    <string name="start_text">Commençer</string>
+    <string name="no_conversation">Pas de conversation</string>
+    <string name="search_not_found_for_messages">No conversation found</string>
+    <string name="info_broadcast_message">Les messages seront diffusés à chaque destinataire individuellement</string>
+    <string name="shareOptions">شارك</string>
+
+    <string name="mobitexter_contact_sync_key">KEYMOBITEXTER_CONTACT_SYNC_</string>
+    <string name="call_history_display_within_messages_pref_key">CALL_HISTORY_DISPLAY_WITHIN_MESSAGES</string>
+    <string name="last_inbox_sync_time">LAST_INBOX_SYNC_TIME</string>
+    <string name="last_outbox_sync_time">LAST_OUTBOX_SYNC_TIME</string>
+    <string name="phone_number_key">phone_number_key</string>
+    <string name="group_sms_freq_key">GROUP_SMS_FREQ_KEY</string>
+    <string name="delivery_report_pref_key">DELIVERY_REPORT_ENABLE</string>
+    <string name="sent_sms_sync_pref_key">SENT_SMS_SYNC_FLAG</string>
+    <string name="received_sms_sync_pref_key">RECEIVED_SMS_SYNC_FLAG</string>
+    <string name="verify_contact_number">VERIFY_CONTACT_NUMBER</string>
+    <string name="device_key_string">DEVICE_KEY_STRING</string>
+    <string name="device_registration_id">DEVICE_REGISTRATION_ID</string>
+    <string name="last_sms_sync_time">LAST_SMS_SYNC_TIME</string>
+    <string name="last_message_stat_sync_time">LAST_MESSAGE_STAT_SYNC_TIME</string>
+    <string name="webhook_enable_key">WEBHOOK_ENABLE_KEY</string>
+    <string name="email">EMAIL_ID_VALUE</string>
+    <string name="email_verified">EMAIL_VERIFIED</string>
+    <string name="user_key_string">SU_USER_KEY_STRING</string>
+    <string name="stop_service">STOPSERVICE</string>
+    <string name="patch_available">NEWPATCHAVAILABLE</string>
+    <string name="update_push_registration">UPDATE_PUSH_REGISTRATION</string>
+    <string name="info_sample_contact_list">Renseignez les contacts de votre application ici, en affichant les contacts de l\'appareil comme exemple.</string>
+    <string name="info_message_sync">La synchronisation des messages avec le serveur peut prendre quelques minutes!</string>
+    <string name="instruction_open_conversation_thread">Appuyez sur une conversation pour voir le fil complet</string>
+    <string name="instruction_go_back_to_recent_conversation_list">Pour revenir à l\'écran précédent, faites glisser de gauche à droite</string>
+    <string name="instruction_long_press_message">Pour supprimer et d’autres options, appuyez longuement sur le message.</string>
+    <string name="title_activity_mobi_com">MobiComActivity</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Réglages</string>
+    <string name="user_block">Bloc</string>
+    <string name="user_un_block">Débloquer</string>
+    <string name="applozic_my_profile_option_info">Profil</string>
+    <string name="location_services_disabled_message">L\'envoi d\'un emplacement nécessite l\'accès à votre emplacement. Activer l'accès à la localisation</string>
+    <string name="location_services_disabled_title">Services de localisation désactivés</string>
+    <string name="location_service_settings">Réglages</string>
+    <string name="location_sending_cancelled">Envoi de position annulé</string>
+    <string name="unable_to_fetch_location">Impossible de récupérer l\'emplacement</string>
+    <string name="waiting_for_current_location">En attente de l\'emplacement actuel</string>
+    <string name="select_file">Sélectionner un fichier</string>
+    <string name="applozic_select_photo">Sélectionnez une photo</string>
+    <string name="attachment_retry">Réessayez</string>
+    <string name="verification_success">Votre numéro de téléphone a été vérifié avec succès</string>
+    <string name="launch_mobitexter_app">LAUNCH_MOBITEXTER</string>
+    <string name="delete_conversation">Supprimer la conversation</string>
+    <string name="sync_messages_from_server">Synchroniser avec le serveur…</string>
+    <string name="incoming_call">Appel reçu</string>
+    <string name="outgoing_call">Appel composé</string>
+    <string name="welcome_message">Welcome,
+        \nMobiTexter is a Messenger &amp; SMS Texting app
+        \nText from your laptop, mobile and any Android device using your own phone number.
+        \nSend and receive text on the laptop/pc/computer browser from http://www.mobitexter.net/
+        \nFor any queries, get in touch with us at support@mobitexter.net</string>
+
+    <string name="info_app_not_found_to_open_file">Aucune application trouvée pour ouvrir ce fichier</string>
+    <string name="unable_to_play_requested_audio_file">Aucune application trouvée pour ouvrir ce fichier</string>
+    <string name="file_not_selected">Avez-vous manqué de sélectionner le fichier?</string>
+    <string name="info_attachment_max_allowed_file_size">Impossible d’envoyer la limite maximale de taille de fichier de téléchargement!</string>
+    <string name="info_file_attachment_error">Je ne peux pas envoyer! Une erreur inattendue s\'est produite lors de la lecture du fichier</string>
+    <string name="select_file_count_limit">Impossible de sélectionner plus d\'un fichier</string>
+    <string name="info_file_attachment_mime_type_not_supported">Impossible d\'envoyer ce type de fichier!</string>
+    <string name="ScheduleText">Programme</string>
+    <string name="enter_mt_message_hint">Écrire un message…</string>
+    <string name="messageOptions">Options de message</string>
+    <string name="conversation">Conversation</string>
+    <string name="conversation_options">Options</string>
+    <string name="enter_support_query_hint">Saisissez vos questions, vos rapports de bogues ou vos commentaires ici</string>
+    <string name="info_message_scheduled">Le message est planifié avec succès</string>
+    <string name="sync_older_messages">Voulez-vous synchroniser les anciens messages?</string>
+    <string name="dialog_delete_conversation_title">Supprimer la conversation</string>
+    <string name="dialog_delete_conversation_confir">Supprimer tous les messages de [name]?</string>
+    <string name="negetiveButtonText">Claire</string>
+    <string name="scheduleDialogHeader">Message de planification</string>
+    <string name="scheduledDateText">Date prévue:</string>
+    <string name="scheduledTimeText">Heure prévue:</string>
+    <string name="defaultDate">dd-mm-yyyy</string>
+    <string name="defaultTime">HH:MM:SS</string>
+    <string name="selectionRequestText">Sélectionnez la date et l\'heure pour programmer votre message.</string>
+    <string name="wearable_action_title">Répondre</string>
+    <string name="wearable_action_label">Répondre</string>
+
+    <string name="verify_phone_number_notify_message">envoyer un message texte pour vérifier votre numéro, nous le détecterons automatiquement quand il arrivera</string>
+    <string name="verification_send_sms_itself">Nous devons confirmer que  [phone_number] est votre numéro de téléphone. Votre téléphone sera utilisé pour envoyer un message.</string>
+    <string name="confirm_your_number">Confirmez votre numéro</string>
+    <string name="edit">Modifier</string>
+    <string name="confirm">Confirmer</string>
+    <string name="skip">Sauter</string>
+    <string name="you_string">Vous</string>
+    <string name="view_option_string">Vue</string>
+    <string name="message_option_string">Message</string>
+    <string name="applozic_account_closed">S\'il vous plaît contactez HearMe pour activer le chat dans votre app</string>
+    <string name="applozic_free_version_not_allowed_on_release_build">S\'il vous plaît contactez HearMe pour activer le chat dans votre app</string>
+    <string name="quick_conversation_loading">chargement de la conversation…</string>
+    <string name="alert_for_empty_message">Voulez-vous envoyer un message sans texte?</string>
+    <string name="yes_alert">Oui</string>
+    <string name="subtitle_last_seen_at_time">Vue la dernière fois</string>
+    <string name="is_typing">en train d\'écrire…</string>
+    <string name="user_online">En ligne</string>
+    <string name="removing_channel_user">Supprimer…</string>
+    <string name="adding_channel_user">Ajouter…</string>
+    <string name="deleting_channel_user">Suppression…</string>
+    <string name="channel_member_exit">Sortant…</string>
+    <string name="channel_update">Mise à jour des informations de groupe…</string>
+    <string name="dialog_remove_group_user">Retirer [name] de [group]?</string>
+    <string name="dialog_add_group_user">Ajouter [name] à [group]?</string>
+    <string name="group_name_info">[group]</string>
+    <string name="groupType_info">[groupType]</string>
+    <string name="group_string">groupe</string>
+    <string name="broadcast_string">diffuser</string>
+    <string name="new_broadcast_name_info">Nouvelle diffusion </string>
+    <string name="mute_Group">Muet</string>
+    <string name="unmute_Group">Activer le muet</string>
+    <string name="user_name_info">[name]</string>
+    <string name="channel_member_title">Sélectionnez un contact</string>
+
+
+    <string name="channel_exit_button">EXIT GROUP</string>
+    <string name="channel_delete_group_button">DELETE GROUP</string>
+    <string name="broadcast_exit_button">EXIT BROADCAST</string>
+    <string name="broadcast_delete_button">DELETE BROADCAST</string>
+    <string name="channel_created_by">Créé par</string>
+    <string name="remove_member">Retirer</string>
+    <string name="add">Ajouter</string>
+    <string name="group_creating_info">Création d\'un groupe, veuillez patienter…</string>
+    <string name="broadcast_creating_info">Creating broadcast, please wait…</string>
+    <string name="channel_exit">Quitter</string>
+    <string name="channel_deleting">Supprimer</string>
+    <string name="leave_channel">Êtes-vous sûr de vouloir quitter cette [groupType]?</string>
+    <string name="exit_channel_message_info">Êtes-vous sûr de vouloir quitter cette [group] [groupType]?</string>
+    <string name="delete_channel_messages_and_channel_info">Etes-vous sûr que vous voulez supprimer [group] [groupType]?</string>
+    <string name="channel_name_empty">Le nom du groupe ne peut pas être vide</string>
+    <string name="channel_add_alert">Impossible d\'ajouter un participant au groupe car vous n\'êtes pas un participant</string>
+    <string name="channel_edit_alert">Impossible de changer le nom du groupe car vous n\'êtes pas un participant</string>
+    <string name="admin_text">Admin du groupe</string>
+    <string name="user_not_in_this_group_text">Vous n\'êtes plus un membre de ce groupe</string>
+    <string name="group_has_been_deleted_text">Ce groupe a été supprimé</string>
+    <string name="update_channel_title_name">Entrez le nom du groupe</string>
+    <string name="new_channel_name_hint">Nom de groupe…</string>
+    <string name="user_block_info">Bloc [name]? Un utilisateur bloqué ne pourra plus vous envoyer de messages</string>
+    <string name="user_un_block_info">Débloquer [name] envoyer un message</string>
+    <string name="please_wait_info">Patientez s\'il-vous-plait…</string>
+    <string name="applozic_userId_error_info_in_logs">UserId ne peut pas être nul ou vide et la clé de canal ne doit pas être nulle</string>
+    <string name="applozic_channel_error_info_in_logs">Veuillez vérifier que le nom du groupe est nul ou vide ou qu\'il a au moins un membre à ajouter au groupe.</string>
+    <string name="applozic_add_user_to_multiple_channel_error_info_in_logs">UserId ne peut pas être nul ou vide et la liste de clés de canal ne doit pas être nulle</string>
+    <string name="user_logout_info">Déconnexion réussie</string>
+    <string name="unable_share_message">Impossible de partager, vous ne faites pas partie de ce groupe</string>
+    <string name="user_is_blocked">Impossible d\'envoyer l\'utilisateur est bloqué</string>
+    <string name="when_on_wifi">Quand sur le Wi-Fi</string>
+    <string name="when_on_cellular_network">Quand sur le réseau cellulaire</string>
+    <string name="media_auto_download">Téléchargement multimédia automatique</string>
+    <string name="applozic_network_usage">Utilisation du réseau</string>
+    <string name="enable_vibration_notification">Activer la vibration à la notification</string>
+    <string name="user_has_been_deleted_text">L\'utilisateur a été supprimé</string>
+    <string name="make_admin_text_info">Faire un groupe d\'administrateur</string>
+    <string name="attachment_string">Attachement</string>
+    <string name="photo_string">Photo</string>
+    <string name="contact_string">Contact</string>
+    <string name="video_string">Vidéo</string>
+    <string name="audio_string">Audio</string>
+    <string name="al_location_string">Position</string>
+    <string name="restricted_words_are_not_allowed">Les mots restreints ne sont pas autorisés</string>
+    <string name="warning">ATTENTION!!!</string>
+    <string name="ok_alert">D\'accord</string>
+
+    <string name="JUST_NOW">Juste maintenant</string>
+    <string name="YESTERDAY">Hier</string>
+
+    <plurals name="HOURS">
+        <item quantity="one">%d heure</item>
+        <item quantity="other">%d heures</item>
+    </plurals>
+
+    <plurals name="MINUTES">
+        <item quantity="one">%d min</item>
+        <item quantity="other">%d mins</item>
+    </plurals>
+
+    <plurals name="MINUTES_AGO">
+        <item quantity="one">%d min</item>
+        <item quantity="other">%d mins</item>
+    </plurals>
+
+    <plurals name="HOURS_AGO">
+        <item quantity="one">%d heure</item>
+        <item quantity="other">%d heures</item>
+    </plurals>
+
+</resources>

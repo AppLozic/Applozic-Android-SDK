@@ -1,0 +1,70 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/bg"
+   >
+
+
+  <!--  <android.support.v7.widget.Toolbar
+        android:id="@+id/my_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/mobitexter_main_color"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        android:elevation="4dp">
+
+        <TextView
+            android:id="@+id/toolbar_title"
+            style="@style/ToolbarTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="6dp"
+            android:layout_marginLeft="6dp"
+            android:ellipsize="end"
+            android:gravity="center_vertical"
+            android:maxLines="1"
+            android:text="Détails"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+        <ImageButton
+            android:id="@+id/list"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:background="@drawable/list"
+            android:gravity="right"
+            android:layout_alignParentRight="true"
+            android:layout_margin="5dp"
+            android:backgroundTint="@color/white"
+            android:layout_gravity="end"
+            />
+        <ImageButton
+            android:id="@+id/gridBtn"
+            android:layout_width="32dp"
+            android:layout_height="28dp"
+            android:background="@drawable/grid"
+            android:gravity="right"
+            android:layout_alignParentRight="true"
+            android:backgroundTint="@color/white"
+            android:layout_gravity="end"
+
+            />
+
+
+
+    </android.support.v7.widget.Toolbar>-->
+
+    <GridView
+        android:paddingTop="40dp"
+        android:numColumns="1"
+        android:gravity="center"
+        android:columnWidth="100dp"
+        android:stretchMode="columnWidth"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:id="@+id/grid"
+        />
+</RelativeLayout>

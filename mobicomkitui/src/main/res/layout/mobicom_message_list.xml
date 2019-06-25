@@ -344,6 +344,7 @@
                         android:src="@drawable/applozic_ic_action_attachment"
                         android:visibility="visible" />
 
+
                     <!--
                             <EditText
                                 android:id="@+id/conversation_message"

@@ -222,4 +222,11 @@
     <string name="profile_contact_number">Contact Number</string>
     <string name="user_name">User Name</string>
     <string name="powered_by_applozic">Powered By Applozic</string>
+
+
+    <string name="spellchecker_name">Sample correction</string>
+    <string name="subtype_generic" translatable="false">%s</string>
+    <string name="sample_settings">Sample settings</string>
+    <string name="sample_preference">Sample preference</string>
+
 </resources>

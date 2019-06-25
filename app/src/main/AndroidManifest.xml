@@ -91,6 +91,12 @@
         <meta-data
             android:name="activity.open.on.call.button.click"
             android:value="com.applozic.mobicomkit.sample.MainActivity" />
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="9b43bb084d2988834ffc7cc5c9de46ad80356861" />
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyAv1wf5eMyErPaU3l8EnMUmOsoYJ2joC70" />
     </application>
 
 </manifest>

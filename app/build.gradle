@@ -15,6 +15,7 @@ buildscript {
 
     dependencies {
         classpath 'io.fabric.tools:gradle:1.+'
+
     }
 }
 repositories {
@@ -75,7 +76,7 @@ dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     //Note: use this for customization
     api project(':mobicomkitui')
-    //api 'com.applozic.communication.uiwidget:mobicomkitui:5.47'
+    //api 'com.applozic.communication.uiwidget:mobicomkitui:5.46'
     implementation "com.android.support:support-v4:${rootProject.hasProperty("supportLibVersion") ? rootProject.supportLibVersion : defaultSupportLibVersion}"
     implementation "com.android.support:appcompat-v7:${rootProject.hasProperty("supportLibVersion") ? rootProject.supportLibVersion : defaultSupportLibVersion}"
     implementation "com.android.support:design:${rootProject.hasProperty("supportLibVersion") ? rootProject.supportLibVersion : defaultSupportLibVersion}"

@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <VideoView
+        android:id="@+id/video"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_marginTop="20dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="false"
+        ></VideoView>
+    <TextView
+        android:id="@+id/text"
+        android:onClick="onClick"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/video"
+        android:layout_marginTop="16dp"
+        android:layout_centerHorizontal="true"
+        android:gravity="center_horizontal"
+        android:text="ggggggggggggg"
+        android:textSize="10sp"></TextView>
+
+    <ImageButton
+        android:id="@+id/add"
+        android:layout_below="@id/video"
+        android:layout_marginTop="16dp"
+        android:gravity="left"
+        android:clickable="true"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:background="@drawable/plus"
+        android:visibility="visible" />
+
+    <ImageButton
+        android:id="@+id/retrive"
+        android:layout_below="@id/video"
+        android:layout_marginTop="16dp"
+        android:gravity="right"
+        android:clickable="true"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:layout_alignParentRight="true"
+        android:background="@drawable/minus"
+        android:visibility="visible" />
+        <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#fff"
+        android:orientation="vertical"
+
+        android:layout_alignParentBottom="true">
+        <FrameLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_gravity="bottom"
+            android:gravity="bottom">
+
+            <EditText
+                android:id="@+id/inputResult"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_alignParentBottom="true"
+                android:layout_gravity="bottom"
+                android:layout_marginBottom="0dp"
+                android:gravity="bottom"
+                android:enabled="false"
+                android:hint="Ecrire votre message.."
+                android:inputType="textVisiblePassword" />
+            <ImageButton
+                android:id="@+id/conversation_send"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_gravity="bottom|end"
+                android:layout_margin="10dp"
+                android:background="@drawable/button_circle"
+                android:clickable="true"
+                android:gravity="center"
+                android:scaleType="center"
+                android:src="@drawable/mobicom_ic_action_send"
+                android:visibility="visible" />
+        </FrameLayout>
+
+    </LinearLayout>
+
+
+</RelativeLayout>
