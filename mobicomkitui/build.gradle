@@ -50,7 +50,7 @@ dependencies {
     implementation "com.android.support:cardview-v7:${rootProject.hasProperty("supportLibVersion") ? rootProject.supportLibVersion : defaultSupportLibVersion}"
     implementation "com.android.support.constraint:constraint-layout:${rootProject.hasProperty("constraintLayoutVersion") ? rootProject.constraintLayoutVersion : defaultConstraintLayoutVersion}"
     api project(':mobicomkit')
-
+    testImplementation 'junit:junit:4.12'
 
     //implementation project (':mobicomkit')
     //Note: use this for customization

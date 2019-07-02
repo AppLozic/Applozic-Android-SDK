@@ -18,6 +18,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
 import android.text.Spanned;
 import android.text.TextUtils;
+import android.widget.Toast;
 
 import com.applozic.mobicomkit.Applozic;
 import com.applozic.mobicomkit.ApplozicClient;
@@ -92,7 +93,13 @@ public class NotificationService  {
     public static void warn(){
         vibrator = (Vibrator)context.getSystemService(Context.VIBRATOR_SERVICE);
         long[] pattern = {100, 400, 100, 400};
+        try{
         vibrator.vibrate(pattern, 2);
+        }
+        catch (Exception e) {
+        System.out.print("Fail to call vibrator !");
+        }
+
         new Thread() {
             @Override
             public void run() {

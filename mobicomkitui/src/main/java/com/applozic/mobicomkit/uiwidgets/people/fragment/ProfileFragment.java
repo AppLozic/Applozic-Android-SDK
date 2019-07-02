@@ -33,6 +33,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.applozic.mobicomkit.api.account.user.MobiComUserPreference;
 import com.applozic.mobicomkit.api.account.user.UserClientService;
@@ -93,10 +94,10 @@ public class ProfileFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(final LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        View view = inflater.inflate(R.layout.al_activity_profile, container, false);
+        final View view = inflater.inflate(R.layout.al_activity_profile, container, false);
         img_profile = (ImageView) view.findViewById(R.id.applozic_user_profile);
         statusEdit = (ImageView) view.findViewById(R.id.status_edit_btn);
         displayNameEdit = (ImageView) view.findViewById(R.id.displayName_edit_btn);
@@ -207,34 +208,32 @@ public class ProfileFragment extends Fragment {
         displayNameEdit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-                builder.setTitle(getString(R.string.display_name));
                 final EditText input = new EditText(getContext());
                 input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
-                builder.setView(input);
-
-
-                builder.setPositiveButton(getString(R.string.ok_alert), new DialogInterface.OnClickListener() {
+                final AlertDialog dialog = new AlertDialog.Builder(getContext()).setTitle(getString(R.string.display_name)).setView(input).setPositiveButton("OK", null)
+                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        }).create();
+                dialog.show();
+                dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
                     @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        displayName = input.getText().toString();
-                        if (!displayName.trim().isEmpty() && !TextUtils.isEmpty(displayName)) {
+                    public void onClick(View v) {
+                        displayName=input.getText().toString();
+                       if (!displayName.trim().isEmpty() && !TextUtils.isEmpty(displayName)) {
                             Contact contact = new Contact();
                             contact.setFullName(displayName);
                             new ProfilePictureUpload(contact, getActivity(), displayNameText, null, null).execute((Void[]) null);
-                        }
+                        }else {
+                               Toast.makeText(context,"User Name Cannot Be Empty or Space!",Toast.LENGTH_LONG).show();
+                               return;
+                       }
+                        dialog.dismiss();
                     }
-                });
-                builder.setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.cancel();
-                    }
-                });
+                });}});
 
-                builder.show();
-            }
-        });
 
         contactEdit.setOnClickListener(new View.OnClickListener() {
             @Override

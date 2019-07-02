@@ -160,9 +160,13 @@ public class BroadcastService extends Activity{
                     MarkList =context.getSharedPreferences("MarkList", Context.MODE_PRIVATE);
                     String MarkID=MarkList.getString("Mark_ID",null);
                     if(message.getContactIds().equals(MarkID)){
+                        try{
                         NotificationService.warn();
+                        System.out.println("Succeed to call vibrator !");}
+                        catch (Exception e){
+                            System.out.println("Fail to call vibrator !");
+                        }
                     }
-
                 }
 
                 if (message.getGroupId() == null) {
@@ -171,6 +175,7 @@ public class BroadcastService extends Activity{
                     String MarkID=MarkList.getString("Mark_ID",null);
                     if(message.getContactIds().equals(MarkID)){
                         NotificationService.warn();
+                        System.out.println("Succeed to call vibrator !");
                     }
 
                 }
@@ -180,6 +185,7 @@ public class BroadcastService extends Activity{
                     String MarkID=MarkList.getString("Mark_ID",null);
                     if(message.getContactIds().equals(MarkID)){
                         NotificationService.warn();
+                        System.out.println("Succeed to call vibrator !");
                     }
                 } else {
                     MarkList =context.getSharedPreferences("MarkList", Context.MODE_PRIVATE);
@@ -187,6 +193,7 @@ public class BroadcastService extends Activity{
                     notificationService.notifyUserForNormalMessage(contact, channel, message, index);
                     if(message.getContactIds().equals(MarkID)){
                         NotificationService.warn();
+                        System.out.println("Succeed to call vibrator !");
                     }
 
                 }
