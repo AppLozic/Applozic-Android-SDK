@@ -1,6 +1,7 @@
 package com.applozic.mobicomkit.uiwidgets.conversation.richmessaging;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -19,13 +20,13 @@ import android.widget.Toast;
 
 import com.applozic.mobicomkit.api.conversation.Message;
 import com.applozic.mobicomkit.uiwidgets.R;
-import com.applozic.mobicommons.commons.core.utils.Utils;
 import com.applozic.mobicommons.json.GsonUtils;
 import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import static android.view.View.GONE;
 
@@ -43,10 +44,9 @@ public class ALRichMessageAdapter extends RecyclerView.Adapter {
     private ALRichMessageListener listener;
     private List<ALRichMessageModel.ALPayloadModel> payloadList;
     private Message message;
-    List<String> titleList;
+    private List<String> titleList;
 
     public ALRichMessageAdapter(Context context, ALRichMessageModel model, ALRichMessageListener listener, Message message) {
-        this.model = model;
         this.context = context;
         this.model = model;
         this.listener = listener;
@@ -74,6 +74,7 @@ public class ALRichMessageAdapter extends RecyclerView.Adapter {
         }
     }
 
+    @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
@@ -86,10 +87,7 @@ public class ALRichMessageAdapter extends RecyclerView.Adapter {
         } else if (model != null && model.getTemplateId() == 1) {
             View itemView = LayoutInflater.from(context).inflate(R.layout.al_guest_details_layout, parent, false);
             return new GuestCountHolder(itemView);
-        } else if (hotelList != null) {
-            View itemView = LayoutInflater.from(context).inflate(R.layout.al_rich_message_item, parent, false);
-            return new MyViewHolder(itemView);
-        } else if (model != null && model.getTemplateId() == 2) {
+        } else if (model != null && (model.getTemplateId() == 2 || model.getTemplateId() == 10 || hotelList != null)) {
             View itemView = LayoutInflater.from(context).inflate(R.layout.al_rich_message_item, parent, false);
             return new MyViewHolder(itemView);
         }
@@ -115,6 +113,9 @@ public class ALRichMessageAdapter extends RecyclerView.Adapter {
         } else if (model != null && (model.getTemplateId() == 6 || model.getTemplateId() == 3)) {
             SingleTextViewHolder singleTextViewHolder = (SingleTextViewHolder) holder;
             bindSingleTextItem(singleTextViewHolder, position);
+        } else if (model != null && model.getTemplateId() == 10) {
+            MyViewHolder viewHolder = (MyViewHolder) holder;
+            bindGenericCards(viewHolder, position);
         }
     }
 
@@ -124,14 +125,12 @@ public class ALRichMessageAdapter extends RecyclerView.Adapter {
             return hotelList.size();
         } else if (model.getTemplateId() == 1) {
             return guestList.size();
-        } else if (model.getTemplateId() == 6 || model.getTemplateId() == 3) {
-            return payloadList.size();
+        } else if (model.getTemplateId() == 6 || model.getTemplateId() == 3 || model.getTemplateId() == 2 || model.getTemplateId() == 10) {
+            return payloadList != null ? payloadList.size() : 0;
         } else if (roomList != null) {
             return roomList.size();
         } else if (model.getTemplateId() == 5) {
             return 1;
-        } else if (model.getTemplateId() == 2) {
-            return payloadList.size();
         }
 
         return 0;
@@ -265,23 +264,6 @@ public class ALRichMessageAdapter extends RecyclerView.Adapter {
 
             singleTextItem = itemView.findViewById(R.id.singleTextItem);
             rootLayout = itemView.findViewById(R.id.rootLayout);
-
-            singleTextItem.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (model != null && model.getTemplateId() == 6) {
-                        if (context.getApplicationContext() instanceof ALRichMessageListener) {
-                            ((ALRichMessageListener) context.getApplicationContext()).onAction(context, "Click", message, payloadList.get(getLayoutPosition()).getMessage().trim());
-                        }
-                        listener.onAction(context, "sendHotelRating", null, payloadList.get(getLayoutPosition()).getMessage().trim());
-                    } else {
-                        if (context.getApplicationContext() instanceof ALRichMessageListener) {
-                            ((ALRichMessageListener) context.getApplicationContext()).onAction(context, "Click", message, model);
-                        }
-                        listener.onAction(context, "makePayment", null, model);
-                    }
-                }
-            });
         }
     }
 
@@ -356,7 +338,7 @@ public class ALRichMessageAdapter extends RecyclerView.Adapter {
         holder.doneTv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                listener.onAction(context, "sendGuestList", null, guestList);
+                listener.onAction(context, AlRichMessage.SEND_GUEST_LIST, null, guestList, null);
             }
         });
     }
@@ -393,6 +375,102 @@ public class ALRichMessageAdapter extends RecyclerView.Adapter {
         }
     }
 
+    private void bindGenericCards(MyViewHolder viewHolder, int position) {
+        if (payloadList != null) {
+            final ALRichMessageModel.ALPayloadModel payloadModel = payloadList.get(position);
+
+            if (payloadModel.getHeader() != null && !TextUtils.isEmpty(payloadModel.getHeader().getImgSrc())) {
+                Glide.with(context).load(payloadModel.getHeader().getImgSrc()).into(viewHolder.productImage);
+                viewHolder.productImage.setVisibility(View.VISIBLE);
+                viewHolder.productImageOverlay.setVisibility(View.VISIBLE);
+                viewHolder.productPrice.setBackground(context.getResources().getDrawable(R.drawable.al_rich_messaging_price_border));
+            } else {
+                viewHolder.productImage.setVisibility(View.GONE);
+                viewHolder.productImageOverlay.setVisibility(GONE);
+                viewHolder.productPrice.setBackground(context.getResources().getDrawable(R.drawable.al_imageless_rich_message_price_border));
+            }
+
+            if (payloadModel.getHeader() != null && !TextUtils.isEmpty(payloadModel.getHeader().getOverlayText())) {
+                viewHolder.productPrice.setText(payloadModel.getHeader().getOverlayText());
+                viewHolder.productPrice.setVisibility(View.VISIBLE);
+            } else {
+                viewHolder.productPrice.setVisibility(View.GONE);
+            }
+
+            if (TextUtils.isEmpty(payloadModel.getTitleExt())) {
+                viewHolder.productNameSplitLayout.setVisibility(GONE);
+                if (!TextUtils.isEmpty(payloadModel.getTitle())) {
+                    viewHolder.productNameSingleLine.setVisibility(View.VISIBLE);
+                    viewHolder.productNameSingleLine.setText(payloadModel.getTitle());
+                } else {
+                    viewHolder.productNameSingleLine.setVisibility(View.GONE);
+                }
+            } else {
+                viewHolder.productNameSplitLayout.setVisibility(View.VISIBLE);
+                viewHolder.productNameSingleLine.setVisibility(View.GONE);
+                viewHolder.productName.setVisibility(View.VISIBLE);
+                viewHolder.productRating.setText(payloadModel.getTitleExt());
+
+                if (!TextUtils.isEmpty(payloadModel.getTitle())) {
+                    viewHolder.productName.setText(payloadModel.getTitle());
+                } else {
+                    viewHolder.productName.setText("");
+                }
+            }
+
+            if (!TextUtils.isEmpty(payloadModel.getSubtitle())) {
+                viewHolder.productLocation.setVisibility(View.VISIBLE);
+                viewHolder.productLocation.setText(AlRichMessage.getHtmlText(payloadModel.getSubtitle()));
+            } else {
+                viewHolder.productLocation.setVisibility(View.GONE);
+            }
+
+            if (!TextUtils.isEmpty(payloadModel.getDescription())) {
+                viewHolder.productDescription.setVisibility(View.VISIBLE);
+                viewHolder.productDescription.setText(AlRichMessage.getHtmlText(payloadModel.getDescription()));
+            } else {
+                viewHolder.productDescription.setVisibility(View.GONE);
+            }
+
+            viewHolder.bookAction1.setVisibility(View.GONE);
+            viewHolder.bookAction2.setVisibility(View.GONE);
+            viewHolder.bookAction3.setVisibility(View.GONE);
+            viewHolder.viewAction1.setVisibility(View.GONE);
+            viewHolder.viewAction2.setVisibility(View.GONE);
+            viewHolder.viewAction3.setVisibility(View.GONE);
+
+            if (payloadModel.getButtons() != null && !payloadModel.getButtons().isEmpty()) {
+                try {
+                    List<ALRichMessageModel.AlButtonModel> actionsList = payloadModel.getButtons();
+                    for (int i = 0; i < actionsList.size(); i++) {
+                        if (i == 0) {
+                            viewHolder.bookAction1.setVisibility(View.VISIBLE);
+                            viewHolder.viewAction1.setVisibility(View.VISIBLE);
+                            viewHolder.bookAction1.setText(actionsList.get(0).getName());
+                            viewHolder.bookAction1.setOnClickListener(getGenericCardClickListener(actionsList.get(0)));
+                        }
+
+                        if (i == 1) {
+                            viewHolder.bookAction2.setVisibility(View.VISIBLE);
+                            viewHolder.viewAction2.setVisibility(View.VISIBLE);
+                            viewHolder.bookAction2.setText(actionsList.get(1).getName());
+                            viewHolder.bookAction2.setOnClickListener(getGenericCardClickListener(actionsList.get(1)));
+                        }
+
+                        if (i == 2) {
+                            viewHolder.bookAction3.setVisibility(View.VISIBLE);
+                            viewHolder.viewAction3.setVisibility(View.VISIBLE);
+                            viewHolder.bookAction3.setText(actionsList.get(2).getName());
+                            viewHolder.bookAction3.setOnClickListener(getGenericCardClickListener(actionsList.get(2)));
+                        }
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
     //templateId = 2
     private void bindHotelView(MyViewHolder viewHolder, int position) {
 
@@ -400,9 +478,9 @@ public class ALRichMessageAdapter extends RecyclerView.Adapter {
             final AlHotelBookingModel hotel = hotelList.get(position);
 
             if (!TextUtils.isEmpty(hotel.getHotelName())) {
-                viewHolder.productNameSingleLine.setText(hotel.getHotelName() + " (" + hotel.getStarRating() + "/5)");
+                viewHolder.productNameSingleLine.setText(AlRichMessage.getHtmlText(hotel.getHotelName() + " (" + hotel.getStarRating() + "/5)"));
             } else {
-                viewHolder.productNameSingleLine.setText("Name Unavailable (" + hotel.getStarRating() + "/5)");
+                viewHolder.productNameSingleLine.setText(AlRichMessage.getHtmlText("Name Unavailable (" + hotel.getStarRating() + "/5)"));
             }
 
             viewHolder.productPrice.setText(context.getString(R.string.rupee_symbol) + " " + hotel.getPrice().getRoomPrice());
@@ -414,13 +492,13 @@ public class ALRichMessageAdapter extends RecyclerView.Adapter {
             }
 
             if (!TextUtils.isEmpty(hotel.getHotelAddress())) {
-                viewHolder.productLocation.setText(hotel.getHotelAddress());
+                viewHolder.productLocation.setText(AlRichMessage.getHtmlText(hotel.getHotelAddress()));
             } else {
                 viewHolder.productLocation.setText("Address unavailable");
             }
 
             if (!TextUtils.isEmpty(hotel.getHotelDescription())) {
-                viewHolder.productDescription.setText(hotel.getHotelDescription());
+                viewHolder.productDescription.setText(AlRichMessage.getHtmlText(hotel.getHotelDescription()));
             } else {
                 viewHolder.productDescription.setText("Description unavailable");
             }
@@ -434,7 +512,7 @@ public class ALRichMessageAdapter extends RecyclerView.Adapter {
                 @Override
                 public void onClick(View v) {
                     hotel.setSessionId(model.getSessionId());
-                    listener.onAction(context, "sendHotelDetails", null, hotel);
+                    listener.onAction(context, AlRichMessage.SEND_HOTEL_DETAILS, null, hotel, null);
                 }
             });
         } else if (payloadList != null) {
@@ -481,14 +559,14 @@ public class ALRichMessageAdapter extends RecyclerView.Adapter {
 
             if (!TextUtils.isEmpty(payload.getSubtitle())) {
                 viewHolder.productLocation.setVisibility(View.VISIBLE);
-                viewHolder.productLocation.setText(payload.getSubtitle());
+                viewHolder.productLocation.setText(AlRichMessage.getHtmlText(payload.getSubtitle()));
             } else {
                 viewHolder.productLocation.setVisibility(View.GONE);
             }
 
             if (!TextUtils.isEmpty(payload.getDescription())) {
                 viewHolder.productDescription.setVisibility(View.VISIBLE);
-                viewHolder.productDescription.setText(payload.getDescription());
+                viewHolder.productDescription.setText(AlRichMessage.getHtmlText(payload.getDescription()));
             } else {
                 viewHolder.productDescription.setVisibility(View.GONE);
             }
@@ -502,35 +580,33 @@ public class ALRichMessageAdapter extends RecyclerView.Adapter {
 
             if (payload.getActions() != null && !payload.getActions().isEmpty()) {
                 try {
-                    List<ALRichMessageModel.AlActionModel> actionsList = payload.getActions();
-                    //final List<ALRichMessageModel.AlActionModel> actionsList = Arrays.asList((ALRichMessageModel.AlActionModel[]) GsonUtils.getObjectFromJson(payload.getActions(), ALRichMessageModel.AlActionModel[].class));
+                    List<ALRichMessageModel.AlButtonModel> actionsList = payload.getActions();
                     for (int i = 0; i < actionsList.size(); i++) {
                         if (i == 0) {
                             viewHolder.bookAction1.setVisibility(View.VISIBLE);
                             viewHolder.viewAction1.setVisibility(View.VISIBLE);
                             viewHolder.bookAction1.setText(actionsList.get(0).getName());
-                            viewHolder.bookAction1.setOnClickListener(getActionClickListener(actionsList.get(0)));
+                            viewHolder.bookAction1.setOnClickListener(getActionClickListener(actionsList.get(0), payload.getReplyMetadata()));
                         }
 
                         if (i == 1) {
                             viewHolder.bookAction2.setVisibility(View.VISIBLE);
                             viewHolder.viewAction2.setVisibility(View.VISIBLE);
                             viewHolder.bookAction2.setText(actionsList.get(1).getName());
-                            viewHolder.bookAction2.setOnClickListener(getActionClickListener(actionsList.get(1)));
+                            viewHolder.bookAction2.setOnClickListener(getActionClickListener(actionsList.get(1), payload.getReplyMetadata()));
                         }
 
                         if (i == 2) {
                             viewHolder.bookAction3.setVisibility(View.VISIBLE);
                             viewHolder.viewAction3.setVisibility(View.VISIBLE);
                             viewHolder.bookAction3.setText(actionsList.get(2).getName());
-                            viewHolder.bookAction3.setOnClickListener(getActionClickListener(actionsList.get(2)));
+                            viewHolder.bookAction3.setOnClickListener(getActionClickListener(actionsList.get(2), payload.getReplyMetadata()));
                         }
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
-
         }
     }
 
@@ -538,16 +614,13 @@ public class ALRichMessageAdapter extends RecyclerView.Adapter {
         if (model.getTemplateId() == 3) {
             if (payloadList.get(position).getName() != null) {
                 holder.singleTextItem.setText(payloadList.get(position).getName().trim());
-            }else{
+            } else {
                 holder.singleTextItem.setText("");
             }
-           /* ViewGroup.LayoutParams params = holder.rootLayout.getLayoutParams();
-            params.width = LinearLayout.LayoutParams.MATCH_PARENT;
-            holder.rootLayout.setLayoutParams(params);*/
         } else {
             if (payloadList.get(position).getTitle() != null) {
                 holder.singleTextItem.setText(payloadList.get(position).getTitle().trim());
-            }else{
+            } else {
                 holder.singleTextItem.setText("");
             }
         }
@@ -559,7 +632,7 @@ public class ALRichMessageAdapter extends RecyclerView.Adapter {
 
         if (hotel != null) {
             if (!TextUtils.isEmpty(hotel.getRoomTypeName())) {
-                holder.roomTypeTv.setText(hotel.getRoomTypeName());
+                holder.roomTypeTv.setText(AlRichMessage.getHtmlText(hotel.getRoomTypeName()));
             } else {
                 holder.roomTypeTv.setText("Room name unavailable");
             }
@@ -583,7 +656,7 @@ public class ALRichMessageAdapter extends RecyclerView.Adapter {
                 @Override
                 public void onClick(View v) {
                     hotel.setSessionId(model.getSessionId());
-                    listener.onAction(context, "sendRoomDetailsMessage", null, hotel);
+                    listener.onAction(context, AlRichMessage.SEND_ROOM_DETAILS_MESSAGE, null, hotel, null);
                 }
             });
         }
@@ -624,23 +697,53 @@ public class ALRichMessageAdapter extends RecyclerView.Adapter {
                     bookingDetails.setEmailId(holder.emailIdEt.getText().toString().trim());
                     bookingDetails.setPhoneNo(holder.contactNumberEt.getText().toString().trim());
 
-                    listener.onAction(context, "sendBookingDetails", null, detailsModel);
+                    listener.onAction(context, AlRichMessage.SEND_BOOKING_DETAILS, null, detailsModel, null);
                 }
             }
         });
     }
 
-    private View.OnClickListener getActionClickListener(final ALRichMessageModel.AlActionModel action) {
+    private View.OnClickListener getActionClickListener(final ALRichMessageModel.AlButtonModel buttonModel, final Map<String, Object> replyMetadata) {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (context.getApplicationContext() instanceof ALRichMessageListener) {
-                    ((ALRichMessageListener) context.getApplicationContext()).onAction(context, action.getAction(), message, action.getData());
-                }
-                if (listener != null) {
-                    listener.onAction(context, action.getAction(), message, action.getData());
+                    ((ALRichMessageListener) context.getApplicationContext()).onAction(context, getActionType(buttonModel), message, buttonModel, replyMetadata);
+                } else if (listener != null) {
+                    listener.onAction(context, getActionType(buttonModel), message, buttonModel, replyMetadata);
                 }
             }
         };
+    }
+
+    private View.OnClickListener getGenericCardClickListener(final ALRichMessageModel.AlButtonModel action) {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (context.getApplicationContext() instanceof ALRichMessageListener) {
+                    ((ALRichMessageListener) context.getApplicationContext()).onAction(context, getActionType(action), message, action, getReplyMetadata(action));
+                } else if (listener != null) {
+                    listener.onAction(context, getActionType(action), message, action, getReplyMetadata(action));
+                }
+            }
+        };
+    }
+
+    private Map<String, Object> getReplyMetadata(ALRichMessageModel.AlButtonModel alButtonModel) {
+        if (alButtonModel != null && alButtonModel.getAction() != null) {
+            if (alButtonModel.getAction().getPayload() != null) {
+                return alButtonModel.getAction().getPayload().getReplyMetadata();
+            }
+        }
+        return null;
+    }
+
+    private String getActionType(ALRichMessageModel.AlButtonModel alButtonModel) {
+        if (alButtonModel != null && alButtonModel.getAction() != null) {
+            if (!TextUtils.isEmpty(alButtonModel.getAction().getType())) {
+                return alButtonModel.getAction().getType();
+            }
+        }
+        return AlRichMessage.TEMPLATE_ID + model.getTemplateId();
     }
 }

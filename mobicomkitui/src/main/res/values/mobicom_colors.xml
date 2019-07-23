@@ -45,6 +45,12 @@
     <color name="applozic_theme_color_primary">#FF03A9F4</color>
     <color name="applozic_theme_color_primary_dark">#FF0288D1</color>
     <color name="applozic_theme_color_accent">#FF607D8B</color>
+    <color name="km_list_item_header_text_color">#5c5aa7</color>
+    <color name="km_list_item_text_color">#646262</color>
+    <color name="km_list_item_divider_color">#e5e5e5</color>
+    <color name="km_header_text_background">#e6e5ec</color>
+    <color name="km_list_item_action_color">#504db0</color>
+    <color name="km_list_item_main_header_text_color">#686464</color>
     <color name="applozic_theme_color_app">#ff0099cc</color>
     <color name="applozic_theme_color_control_activated">#ff0099cc</color>
     <color name="applozic_theme_color_control_highlight">#ff0099ee</color>

@@ -137,10 +137,9 @@
 
     </LinearLayout>
 
-    <include layout="@layout/al_rich_message_layout" />
-
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="wrap_content"
+        android:id="@+id/timeContainer"
         android:layout_height="wrap_content"
         android:layout_below="@+id/messageTextLayout"
         android:layout_marginLeft="44dp"
@@ -187,4 +186,12 @@
             android:textSize="11sp"
             android:visibility="gone" />
     </LinearLayout>
+
+    <include layout="@layout/al_rich_message_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/timeContainer"/>
+
+
+
 </RelativeLayout>

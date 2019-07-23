@@ -40,7 +40,9 @@
     <string name="failed_to_load_contact">Failed to load contacts : Response : </string>
     <string name="rupee_symbol">\u20B9</string>
     <string name="invite_message">Download this app from this link : apps.applozic.com</string>
-
+    <string name="cancel_transaction">Do you want to cancel this transaction?</string>
+    <string name="go_back">Are you sure you want to exit this page?</string>
+    <string name="no_alert">No</string>
 
     <!--
          Used for the AlphabetIndexer in ContactsListFragment to provide quick navigation by

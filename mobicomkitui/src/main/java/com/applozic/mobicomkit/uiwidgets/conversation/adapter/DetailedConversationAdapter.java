@@ -966,7 +966,18 @@ public class DetailedConversationAdapter extends RecyclerView.Adapter implements
 
                     if (message.getMetadata() != null && "300".equals(message.getMetadata().get("contentType"))) {
                         myHolder.richMessageLayout.setVisibility(View.VISIBLE);
-                        new AlRichMessage(activityContext, myHolder.richMessageContainer, myHolder.richMessageLayout, message, listener);
+                        if (!TextUtils.isEmpty(message.getMessage())) {
+                            myHolder.messageTextLayout.setVisibility(View.VISIBLE);
+                        } else {
+                            myHolder.messageTextLayout.setVisibility(GONE);
+                        }
+
+                        try {
+                            new AlRichMessage(context, myHolder.richMessageLayout, message, listener, alCustomizationSettings).createRichMessage();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            myHolder.richMessageLayout.setVisibility(View.GONE);
+                        }
                     } else {
                         myHolder.richMessageLayout.setVisibility(View.GONE);
                     }

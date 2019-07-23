@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_below="@+id/messageTextLayout"
+    android:layout_marginTop="8dp"
     android:orientation="vertical"
     android:visibility="gone">
 
@@ -11,14 +12,138 @@
         android:id="@+id/alRichMessageContainer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="15dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginRight="5dp"
-        android:layout_marginEnd="5dp"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="20dp" />
+        android:layout_marginStart="38dp"
+        android:layout_marginLeft="38dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="15dp"/>
 
-    <include layout="@layout/al_rich_message_list_item" />
+    <com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.KmCustomLayoutManager
+        android:id="@+id/alQuickReplyRecycler"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="52dp"
+        android:layout_marginLeft="52dp"
+        android:layout_marginBottom="15dp" />
 
+    <include layout="@layout/al_faq_layout" />
+
+    <include layout="@layout/al_faq_reply_layout" />
+
+    <LinearLayout
+        android:id="@+id/alListMessageLayout"
+        android:layout_width="260dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="50dp"
+        android:layout_marginLeft="50dp"
+        android:background="@drawable/al_rich_message_border"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/headerImage"
+            android:layout_width="match_parent"
+            android:layout_height="70dp"
+            android:adjustViewBounds="true"
+            android:scaleType="centerCrop" />
+
+        <TextView
+            android:id="@+id/headerText"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/km_header_text_background"
+            android:fontFamily="sans-serif"
+            android:letterSpacing="0.04"
+            android:lineSpacingExtra="3sp"
+            android:paddingStart="9dp"
+            android:paddingLeft="9dp"
+            android:paddingTop="7dp"
+            android:paddingEnd="9dp"
+            android:paddingRight="9dp"
+            android:paddingBottom="7dp"
+            android:text=""
+            android:textColor="@color/km_list_item_main_header_text_color"
+            android:textSize="14sp"
+            android:textStyle="normal" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/alListItemRecycler"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/km_list_item_divider_color" />
+
+        <TextView
+            android:id="@+id/actionButton1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="11dp"
+            android:layout_marginBottom="11dp"
+            android:drawablePadding="4dp"
+            android:ellipsize="end"
+            android:fontFamily="sans-serif"
+            android:gravity="center"
+            android:letterSpacing="0.07"
+            android:maxLines="1"
+            android:text=""
+            android:textColor="@color/km_list_item_action_color"
+            android:textSize="15sp"
+            android:textStyle="normal"
+            android:visibility="gone" />
+
+        <View
+            android:id="@+id/actionDivider2"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/km_list_item_divider_color"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/actionButton2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="11dp"
+            android:layout_marginBottom="11dp"
+            android:drawablePadding="4dp"
+            android:ellipsize="end"
+            android:fontFamily="sans-serif"
+            android:gravity="center"
+            android:letterSpacing="0.07"
+            android:maxLines="1"
+            android:text=""
+            android:textColor="@color/km_list_item_action_color"
+            android:textSize="15sp"
+            android:textStyle="normal"
+            android:visibility="gone" />
+
+        <View
+            android:id="@+id/actionDivider3"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/km_list_item_divider_color"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/actionButton3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="11dp"
+            android:layout_marginBottom="11dp"
+            android:drawablePadding="4dp"
+            android:ellipsize="end"
+            android:fontFamily="sans-serif"
+            android:gravity="center"
+            android:letterSpacing="0.07"
+            android:maxLines="1"
+            android:text=""
+            android:textColor="@color/km_list_item_action_color"
+            android:textSize="15sp"
+            android:textStyle="normal"
+            android:visibility="gone" />
+    </LinearLayout>
 </LinearLayout>

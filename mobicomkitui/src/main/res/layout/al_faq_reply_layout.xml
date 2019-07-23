@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/alFaqReplyLayout"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="50dp"
+    android:layout_marginLeft="50dp"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:paddingTop="2dp"
+    android:paddingBottom="2dp"
+    android:visibility="gone">
+
+    <TextView
+        android:id="@+id/buttonLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_marginStart="9dp"
+        android:layout_marginLeft="9dp"
+        android:layout_marginEnd="6dp"
+        android:layout_marginRight="6dp"
+        android:fontFamily="sans-serif"
+        android:letterSpacing="0.04"
+        android:text=""
+        android:textColor="#646262"
+        android:textSize="14sp"
+        android:textStyle="normal" />
+
+    <TextView
+        android:id="@+id/actionYes"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="13dp"
+        android:layout_marginLeft="13dp"
+        android:background="@drawable/al_count_button_shape"
+        android:letterSpacing="0.04"
+        android:paddingStart="18dp"
+        android:paddingLeft="18dp"
+        android:paddingTop="7dp"
+        android:paddingEnd="18dp"
+        android:paddingRight="18dp"
+        android:paddingBottom="7dp"
+        android:text="" />
+
+    <TextView
+        android:id="@+id/actionNo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="7dp"
+        android:layout_marginLeft="7dp"
+        android:layout_marginEnd="2dp"
+        android:layout_marginRight="2dp"
+        android:background="@drawable/al_count_button_shape"
+        android:letterSpacing="0.04"
+        android:paddingStart="20dp"
+        android:paddingLeft="20dp"
+        android:paddingTop="7dp"
+        android:paddingEnd="19dp"
+        android:paddingRight="19dp"
+        android:paddingBottom="7dp"
+        android:text="" />
+</LinearLayout>
