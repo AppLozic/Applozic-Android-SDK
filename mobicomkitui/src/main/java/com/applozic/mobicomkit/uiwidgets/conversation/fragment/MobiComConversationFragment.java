@@ -4469,7 +4469,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
     public void loadImageOnFullScreen(Context context, String action, ALRichMessageModel.ALPayloadModel payloadModel) {
         Intent intent = new Intent(context, FullScreenImageActivity.class);
         intent.putExtra(action, GsonUtils.getJsonFromObject(payloadModel, ALRichMessageModel.ALPayloadModel.class));
-        ((MobiComKitActivityInterface) context).startActivityForResult(intent, MobiComKitActivityInterface.REQUEST_CODE_FULL_SCREEN_ACTION);
+        getActivity().startActivityForResult(intent, MobiComKitActivityInterface.REQUEST_CODE_FULL_SCREEN_ACTION);
     }
 
     public void makePaymentForBooking(ALRichMessageModel model) {

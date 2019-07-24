@@ -13,6 +13,8 @@ import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -20,11 +22,11 @@ import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.applozic.mobicomkit.api.MobiComKitConstants;
 import com.applozic.mobicomkit.api.conversation.Message;
@@ -32,10 +34,16 @@ import com.applozic.mobicomkit.broadcast.ConnectivityReceiver;
 import com.applozic.mobicomkit.uiwidgets.R;
 
 import com.applozic.mobicomkit.uiwidgets.conversation.TouchImageView;
+import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.ALRichMessageModel;
+import com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.AlRichMessage;
 import com.applozic.mobicommons.commons.core.utils.Utils;
 import com.applozic.mobicommons.commons.image.ImageUtils;
 import com.applozic.mobicommons.file.FileUtils;
 import com.applozic.mobicommons.json.GsonUtils;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
+import com.bumptech.glide.request.target.BitmapImageViewTarget;
+import com.bumptech.glide.request.transition.Transition;
 
 import java.io.File;
 import java.util.List;
@@ -43,8 +51,8 @@ import java.util.List;
 /**
  * Created by devashish on 22/9/14.
  */
-public class FullScreenImageActivity extends AppCompatActivity  {
-    TouchImageView mediaImageViewView;
+public class FullScreenImageActivity extends AppCompatActivity {
+    TouchImageView mediaImageView;
 
     private Message message;
     private ConnectivityReceiver connectivityReceiver;
@@ -60,39 +68,65 @@ public class FullScreenImageActivity extends AppCompatActivity  {
         getSupportActionBar().show();
         showUi();
 
-        mediaImageViewView = (TouchImageView) findViewById(R.id.full_screen_image);
-        ProgressBar progressBar = (ProgressBar) findViewById(R.id.full_screen_progress_bar);
+        mediaImageView = (TouchImageView) findViewById(R.id.full_screen_image);
+        final ProgressBar progressBar = (ProgressBar) findViewById(R.id.full_screen_progress_bar);
         progressBar.setVisibility(View.VISIBLE);
-        String messageJson = getIntent().getStringExtra(MobiComKitConstants.MESSAGE_JSON_INTENT);
+        String payload = getIntent().getStringExtra(AlRichMessage.TEMPLATE_ID + 9);
 
-        if (!TextUtils.isEmpty(messageJson)) {
-            message = (Message) GsonUtils.getObjectFromJson(messageJson, Message.class);
-        }
+        if (payload != null) {
+            TextView captionText = findViewById(R.id.captionText);
+            ALRichMessageModel.ALPayloadModel payloadModel = (ALRichMessageModel.ALPayloadModel) GsonUtils.getObjectFromJson(payload, ALRichMessageModel.ALPayloadModel.class);
 
-        if (message != null && message.getFilePaths() != null && !message.getFilePaths().isEmpty()) {
-            try {
-                Bitmap imageBitmap = ImageUtils.decodeSampledBitmapFromPath(message.getFilePaths().get(0));
-                mediaImageViewView.setImageBitmap(imageBitmap);
-            } catch (Exception e) {
-                e.printStackTrace();
+            Glide.with(this)
+                    .asBitmap()
+                    .load(payloadModel.getUrl())
+                    .apply(new RequestOptions().override(1600, 1600)) //This is important
+                    .into(new BitmapImageViewTarget(mediaImageView) {
+                        @Override
+                        public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
+                            super.onResourceReady(resource, transition);
+                            progressBar.setVisibility(View.GONE);
+                            mediaImageView.setImageBitmap(resource);
+                            mediaImageView.setZoom(1);
+                        }
+                    });
+
+            if (captionText != null && !TextUtils.isEmpty(payloadModel.getCaption())) {
+                captionText.setVisibility(View.VISIBLE);
+                captionText.setText(payloadModel.getCaption());
             }
-        }
+        } else {
+            String messageJson = getIntent().getStringExtra(MobiComKitConstants.MESSAGE_JSON_INTENT);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-            getWindow().getDecorView().setOnSystemUiVisibilityChangeListener(new View.OnSystemUiVisibilityChangeListener() {
+            if (!TextUtils.isEmpty(messageJson)) {
+                message = (Message) GsonUtils.getObjectFromJson(messageJson, Message.class);
+            }
 
-                @Override
-                public void onSystemUiVisibilityChange(int visibility) {
-                    if (visibility == 0) {
-                        getSupportActionBar().show();
-                    }
+            if (message != null && message.getFilePaths() != null && !message.getFilePaths().isEmpty()) {
+                try {
+                    Bitmap imageBitmap = ImageUtils.decodeSampledBitmapFromPath(message.getFilePaths().get(0));
+                    mediaImageView.setImageBitmap(imageBitmap);
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-            });
-        }
-        progressBar.setVisibility(View.GONE);
+            }
 
-        connectivityReceiver = new ConnectivityReceiver();
-        registerReceiver(connectivityReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+                getWindow().getDecorView().setOnSystemUiVisibilityChangeListener(new View.OnSystemUiVisibilityChangeListener() {
+
+                    @Override
+                    public void onSystemUiVisibilityChange(int visibility) {
+                        if (visibility == 0) {
+                            getSupportActionBar().show();
+                        }
+                    }
+                });
+            }
+            progressBar.setVisibility(View.GONE);
+
+            connectivityReceiver = new ConnectivityReceiver();
+            registerReceiver(connectivityReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+        }
     }
 
 
@@ -152,6 +186,9 @@ public class FullScreenImageActivity extends AppCompatActivity  {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate menu resource file.
         getMenuInflater().inflate(R.menu.attachment_menu, menu);
+        if (message == null) {
+            menu.findItem(R.id.shareOptions).setVisible(false);
+        }
 
         // Return true to display menu
         return true;
