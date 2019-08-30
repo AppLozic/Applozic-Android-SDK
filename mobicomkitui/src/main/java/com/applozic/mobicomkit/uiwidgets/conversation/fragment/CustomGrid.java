@@ -73,6 +73,7 @@ public class CustomGrid extends BaseAdapter {
             final VideoView videoView = (VideoView) gridViewAndroid.findViewById(R.id.item_video);
             CardView card = (CardView) gridViewAndroid.findViewById(R.id.cardone);
 
+
             card.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {

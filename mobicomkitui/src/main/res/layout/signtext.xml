@@ -16,8 +16,8 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="30dp"
-            android:layout_marginBottom="35dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="15dp"
             android:foreground="?android:attr/selectableItemBackground">
 
             <VideoView
@@ -34,12 +34,12 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/item_video"
                 android:layout_centerHorizontal="true"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="5dp"
                 android:textStyle="bold"
                 android:textColor="@color/primary_dark_color"
                 android:gravity="center_horizontal"
                 android:text="ggggggggggggg"
-                android:textSize="12sp"></TextView>
+                android:textSize="14sp"></TextView>
 
 
         </RelativeLayout>

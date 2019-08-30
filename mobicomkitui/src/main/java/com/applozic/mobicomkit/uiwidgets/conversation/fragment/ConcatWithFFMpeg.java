@@ -77,15 +77,18 @@ public class ConcatWithFFMpeg extends AppCompatActivity {
         Log.i("TAG", "***sendVideoMessage msg*** " + msg);
         Log.i("TAG", "***sendVideoMessage items length*** " + items.length);
 
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = "VID_" + timeStamp + "_" + ".mp4";
 
         if (items.length == 1) {
             if (AllCategory.contains(items[0].toLowerCase())) {
-                String message = myFile + "/" + items[0].toLowerCase() + ".mp4";
+                String message = myFile + "/" + imageFileName;
                 Log.i("TAG", "***sendVideoMessage OneItem***" + items);
 
                 new MessageBuilder(context)
                         .setContentType(Message.ContentType.ATTACHMENT.getValue())
                         .setTo(contact)
+                        //setGroupId()
                         .setFilePath(message)
                         .setMessage(msg)
                         .send();
@@ -95,11 +98,8 @@ public class ConcatWithFFMpeg extends AppCompatActivity {
                 Toast.makeText(context, "words does not exists", Toast.LENGTH_SHORT).show();
             }
         } else {
-            // String outputFile = myFile + "/" + msg.replaceAll("\\s+", "") + ".mp4";
-            String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-            String imageFileName = "VID_" + timeStamp + "_" + ".mp4";
 
-            String outputFile = myFileConcat + "/" + imageFileName + ".mp4";
+            String outputFile = myFileConcat + "/" + imageFileName;
 
 
             Log.i("TAG", "***sendVideoMessage MultipleItem***");
@@ -194,6 +194,7 @@ public class ConcatWithFFMpeg extends AppCompatActivity {
                     new MessageBuilder(context)
                             .setContentType(Message.ContentType.ATTACHMENT.getValue())
                             .setTo(contact)
+                            //setGroupId()
                             .setFilePath(outputFile)
                             .setMessage(msg)
                             .send();
