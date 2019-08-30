@@ -80,8 +80,10 @@ import com.applozic.mobicomkit.uiwidgets.conversation.MessageCommunicator;
 import com.applozic.mobicomkit.uiwidgets.conversation.MobiComKitBroadcastReceiver;
 import com.applozic.mobicomkit.uiwidgets.conversation.fragment.AudioMessageFragment;
 import com.applozic.mobicomkit.uiwidgets.conversation.fragment.ConversationFragment;
+import com.applozic.mobicomkit.uiwidgets.conversation.fragment.MobiComConversationFragment;
 import com.applozic.mobicomkit.uiwidgets.conversation.fragment.MobiComQuickConversationFragment;
 import com.applozic.mobicomkit.uiwidgets.conversation.fragment.MultimediaOptionFragment;
+import com.applozic.mobicomkit.uiwidgets.conversation.fragment.sign_to_text;
 import com.applozic.mobicomkit.uiwidgets.instruction.ApplozicPermissions;
 import com.applozic.mobicomkit.uiwidgets.instruction.InstructionUtil;
 import com.applozic.mobicomkit.uiwidgets.people.activity.MobiComKitPeopleActivity;
@@ -350,6 +352,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ApplozicService.initWithContext(getApplication());
+        Log.i("TAG", "***conversation_send1***" + contact);
         String jsonString = FileUtils.loadSettingsJsonFile(getApplicationContext());
         if (!TextUtils.isEmpty(jsonString)) {
             alCustomizationSettings = (AlCustomizationSettings) GsonUtils.getObjectFromJson(jsonString, AlCustomizationSettings.class);
@@ -520,7 +523,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
     }
 
     private void animateToolbarTitle() {
-        if(toolbarTitle != null){
+        if (toolbarTitle != null) {
             ObjectAnimator animation = ObjectAnimator.ofFloat(toolbarTitle, "translationY", 0f);
             animation.setDuration(0);
             animation.start();
@@ -530,7 +533,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
     @Override
     public void setToolbarTitle(String title) {
         toolbarTitle.setText(title);
-        if(toolbarSubtitle != null && toolbarSubtitle.getVisibility() == View.GONE){
+        if (toolbarSubtitle != null && toolbarSubtitle.getVisibility() == View.GONE) {
             animateToolbarTitle();
         }
     }
@@ -1126,7 +1129,6 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
         }
     }
 
-
     public void processCall(Contact contactObj, Integer conversationId) {
         this.contact = baseContactService.getContactById(contactObj.getContactIds());
         this.currentConversationId = conversationId;
@@ -1439,10 +1441,10 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
     @Override
     public void hideSubtitleAndProfilePic() {
         animateToolbarTitle();
-        if(toolbarSubtitle != null){
+        if (toolbarSubtitle != null) {
             toolbarSubtitle.setVisibility(View.GONE);
         }
-        if(conversationContactPhoto != null) {
+        if (conversationContactPhoto != null) {
             conversationContactPhoto.setVisibility(View.GONE);
         }
     }
@@ -1494,6 +1496,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
                                     R.string.applozic_account_closed : R.string.applozic_free_version_not_allowed_on_release_build,
                             Snackbar.LENGTH_INDEFINITE);
                     snackbar.show();
+
                 }
             }
         }

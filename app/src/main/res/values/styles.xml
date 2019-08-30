@@ -29,5 +29,12 @@ Theme.Holo.Light.DarkActionBar
         <item name="android:windowContentOverlay">@null</item>
         <item name="android:windowIsTranslucent">true</item>
     </style>
+    <style name="LoginTheme" parent="FirebaseUI">
+        <item name="colorPrimary">@color/buttonbgcolor</item>
+        <item name="colorPrimaryDark">@color/buttonbgcolor</item>
+        <item name="colorButtonNormal">@color/buttonbgcolor</item>
+        <item name="colorAccent">@color/buttonbgcolor</item>
+    </style>
+
 
 </resources>

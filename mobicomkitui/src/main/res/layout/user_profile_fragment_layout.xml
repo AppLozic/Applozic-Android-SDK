@@ -116,6 +116,7 @@
                     android:textDirection="locale"
                     android:paddingStart="20dp"
                     android:textColor="#7F000000"
+                    android:text="@string/statusUser"
                     android:textSize="14sp" />
             </LinearLayout>
         </android.support.v7.widget.CardView>

@@ -36,7 +36,7 @@
     <string name="applozic_enter_group_name">Please enter a group name to proceed..</string>
     <string name="snap_text">Oh Snap!</string>
     <string name="account_disconnection_message">We’re sorry but messaging is not \navailable at the moment.\nPlease contact support for more details</string>
-    <string name="powered_by_applozic_message">We are powered by Applozic</string>
+    <string name="powered_by_applozic_message"></string>
     <string name="failed_to_load_contact">Failed to load contacts : Response : </string>
     <string name="rupee_symbol">\u20B9</string>
     <string name="invite_message">Download this app from this link : apps.applozic.com</string>
@@ -222,4 +222,18 @@
     <string name="profile_contact_number">Contact Number</string>
     <string name="user_name">User Name</string>
     <string name="powered_by_applozic">Powered By Applozic</string>
+
+
+    <string name="spellchecker_name">Sample correction</string>
+    <string name="subtype_generic" translatable="false">%s</string>
+    <string name="sample_settings">Sample settings</string>
+    <string name="sample_preference">Sample preference</string>
+    <string name="loadmore">Loading more items please wait&#8230;</string>
+    <string name="translation">Translation</string>
+    <string name="not_sub_cat">Sub category not available</string>
+    <string name="no_traduction">Translation not available</string>
+    <string name="statusUser">Hey there! I\'m using HearMe</string>
+
+
+
 </resources>

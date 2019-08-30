@@ -1,7 +1,9 @@
 package com.applozic.mobicomkit.uiwidgets.conversation;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.support.v4.app.FragmentActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
@@ -9,8 +11,13 @@ import android.widget.PopupWindow;
 
 import com.applozic.mobicomkit.uiwidgets.R;
 import com.applozic.mobicomkit.uiwidgets.conversation.activity.ConversationActivity;
+import com.applozic.mobicomkit.uiwidgets.conversation.fragment.MobiComConversationFragment;
+import com.applozic.mobicomkit.uiwidgets.conversation.fragment.MobiComQuickConversationFragment;
+import com.applozic.mobicomkit.uiwidgets.conversation.fragment.sign_to_text;
+import com.applozic.mobicomkit.uiwidgets.conversation.fragment.text_to_sign;
 import com.applozic.mobicomkit.uiwidgets.uilistener.ALStoragePermission;
 import com.applozic.mobicomkit.uiwidgets.uilistener.ALStoragePermissionListener;
+import com.applozic.mobicommons.people.contact.Contact;
 
 import java.util.List;
 
@@ -23,10 +30,13 @@ public class MultimediaOptionsGridView {
     GridView multimediaOptions;
     private Uri capturedImageUri;
     private ALStoragePermissionListener storagePermissionListener;
+    protected Contact contact;
+
 
     public MultimediaOptionsGridView(FragmentActivity context, GridView multimediaOptions) {
         this.context = context;
         this.multimediaOptions = multimediaOptions;
+
         if (context instanceof ALStoragePermissionListener) {
             storagePermissionListener = (ALStoragePermissionListener) context;
         } else {
@@ -47,6 +57,7 @@ public class MultimediaOptionsGridView {
     public void setMultimediaClickListener(final List<String> keys) {
         capturedImageUri = null;
 
+
         multimediaOptions.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -56,7 +67,10 @@ public class MultimediaOptionsGridView {
         });
     }
 
-    public void executeMethod(String key) {
+    public  void executeMethod(String key) {
+        Log.i("TAG", "***conversation_send1***" + contact);
+
+
         if (key.equals(context.getResources().getString(R.string.al_location))) {
             ((ConversationActivity) context).processLocation();
         } else if (key.equals(context.getString(R.string.al_camera))) {
@@ -132,6 +146,10 @@ public class MultimediaOptionsGridView {
             }
         } else if (key.equals(context.getString(R.string.al_price))) {
             new ConversationUIService(context).sendPriceMessage();
+        } else if (key.equals(":SL2T")) {
+            new ConversationUIService(context).processSL2T();
+        } else if (key.equals(":T2SL")) {
+            new ConversationUIService(context).processT2SL();
         }
         multimediaOptions.setVisibility(View.GONE);
     }

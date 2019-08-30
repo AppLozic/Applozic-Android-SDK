@@ -35,7 +35,7 @@
     <string name="application_key">applozic-sample-app</string>
     <string name="default_server_url">https://apps.applozic.com</string>
     <string name="default_mqtt_server_url">tcp://apps.applozic.com:1883</string>
-    <string name="default_media_location_folder">Applozic</string>
+    <string name="default_media_location_folder">HearMe</string>
     <string name="order_sample_button">विक्रेता के साथ चैट करें</string>
     <string name="take_order_userid">ApplozicShop</string>
     <string name="initiate_chat_button_info">चैटिंग शुरू करें</string>

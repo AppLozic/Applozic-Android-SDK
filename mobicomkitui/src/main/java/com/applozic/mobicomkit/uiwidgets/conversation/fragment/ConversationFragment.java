@@ -164,6 +164,11 @@ public class ConversationFragment extends MobiComConversationFragment implements
 
     }
 
+    public void updateTitle() {
+        //((ActionBarActivity) getActivity()).getSupportActionBar().setTitle(ApplozicApplication.TITLE);
+        super.updateTitle();
+    }
+
     public void hideMultimediaOptionGrid() {
         if (multimediaPopupGrid.getVisibility() == View.VISIBLE) {
             multimediaPopupGrid.setVisibility(View.GONE);

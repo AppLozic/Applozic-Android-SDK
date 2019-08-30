@@ -15,6 +15,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -34,11 +35,15 @@ import com.applozic.mobicomkit.feed.TopicDetail;
 import com.applozic.mobicomkit.uiwidgets.async.ApplozicConversationCreateTask;
 import com.applozic.mobicomkit.uiwidgets.conversation.ConversationUIService;
 import com.applozic.mobicomkit.uiwidgets.conversation.activity.ConversationActivity;
+import com.applozic.mobicommons.people.ALContactProcessor;
 import com.applozic.mobicommons.people.channel.Conversation;
 import com.applozic.mobicommons.people.contact.Contact;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import io.michaelrocks.libphonenumber.android.PhoneNumberUtil;
+import io.michaelrocks.libphonenumber.android.Phonenumber;
 
 
 public class MainActivity extends AppCompatActivity
@@ -112,7 +117,7 @@ public class MainActivity extends AppCompatActivity
                 (DrawerLayout) findViewById(R.id.drawer_layout));
 
         //Put Support Contact Data
-        buildSupportContactData();
+       // buildSupportContactData();
 
         /*else {
             Intent intent = new Intent(this, ConversationActivity.class);
@@ -357,7 +362,7 @@ public class MainActivity extends AppCompatActivity
 
     }
 
-    private void buildSupportContactData() {
+  /*  private void buildSupportContactData() {
         Context context = getApplicationContext();
         AppContactService appContactService = new AppContactService(context);
         // avoid each time update ....
@@ -368,9 +373,10 @@ public class MainActivity extends AppCompatActivity
             contact.setContactNumber(getString(R.string.support_contact_number));
             contact.setImageURL(getString(R.string.support_contact_image_url));
             contact.setEmailId(getString(R.string.support_contact_emailId));
-            appContactService.add(contact);
+            .appContactService(contact);
         }
-    }
+    }*/
+
 
     /**
      * A placeholder fragment containing a simple view.

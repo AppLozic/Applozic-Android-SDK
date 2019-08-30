@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:card_view="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/cardone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        card_view:cardCornerRadius="5dp"
+        card_view:cardUseCompatPadding="true">
+
+        <CheckBox
+            android:id="@+id/star"
+            style="?android:attr/starStyle"
+            android:buttonTint="@drawable/cb_selector"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="30dp"
+            android:layout_marginBottom="35dp"
+            android:foreground="?android:attr/selectableItemBackground">
+
+            <VideoView
+                android:id="@+id/item_video"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentBottom="false"></VideoView>
+
+            <TextView
+                android:id="@+id/grid_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/item_video"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="16dp"
+                android:gravity="center_horizontal"
+                android:text="ggggggggggggg"
+                android:textColor="@color/primary_dark_color"
+                android:textSize="12sp"
+                android:textStyle="bold"></TextView>
+
+            <ImageView
+                android:id="@+id/add"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_below="@id/item_video"
+                android:layout_marginTop="15dp"
+                android:layout_marginLeft="20dp"
+                android:background="@drawable/plus"
+                android:gravity="left" />
+
+            <ImageView
+                android:id="@+id/retrive"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_below="@id/item_video"
+                android:layout_alignParentRight="true"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/minus"
+                android:layout_marginRight="20dp"
+                android:gravity="right" />
+
+
+        </RelativeLayout>
+
+    </android.support.v7.widget.CardView>
+
+
+
+
+    </RelativeLayout>

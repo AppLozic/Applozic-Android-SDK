@@ -1,1 +1,1 @@
-include ':app', ':mobicommons', ':mobicomkit', ':mobicomkitui'
+include ':app', ':mobicommons', ':mobicomkit', ':mobicomkitui', ':FFmpegAndroid'

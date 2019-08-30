@@ -40,6 +40,8 @@ import com.applozic.mobicomkit.contact.BaseContactService;
 import com.applozic.mobicomkit.contact.ContactService;
 import com.applozic.mobicomkit.feed.RegisteredUsersApiResponse;
 import com.applozic.mobicomkit.feed.TopicDetail;
+import com.applozic.mobicomkit.listners.AlChannelListener;
+import com.applozic.mobicomkit.listners.AlContactListener;
 import com.applozic.mobicomkit.uiwidgets.AlCustomizationSettings;
 import com.applozic.mobicomkit.uiwidgets.ApplozicSetting;
 import com.applozic.mobicomkit.uiwidgets.R;
@@ -52,6 +54,8 @@ import com.applozic.mobicomkit.uiwidgets.conversation.fragment.ConversationFragm
 import com.applozic.mobicomkit.uiwidgets.conversation.fragment.MessageInfoFragment;
 import com.applozic.mobicomkit.uiwidgets.conversation.fragment.MobiComQuickConversationFragment;
 import com.applozic.mobicomkit.uiwidgets.conversation.fragment.MultimediaOptionFragment;
+import com.applozic.mobicomkit.uiwidgets.conversation.fragment.sign_to_text;
+import com.applozic.mobicomkit.uiwidgets.conversation.fragment.text_to_sign;
 import com.applozic.mobicomkit.uiwidgets.people.activity.MobiComKitPeopleActivity;
 import com.applozic.mobicomkit.uiwidgets.people.fragment.UserProfileFragment;
 import com.applozic.mobicommons.commons.core.utils.LocationInfo;
@@ -1097,6 +1101,27 @@ public class ConversationUIService {
         usersAsyncTask.execute((Void) null);
 
     }
+
+    public void processSL2T() {
+        ConversationFragment conversationFragment = getConversationFragment();
+
+        //Log.i("TAG", "process base CONTACT_ID1" + conversationFragment.getContact());
+        Log.i("TAG", "process base CONTACT_ID2" + conversationFragment.getContact().getContactIds());
+        Intent intent = new Intent(fragmentActivity, sign_to_text.class);
+        intent.putExtra("CONTACT_ID", conversationFragment.getContact().getContactIds());
+        fragmentActivity.startActivity(intent);
+    }
+
+    public void processT2SL() {
+        ConversationFragment conversationFragment = getConversationFragment();
+
+        //Log.i("TAG", "process base CONTACT_ID1" + conversationFragment.getContact());
+        Log.i("TAG", "process base CONTACT_ID2" + conversationFragment.getContact().getContactIds());
+        Intent intent = new Intent(fragmentActivity, text_to_sign.class);
+        intent.putExtra("CONTACT_ID", conversationFragment.getContact().getContactIds());
+        fragmentActivity.startActivity(intent);
+    }
+
 
 
 }

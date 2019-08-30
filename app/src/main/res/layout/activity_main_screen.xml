@@ -1,0 +1,78 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:configChanges="orientation"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/mobicom_activity_horizontal_margin"
+    android:paddingRight="@dimen/mobicom_activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingStart="@dimen/mobicom_activity_horizontal_margin"
+    android:background="@color/white"
+    android:paddingEnd="@dimen/mobicom_activity_horizontal_margin"
+    tools:context="com.applozic.mobicomkit.sample.LoginActivity">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginStart="2dp"
+        android:gravity="center"
+        android:text="@string/welcome_msg"
+        android:textColor="@color/buttonbgcolor"
+        android:textSize="20sp" />
+
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="445dp"
+        android:gravity="center_vertical|center_horizontal"
+        android:orientation="horizontal">
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/contactImage"
+            android:layout_width="250dp"
+            android:layout_height="278dp"
+            android:layout_centerInParent="true"
+            android:layout_gravity="center"
+            android:layout_margin="5dp"
+            android:layout_marginBottom="10dp"
+            android:gravity="center"
+            android:padding="10dp"
+            android:src="@drawable/liz"
+            android:visibility="visible" />
+
+
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="center|bottom"
+        android:orientation="vertical">
+
+        <Button
+            android:id="@+id/btn_accept"
+            style="@style/Button"
+            android:layout_width="269dp"
+            android:layout_height="40dp"
+            android:layout_alignParentBottom="true"
+            android:layout_gravity="center_horizontal|center"
+            android:layout_marginBottom="10dp"
+            android:configChanges="orientation"
+            android:imeOptions="flagNoExtractUi"
+            android:text="@string/btn_accept"
+            android:textColor="#ffffff"
+            android:textSize="12sp" />
+    </LinearLayout>
+
+</LinearLayout>
+
+
+

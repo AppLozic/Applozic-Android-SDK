@@ -15,7 +15,6 @@ import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.ResultReceiver;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.NestedScrollView;
@@ -24,6 +23,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.ContextMenu;
 import android.view.Gravity;
@@ -87,7 +87,6 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class ChannelInfoActivity extends AppCompatActivity {
 
     public static final String GROUP_UPDTAE_INFO = "GROUP_UPDTAE_INFO";
-    public static final String CHANNEL_UPDATE_RECEIVER = "CHANNEL_UPDATE_RECEIVER";
     public static final String CHANNEL_KEY = "CHANNEL_KEY";
     public static final String USERID = "USERID";
     public static final String CHANNEL_NAME = "CHANNEL_NAME";
@@ -116,7 +115,6 @@ public class ChannelInfoActivity extends AppCompatActivity {
     private Integer channelKey;
     private RefreshBroadcast refreshBroadcast;
     private NestedScrollView nestedScrollView;
-    private ResultReceiver channelUpdateReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -178,7 +176,6 @@ public class ChannelInfoActivity extends AppCompatActivity {
 
         if (getIntent().getExtras() != null) {
             channelKey = getIntent().getIntExtra(CHANNEL_KEY, 0);
-            channelUpdateReceiver = getIntent().getParcelableExtra(CHANNEL_UPDATE_RECEIVER);
             channel = ChannelService.getInstance(this).getChannelByChannelKey(channelKey);
             isUserPresent = ChannelService.getInstance(this).processIsUserPresentInChannel(channelKey);
             if (channel != null) {
@@ -325,7 +322,7 @@ public class ChannelInfoActivity extends AppCompatActivity {
                 if (channel.getName().equals(groupInfoUpdate.getNewName())) {
                     groupInfoUpdate.setNewName(null);
                 }
-                new ChannelAsync(groupInfoUpdate, ChannelInfoActivity.this, channelUpdateReceiver).execute();
+                new ChannelAsync(groupInfoUpdate, ChannelInfoActivity.this).execute();
             }
         }
     }
@@ -589,7 +586,7 @@ public class ChannelInfoActivity extends AppCompatActivity {
                 setPositiveButton(R.string.channel_exit, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        new ChannelAsync(channel, ChannelInfoActivity.this, channelUpdateReceiver).execute();
+                        new ChannelAsync(channel, ChannelInfoActivity.this).execute();
                     }
                 });
         alertDialog.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
@@ -942,20 +939,19 @@ public class ChannelInfoActivity extends AppCompatActivity {
         private ProgressDialog progressDialog;
         private Context context;
         private Channel channel;
-        private ResultReceiver channelUpdateReceiver;
 
-        public ChannelAsync(Channel channel, Context context, ResultReceiver channelUpdateReceiver) {
+        public ChannelAsync(Channel channel, Context context) {
             this.channel = channel;
             this.context = context;
             this.channelService = ChannelService.getInstance(context);
-            this.channelUpdateReceiver = channelUpdateReceiver;
+
         }
 
-        public ChannelAsync(GroupInfoUpdate groupInfoUpdate, Context context, ResultReceiver channelUpdateReceiver) {
+        public ChannelAsync(GroupInfoUpdate groupInfoUpdate, Context context) {
             this.groupInfoUpdate = groupInfoUpdate;
             this.context = context;
             this.channelService = ChannelService.getInstance(context);
-            this.channelUpdateReceiver = channelUpdateReceiver;
+
         }
 
         @Override
@@ -1030,9 +1026,6 @@ public class ChannelInfoActivity extends AppCompatActivity {
                     channelService.updateChannel(channel);
                     channelImage.setImageURI(Uri.parse(groupInfoUpdate.getContentUri()));
                 }
-            }
-            if (channelUpdateReceiver != null) {
-                channelUpdateReceiver.send(1, null);
             }
         }
     }

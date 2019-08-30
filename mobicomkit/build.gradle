@@ -50,6 +50,8 @@ repositories {
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.2.0'
+    implementation 'com.googlecode.libphonenumber:libphonenumber:7.0.1'
+
     api project(':mobicommons')
     //Note: use this for customization
     //api 'com.applozic.mobiframework:mobicommons:5.47' //Note: use this in case customization is not required

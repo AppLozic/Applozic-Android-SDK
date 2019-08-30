@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources  xmlns:tools="http://schemas.android.com/tools"
-    tools:ignore="MissingTranslation">
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
 
     <string name="app_name">Applozic</string>
     <string name="mobicomkit_label">Applozic</string>
@@ -35,11 +34,11 @@
     <string name="ecommerce_chat_button">Chat</string>
     <string name="ecommerce_ad_text">Free Advertise</string>
     <string name="ecommerce_text1">Demo screen to show messaging integration, tap on the Chat button below</string>
-    <string name="application_key">applozic-sample-app</string>
+    <string name="application_key">hearme39f668e3692dfd6b80ebc068</string>
     <string name="support_phone_number">+918042028425</string>
     <string name="default_server_url">https://apps.applozic.com</string>
     <string name="default_mqtt_server_url">tcp://apps.applozic.com:1883</string>
-    <string name="default_media_location_folder">Applozic</string>
+    <string name="default_media_location_folder">HearMe</string>
     <string name="order_sample_button">Chat with seller</string>
     <string name="take_order_userid">ApplozicShop</string>
     <string name="initiate_chat_button_info">Start Chatting</string>
@@ -66,7 +65,48 @@
     <string name="rs">20 Rs</string>
     <string name="group_chat">Group chat</string>
     <string name="Please_download_the_Google_play_store_apk">Please download the Google play store apk</string>
-    <string name="click_more">Click more</string>
-    <string name="press_back_again_to_exit">Press Back again to Exit.</string>
+    <string name="click_more">Cliquez plus</string>
+    <string name="press_back_again_to_exit">Appuyez de nouveau sur Retour pour quitter.</string>
     <string name="log_out_successful">Log out successful</string>
+
+
+    <!--
+    Created  by NOZHA GH
+    -->
+    <string name="next">NEXT</string>
+    <string name="skip">SKIP</string>
+
+    <string name="slide_1_title">Welcome</string>
+    <string name="slide_1_desc"></string>
+
+    <string name="slide_2_title"> </string>
+    <string name="slide_2_desc"></string>
+
+    <string name="slide_3_title"></string>
+    <string name="slide_3_desc"></string>
+
+    <string name="slide_4_title">Join us!</string>
+    <string name="slide_4_desc"></string>
+    <!-- Add for auth with firebase -->
+    <string name="sign_in_cancelled">Sign in cancelled</string>
+    <string name="no_internet_connection">No Internet connection</string>
+    <string name="unknown_error">Unknown error</string>
+    <string name="sign_out_failed">Sign out failed</string>
+    <string name="unknown_sign_in_response">Unknown sign in response</string>
+    <string name="send_sms_message">Please enter your mobile number.You will get a SMS including a verification code.</string>
+    <string name="send_sms">send verifcation code</string>
+    <string name="message">This App will send you an SMS message to verify your phone number. Kindly enter your phone Number</string>
+    <string name="enter_phone_hint">Enter Phone Number</string>
+    <string name="start_phone_auth">Start Verification</string>
+    <string name="verify_phone_auth">Verify</string>
+    <string name="enter_verify_code">Enter SMS Code</string>
+    <string name="success_message">You have successfully Logged in</string>
+    <!-- Add for page login-->
+    <string name="spinner_title">Choose a sign language</string>
+    <string name="btn_accept">Accept and continue</string>
+    <string name="welcome_msg">Welcome to HearMe</string>
+    <string name="init">Initialization...</string>
+    <string name="init_wait">Please wait</string>
+
+
 </resources>

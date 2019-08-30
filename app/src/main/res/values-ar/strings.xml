@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources  xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="MissingTranslation">
+
+    <string name="app_name">HearMe</string>
+    <string name="mobicomkit_label">HearMe</string>
+    <string name="title_activity_main">MainActivity</string>
+    <string name="title_section1">Section 1</string>
+    <string name="title_section2">Chat using Fragment </string>
+    <string name="title_section3">Messages</string>
+    <string name="title_section4">ECommerce</string>
+    <string name="title_section5">Messages (Activity based)</string>
+    <string name="title_section6">Messages</string>
+    <string name="title_section7">Log out</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="action_example">Chat</string>
+    <string name="action_settings">Settings</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="button_text">Test</string>
+    <string name="title_activity_test">Test</string>
+    <string name="hello_world">Hello world test!</string>
+    <string name="ecommerce">Applozic</string>
+    <string name="user_id">devashish.mamgain@gmail.com</string>
+    <string name="ecommerce_button1_text">Gadgets</string>
+    <string name="ecommerce_button2_text">Home</string>
+    <string name="ecommerce_button3_text">PC</string>
+    <string name="ecommerce_button4_text">Bags</string>
+    <string name="ecommerce_button5_text">Watches</string>
+    <string name="ecommerce_button6_text">Mobiles</string>
+    <string name="ecommerce_button7_text">Cars</string>
+    <string name="ecommerce_button8_text">Games</string>
+    <string name="ecommerce_button9_text">Music</string>
+    <string name="ecommerce_ad_button">Post Free Ad</string>
+    <string name="ecommerce_chat_button">Chat</string>
+    <string name="ecommerce_ad_text">Free Advertise</string>
+    <string name="ecommerce_text1">Demo screen to show messaging integration, tap on the Chat button below</string>
+    <string name="application_key">hearme39f668e3692dfd6b80ebc068</string>
+    <string name="support_phone_number">+918042028425</string>
+    <string name="default_server_url">https://apps.applozic.com</string>
+    <string name="default_mqtt_server_url">tcp://apps.applozic.com:1883</string>
+    <string name="default_media_location_folder">HearMe</string>
+    <string name="order_sample_button">Chat with seller</string>
+    <string name="take_order_userid">ApplozicShop</string>
+    <string name="initiate_chat_button_info">Start Chatting</string>
+    <string name="enter_user_id_info">Please Enter UserId</string>
+    <string name="empty_user_id_info">UserId is empty</string>
+
+    <!-- support or admin  contact information ...please add details here  -->
+    <string name="support_contact_display_name">AppLozic</string>
+    <string name="initiate_chat_info">Initiate chat with user</string>
+    <string name="support_contact_userId">applozic</string>
+    <string name="support_contact_emailId">devashish@applozic.com</string>
+    <string name="support_contact_number">918042028425</string>
+    <string name="support_contact_image_url">R.drawable.ic_launcher</string>
+    <string name="invite_message">Hey, check out Applozic -
+        Plug &amp; Play Messaging: http://www.applozic.com</string>
+    <string name="facebook_app_id">2194468880571702</string>
+    <string name="intrest_in_chat">Hello I am interested in your property, Can we chat?</string>
+    <string name="start">بدأ</string>
+    <string name="cancel">إلغاء</string>
+    <string name="TestTopic2">TestTopic2</string>
+    <string name="Topic_1">Topic 1</string>
+    <string name="Price">Price</string>
+    <string name="Qty">Qty</string>
+    <string name="rs">20 Rs</string>
+    <string name="group_chat">مجموعة محادثة</string>
+    <string name="Please_download_the_Google_play_store_apk">Please download the Google play store apk</string>
+    <string name="click_more">انقر أكثر</string>
+    <string name="press_back_again_to_exit">اضغط مرة أخرى للخارج.</string>
+    <string name="log_out_successful">Log out successful</string>
+
+    <!--Add by NOZHA -->
+    <string name="next">التالي</string>
+    <string name="skip">تخطى</string>
+
+    <string name="slide_1_title">مرحبا بكم</string>
+    <string name="slide_1_desc"></string>
+
+    <string name="slide_2_title"> </string>
+    <string name="slide_2_desc"></string>
+
+    <string name="slide_3_title"></string>
+    <string name="slide_3_desc"></string>
+
+    <string name="slide_4_title">انضم إلينا</string>
+    <string name="slide_4_desc"></string>
+
+    <!-- Add for auth with firebase -->
+    <string name="sign_in_cancelled">تم إلغاء تسجيل الدخول</string>
+    <string name="no_internet_connection">لا يوجد اتصال بالإنترنت</string>
+    <string name="unknown_error">خطأ غير معروف</string>
+    <string name="sign_out_failed">فشل تسجيل الخروج</string>
+    <string name="unknown_sign_in_response">غير معروف تسجيل في استجابة</string>
+    <!-- Add for page login-->
+    <string name="spinner_title">اختر لغة الإشارة</string>
+    <string name="prompt_display_name">إسم المستخدم الخاص بك</string>
+    <string name="action_sign_in">اشترك</string>
+    <string name="btn_accept">قبول ومتابعة</string>
+    <string name="welcome_msg">مرحبا بكم في HearMe</string>
+    <string name="init">تهيئة ...</string>
+    <string name="init_wait">من فضلك انتظر</string>
+
+
+
+
+
+
+
+
+
+</resources>

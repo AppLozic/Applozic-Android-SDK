@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:title="@string/sample_settings">
+    <CheckBoxPreference
+        android:title="@string/sample_preference"
+        android:persistent="true"
+        android:defaultValue="true" />
+</PreferenceScreen>

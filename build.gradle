@@ -7,15 +7,17 @@ buildscript {
             // Alternative URL is 'https://dl.google.com/dl/android/maven2/'
         }
         jcenter()
+        google()
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:3.1.3'
         classpath 'com.google.gms:google-services:4.0.1'
 
-        /*classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.1'
-          classpath 'com.github.dcendents:android-maven-gradle-plugin:2.0'
-          classpath 'com.github.dcendents:android-maven-plugin:1.2'
-          classpath 'com.novoda:bintray-release:0.3.4'*/
+
+        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.1'
+        classpath 'com.github.dcendents:android-maven-gradle-plugin:2.0'
+        classpath 'com.github.dcendents:android-maven-plugin:1.2'
+        classpath 'com.novoda:bintray-release:0.3.4'
 // NOTE: Do not place your application dependencies here; they belong
 // in the individual module build.gradle files
     }
@@ -53,4 +55,16 @@ task clean(type: Delete) {
 }
 subprojects {
     tasks.withType(Javadoc).all { enabled = false }
+}
+subprojects {
+    project.configurations.all {
+        resolutionStrategy.eachDependency { details ->
+            if (details.requested.group == 'com.android.support'
+                    && !details.requested.name.contains('multidex')) {
+                details.useVersion "27.0.2"
+            }
+        }
+    }
+
+
 }

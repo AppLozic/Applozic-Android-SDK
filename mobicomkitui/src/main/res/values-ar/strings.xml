@@ -1,0 +1,557 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
+
+    <string name="internet_connection_not_available">لا يوجد اتصال بالإنترنت</string>
+    <string name="you_need_network_access_for_delete">يجب أن يكون لديك وصول إلى الشبكة لحذف المحادثة </string>
+    <string name="applozic_server_error">لقد اشتعلت خطأ ، أعد المحاولة لاحقًا</string>
+    <string name="you_need_network_access_for_block_or_unblock">يجب أن يكون لديك وصول إلى الشبكة لحظر / إلغاء حظر مستخدم</string>
+    <string name="internet_connection_for_group_name_info">يحتاج هاتفك إلى اتصال بالإنترنت لتغيير اسم المجموعة</string>
+    <string name="you_dont_have_any_network_access_info">ليس لديك أي وصول إلى الشبكة الآن</string>
+    <string name="failed_to_leave_group">فشل في مغادرة المجموعة</string>
+    <string name="user_is_already_exists">المستخدم موجود بالفعل في المجموعة</string>
+    <string name="delete_conversation_failed">فشل الحذف</string>
+    <string name="menu_search">بحث</string>
+    <string name="menu_add_contact">إنشاء جهة اتصال جديدة</string>
+    <string name="menu_edit_contact">تحرير الاتصال</string>
+    <string name="no_contacts">لم يتم العثور على جهات اتصال</string>
+    <string name="no_contact_selected">لم يتم تحديد جهة اتصال</string>
+    <string name="search_hint">بحث...</string>
+    <string name="activity_contacts_list">MobiTexter</string>
+    <string name="activity_contacts_title">اختر جهة اتصال</string>
+    <string name="activity_contact_detail">الاتصال التفاصيل</string>
+    <string name="contacts_list_search_results_title">الاتصال البحث عن \"%s\"</string>
+    <string name="contactsListActivity">قائمة الاتصال</string>
+    <string name="phone_number_not_present">رقم الهاتف غير موجود</string>
+    <string name="mobiframework_title_device">جهاز</string>
+    <string name="mobiframework_title_group">مجموعة</string>
+    <string name="zero_friends_on_phone">لم يتم العثور على جهة اتصال مطابقة على جهات اتصال الهاتف ولكن لا يزال بإمكانك إرسال رسالة عن طريق إدخال البريد الإلكتروني أو رقم المستخدم أو رقم الهاتف</string>
+    <string name="contact_sync_in_progress">اتصال المزامنة قيد التقدم ، قد يستغرق بضع دقائق</string>
+    <string name="zero_friends_on_app">جهات الاتصال غير موجودة</string>
+    <string name="zero_groups_on_app">المجموعات غير موجودة</string>
+    <string name="delete_thread_text">حذف....</string>
+    <string name="search_title">بحث</string>
+    <string name="applozic_user_already_in_a_group">أضيف بالفعل إلى [groupType]</string>
+    <string name="applozic_contacts_loading_info">جاري التحميل الرجاءالانتظار...</string>
+    <string name="applozic_contacts_loading_error">يجب أن يكون لديك وصول إلى الشبكة لتحميل جهات الاتصال</string>
+    <string name="applozic_enter_group_name">الرجاء إدخال اسم المجموعة للمتابعة..</string>
+    <string name="snap_text">Oh Snap!</string>
+    <string name="account_disconnection_message">نأسف ولكن المراسلة غير متاحة \ في الوقت الحالي. \ يرجى الاتصال بالدعم لمزيد من التفاصيل</string>
+    <string name="failed_to_load_contact">فشل في تحميل جهات الاتصال : Response : </string>
+    <string name="rupee_symbol">\u20B9</string>
+
+
+    <!--
+         Used for the AlphabetIndexer in ContactsListFragment to provide quick navigation by
+         alphabet using ListView fast scroll.
+    -->
+    <string name="alphabet">ABCDEFGHIJKLMNOPQRSTUVWXYZ</string>
+
+    <!--
+         When using ContactsContract.Contacts#CONTENT_FILTER_URI to search contacts, a match occurs
+         when using a number of different fields, such as name, e-mail address, address, phone
+         number, etc. When a match occurs that is not the name, there is currently no way to tell
+         which other field was matched. This string is displayed in the secondary display text in
+         ContactsListFragment when a search query match occurs that is not the display name.
+    -->
+    <string name="search_match_other">استعمال حقل آخر</string>
+    <string name="invite">ادعو اصدقائك</string>
+    <array name="alphabet_color">
+        <item>#f16364</item>
+        <item>#f58559</item>
+        <item>#f9a43e</item>
+        <item>#e4c62e</item>
+        <item>#67bf74</item>
+        <item>#59a2be</item>
+        <item>#2093cd</item>
+        <item>#ad62a7</item>
+    </array>
+    <dimen name="tile_letter_font_size">250dp</dimen>
+    <!-- The deafult tile size -->
+    <dimen name="letter_tile_size">64dp</dimen>
+
+    <string name="contact_permission">هناك حاجة إلى إذن الاتصال للوصول</string>
+    <string name="storage_permission">هناك حاجة إلى إذن التخزين للوصول</string>
+    <string name="read_sms_permission">قراءة إذن الرسائل القصيرة مطلوبة للوصول</string>
+    <string name="location_permission">هناك حاجة إذن الموقع للوصول</string>
+    <string name="phone_state_permisssion">هناك حاجة إذن حالة الهاتف للوصول</string>
+    <string name="phone_call_permission">هناك حاجة إلى إذن مكالمة هاتفية للوصول</string>
+    <string name="phone_camera_permission">هناك حاجة إلى إذن الكاميرا للوصول</string>
+    <string name="record_audio">إذن تسجيل الصوت اللازمة</string>
+    <string name="camera_audio_permission">هناك حاجة إلى إذن الكاميرا وتسجيل الصوت للوصول</string>
+
+    <string name="contact_permission_not_granted">لم يتم منح إذن للاتصال</string>
+    <string name="storage_permission_not_granted">لم يتم منح إذن للتخزين</string>
+    <string name="read_sms_permission_not_granted">لم يتم منح إذن للقراءة</string>
+    <string name="location_permission_not_granted">لم يتم منح إذن للموقع</string>
+    <string name="phone_state_permission_not_granted">لم يتم منح إذن لحالة الهاتف</string>
+    <string name="phone_call_permission_not_granted">لم يتم منح إذن للمكالمة الهاتفية</string>
+    <string name="phone_camera_permission_not_granted">لم يتم منح إذن للكاميرا</string>
+    <string name="record_audio_permission_not_granted">لم يتم منح إذن للتسجيل الصوتي</string>
+    <string name="audio_or_camera_permission_not_granted">لم يتم منح إذن لتسجيل الكاميرا أو الصوت</string>
+
+    <string name="contact_permission_granted">تم منح إذن اتصالات</string>
+    <string name="storage_permission_granted">تم منح إذن التخزين</string>
+    <string name="read_sms_permission_granted">قراءة الرسائل القصيرة إذن تم منح</string>
+    <string name="location_permission_granted">تم منح إذن الموقع</string>
+    <string name="phone_state_permission_granted">تم منح إذن حالة الهاتف</string>
+    <string name="phone_call_permission_granted">مكالمة هاتفية تم منح إذن</string>
+    <string name="phone_camera_permission_granted">تم منح إذن الكاميرا</string>
+    <string name="record_audio_permission_granted">تم منح إذن سجل الصوت</string>
+    <string name="phone_camera_and_audio_permission_granted">تم منح إذن الكاميرا والصوت</string>
+    <string name="mobicom_max_attachment_warning">تم الوصول إلى الحد الأقصى للمرفق</string>
+    <string name="mobicom_select_attachment_text">حدد مرفقًا واحدًا على الأقل</string>
+    <string name="audio_recording_send_text">اضغط على ابدأ لتسجيل الصوت</string>
+    <string name="applozic_audio_permission_missing">غير قادر على تشغيل مسجل الصوت.</string>
+    <string name="applozic_message_info">معلومات الرسالة</string>
+    <string name="applozic_message_info_no_network">غير قادر على جلب معلومات الرسالة</string>
+    <string name="applozic_user_profile_heading">الملف الشخصي</string>
+    <string name="send_message_to">ارسل إلى..</string>
+    <string name="info_attachment_max_allowed_file_size_exceeded">لا يمكن إرسال حد أقصى لحجم ملف التحميل </string>
+    <string name="group_members_limit_exceeds">الحد الذي تم الوصول إليه ، قم بإزالة شخص ما من المجموعة أولاً</string>
+    <string name="please_wait_creating_group_of_two">ارجوك انتظر...</string>
+    <string name="sort_contacts_by_lastSeenAt">Sort by lastSeen</string>
+    <string name="sort_contacts_by_recent_chats">Sort by recent chats</string>
+    <string name="chats">دردشات</string>
+    <string name="refresh">تحديث</string>
+    <string name="start_New">ابدا من جديد</string>
+    <string name="dial">يتصل</string>
+    <string name="next">التالى</string>
+    <string name="done">عمل</string>
+    <string name="gallery">رواق</string>
+    <string name="camera_option">كاميرا</string>
+    <string name="logout">Logout</string>
+    <string name="send_logs">إرسال سجلات</string>
+    <string name="log_email_subject">- HearMe android SDK سجلات النص</string>
+    <string name="select_email_app_chooser_title">حدد التطبيق لإرسال السجلات</string>
+    <string name="copy">نسخ</string>
+    <string name="forward">إعادة توجيه</string>
+    <string name="resend">إعادة إرسال</string>
+    <string name="delete">حذف</string>
+    <string name="info">معلومات</string>
+    <string name="share">شارك</string>
+    <string name="reply">الرد</string>
+    <string name="self_destruct">تدمير</string>
+    <string name="off">إيقاف</string>
+    <string name="one_min">1 دقيقة</string>
+    <string name="two_min">2 دقيقة</string>
+    <string name="five_min">5 دقيقة</string>
+    <string name="ten_min">10 دقيقة</string>
+    <string name="sms">رسالة قصيرة</string>
+    <string name="mt">MT</string>
+    <string name="Delete_conversation">مسح المحادثة</string>
+    <string name="delete_group">حذف المجموعة</string>
+    <string name="exit_group">الخروج من مجموعة </string>
+    <string name="message">رسالة</string>
+    <string name="remove">إزالة</string>
+    <string name="make_group_admin">جعل المشرف المجموعة</string>
+    <string name="take_photo">التقاط الصور</string>
+    <string name="attach_file">إرفاق الملف</string>
+    <string name="audio_message">رسالة صوتية</string>
+    <string name="video_message">رسالة فيديو</string>
+    <string name="share_contact">مشاركة الاتصال</string>
+    <string name="attach_price">إرفاق السعر</string>
+    <string name="al_location">:location</string>
+    <string name="al_file">:file</string>
+    <string name="al_audio">:audio</string>
+    <string name="al_camera">:camera</string>
+    <string name="al_video">:video</string>
+    <string name="al_contact">:contact</string>
+    <string name="al_price">:price</string>
+    <string name="current_location">الموقع الحالي</string>
+    <string name="price">السعر</string>
+    <string name="status">وضع</string>
+    <string name="name">اسم</string>
+    <string name="phone">هاتف</string>
+    <string name="Group">مجموعة</string>
+    <string name="Contact">اتصل</string>
+    <string name="participants">المشاركين</string>
+    <string name="cancel">إلغاء</string>
+    <string name="Add_caption">إضافة تعليق...</string>
+    <string name="New_Attachment">مرفق جديد</string>
+    <string name="send_location">إرسال موقع</string>
+    <string name="send_your_current_location">إرسال موقعك الحالي</string>
+    <string name="Add_Contacts">اضف جهات اتصال</string>
+    <string name="stop">توقف</string>
+    <string name="profile_status">حالة الملف </string>
+    <string name="no_status">لا توجد حالة</string>
+    <string name="online">على الانترنت</string>
+    <string name="notifications">إشعارات</string>
+    <string name="push_notifications">إدفع إشعارات</string>
+    <string name="sales_manager">مدير المبيعات</string>
+    <string name="display_name">اسم</string>
+    <string name="today">اليوم</string>
+    <string name="kb45">45kb</string>
+    <string name="message_text">نص الرسالة</string>
+    <string name="read">قراءة</string>
+    <string name="delivered">تسليم</string>
+    <string name="file_name_will_come_here_for_attachment">اسم الملف سيأتي هنا للمرفق</string>
+    <string name="mb_10">10 MB</string>
+    <string name="mobile_number">رقم الهاتف المحمول</string>
+    <string name="schedule">جدول</string>
+    <string name="delivery_status">حالة التسليم</string>
+    <string name="testTime">testTime</string>
+    <string name="created_at_time">تم إنشاؤها في</string>
+    <string name="edit_group_name">تحرير اسم المجموعة</string>
+    <string name="add_member">إضافة عضو</string>
+    <string name="group_not_exist">المجموعة غير موجودة</string>
+    <string name="no_groups">لا مجموعات</string>
+    <string name="contacts_not_found">لم يتم العثور على جهات اتصال</string>
+    <string name="remove_image">إزالة الصورة</string>
+    <string name="applozic_failed_to_load_contact">فشل في تحميل جهة الاتصال</string>
+    <string name="applozic_Cropping_failed">فشل</string>
+    <string name="applozic_resending_attachment">إعادة إرسال المرفق....</string>
+    <string name="Location">موقعك</string>
+    <string name="processing_please_wait">جارى المعالجة .. انتظر من فضلك</string>
+    <string name="success">نجاح</string>
+    <string name="error">خطأ</string>
+    <string name="mute_group_for">كتم المجموعة ل..</string>
+    <string name="mute_user_for">كتم المستخدم ل..</string>
+    <string name="eight_Hours">8 ساعات</string>
+    <string name="one_week">1 أسبوع</string>
+    <string name="one_year"> 1 عام</string>
+    <string name="file_does_not_exist">الملف غير موجود</string>
+    <string name="copied_message">تم نسخ الرسالة</string>
+    <string name="data_usage">استخدام البيانات</string>
+    <string name="missed">افتقد</string>
+    <string name="hold_to_record_release_to_send">عقد للتسجيل ، والإفراج لإرسال</string>
+    <string name="slide_to_cancel">الشريحة للإلغاء</string>
+    <string name="tap_on_mic_button_to_record_audio">اضغط على زر الميكروفون لبدء التسجيل الصوتي</string>
+    <string name="profile_contact">لا يوجد رقم الاتصال</string>
+    <string name="profile_contact_number">رقم الاتصال</string>
+    <string name="user_name">اسم المستخدم</string>
+    <string name="powered_by_applozic"> مشغل بواسطة HearMe    </string>
+    <string name="spellchecker_name">تصحيح العينة</string>
+    <string name="subtype_generic" translatable="false">%s</string>
+    <string name="sample_settings">إعدادات العينة</string>
+    <string name="sample_preference">تفضيل العينة</string>
+
+    <!-- xml mobicom_array-->
+    <string-array name="secret_message_timer_array">
+        <item>تدمير الذات</item>
+        <item>إيقاف</item>
+        <item>1 دقيقة</item>
+        <item>2 دقائق</item>
+        <item>5 دقائق</item>
+        <item>10 دقائق</item>
+    </string-array>
+
+    <string-array name="send_type_options">
+        <item>رسالة</item>
+        <item>MT</item>
+    </string-array>
+
+    <!-- Scheduled Message strings -->
+
+    <string-array name="schedule_menu">
+        <item>نسخ</item>
+        <item>إلغاء</item>
+    </string-array>
+
+    <string-array name="menu">
+        <item>نسخ</item>
+        <item>أحالت</item>
+        <item>إعادة إرسال</item>
+        <item>حذف</item>
+        <item>معلومات</item>
+        <item>شارك</item>
+        <item>الرد</item>
+    </string-array>
+
+    <string-array name="conversation_options_menu">
+        <item>مسح المحادثة</item>
+        <item>حذف المجموعة</item>
+        <item>خروج المجموعة</item>
+    </string-array>
+
+    <!--Group member list menu -->
+    <string-array name="channel_users_menu_option">
+        <item>رسالة</item>
+        <item>إزالة</item>
+        <item>جعل المشرف المجموعة</item>
+    </string-array>
+
+    <!--Multimedia options -->
+    <string-array name="multimediaOptions_sms">
+        <item>الموقع الحالي</item>
+    </string-array>
+
+    <string-array name="multimediaOptions_mt">
+        <item>الموقع الحالي</item>
+        <item>تصوير</item>
+        <item>أرفق ملف</item>
+        <item>رسالة صوتية</item>
+        <item>رسالة فيديو</item>
+        <item>شارك جهة الإتصال</item>
+    </string-array>
+
+    <string-array name="multimediaOptions_with_price">
+        <item>الموقع الحالي</item>
+        <item>تصوير</item>
+        <item>أرفق ملف</item>
+        <item>رسالة صوتية</item>
+        <item>رسالة فيديو</item>
+        <item>شارك جهة الإتصال</item>
+        <item>مرفقة سعر</item>
+    </string-array>
+
+    <string-array name="multimediaOptions_with_price_text">
+        <item>موقع</item>
+        <item>الة تصوير</item>
+        <item>ملف</item>
+        <item>ملف الصوت</item>
+        <item>فيديو</item>
+        <item>اتصل</item>
+        <item>السعر</item>
+    </string-array>
+
+    <string-array name="multimediaOptions_without_price_text">
+        <item>موقع</item>
+        <item>الة تصوير</item>
+        <item>ملف</item>
+        <item>ملف الصوت</item>
+        <item>فيديو</item>
+        <item>اتصل</item>
+        <item>SL2T</item>
+        <item>T2SL</item>
+    </string-array>
+
+    <string-array name="multimediaOptions_without_price_key">
+        <item>:location</item>
+        <item>:camera</item>
+        <item>:file</item>
+        <item>:audio</item>
+        <item>:video</item>
+        <item>:contact</item>
+        <item>:SL2T</item>
+        <item>:T2SL</item>
+
+    </string-array>
+
+    <string-array name="multimediaOptionIcons_without_price">
+        <item>&#xf041;</item>
+        <item>&#xf030;</item>
+        <item>&#xf0c6;</item>
+        <item>&#xf130;</item>
+        <item>&#xf03d;</item>
+        <item>&#xf007;</item>
+        <item>&#xf007;</item>
+        <item>&#xf007;</item>
+
+    </string-array>
+
+    <string-array name="notification_texts">
+        <item>موقعك</item>
+        <item>ملف الصوت</item>
+        <item>فيديو</item>
+        <item>المرفق</item>
+    </string-array>
+
+    <!-- mobicom_Strings-->
+    <string name="app_name">HearMe</string>
+    <string name="conversations">المحادثات</string>
+    <string name="channel_create_title">مجموعة جديدة</string>
+    <string name="channel_members_title">إضافة أعضاء</string>
+    <string name="select_at_least">يجب تحديد جهة اتصال واحدة على الأقل</string>
+    <string name="group_name_hint">اسم المجموعة</string>
+    <string name="empty_conversations">لا محادثات!</string>
+    <string name="enter_message_hint">اكتب رسالة…</string>
+    <string name="send_text">إرسال</string>
+    <string name="cancel_text">إلغاء</string>
+    <string name="ok_text">حسنا</string>
+    <string name="start_text">بداية</string>
+    <string name="no_conversation">ليس لديك محادثات</string>
+    <string name="search_not_found_for_messages">ليس لديك محادثات</string>
+    <string name="info_broadcast_message">سيتم بث الرسائل إلى كل مستلم على حدة</string>
+    <string name="shareOptions">Partager</string>
+
+    <string name="mobitexter_contact_sync_key">KEYMOBITEXTER_CONTACT_SYNC_</string>
+    <string name="call_history_display_within_messages_pref_key">CALL_HISTORY_DISPLAY_WITHIN_MESSAGES</string>
+    <string name="last_inbox_sync_time">LAST_INBOX_SYNC_TIME</string>
+    <string name="last_outbox_sync_time">LAST_OUTBOX_SYNC_TIME</string>
+    <string name="phone_number_key">phone_number_key</string>
+    <string name="group_sms_freq_key">GROUP_SMS_FREQ_KEY</string>
+    <string name="delivery_report_pref_key">DELIVERY_REPORT_ENABLE</string>
+    <string name="sent_sms_sync_pref_key">SENT_SMS_SYNC_FLAG</string>
+    <string name="received_sms_sync_pref_key">RECEIVED_SMS_SYNC_FLAG</string>
+    <string name="verify_contact_number">VERIFY_CONTACT_NUMBER</string>
+    <string name="device_key_string">DEVICE_KEY_STRING</string>
+    <string name="device_registration_id">DEVICE_REGISTRATION_ID</string>
+    <string name="last_sms_sync_time">LAST_SMS_SYNC_TIME</string>
+    <string name="last_message_stat_sync_time">LAST_MESSAGE_STAT_SYNC_TIME</string>
+    <string name="webhook_enable_key">WEBHOOK_ENABLE_KEY</string>
+    <string name="email">EMAIL_ID_VALUE</string>
+    <string name="email_verified">EMAIL_VERIFIED</string>
+    <string name="user_key_string">SU_USER_KEY_STRING</string>
+    <string name="stop_service">STOPSERVICE</string>
+    <string name="patch_available">NEWPATCHAVAILABLE</string>
+    <string name="update_push_registration">UPDATE_PUSH_REGISTRATION</string>
+    <string name="info_sample_contact_list">قم بملء جهات اتصال التطبيق هنا ، مع إظهار جهات اتصال الجهاز كنموذج</string>
+    <string name="info_message_sync">مزامنة الرسائل مع الخادم ، قد يستغرق الأمر بضع دقائق!</string>
+    <string name="instruction_open_conversation_thread">اضغط على أي محادثة لرؤية الموضوع الكامل</string>
+    <string name="instruction_go_back_to_recent_conversation_list">للعودة إلى الشاشة السابقة ، مرر من اليسار إلى اليمين</string>
+    <string name="instruction_long_press_message">للحذف والخيارات الأخرى ، اضغط لفترة طويلة على الرسالة</string>
+    <string name="title_activity_mobi_com">MobiComActivity</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">الإعدادات</string>
+    <string name="user_block">منع</string>
+    <string name="user_un_block">رفع الحظر</string>
+    <string name="applozic_my_profile_option_info">الملف الشخصي</string>
+    <string name="location_services_disabled_message">إرسال الموقع يتطلب الوصول إلى موقعك. تشغيل الوصول إلى الموقع</string>
+    <string name="location_services_disabled_title">خدمات الموقع معطلة</string>
+    <string name="location_service_settings">الإعدادات</string>
+    <string name="location_sending_cancelled">إرسال الموقع تم إلغاؤه </string>
+    <string name="unable_to_fetch_location">غير قادر على جلب الموقع</string>
+    <string name="waiting_for_current_location">في انتظار الموقع الحالي</string>
+    <string name="select_file">حدد ملف</string>
+    <string name="applozic_select_photo">اختر صورة</string>
+    <string name="attachment_retry">إعادة المحاولة</string>
+    <string name="verification_success">تم التحقق من رقم هاتفك بنجاح</string>
+    <string name="launch_mobitexter_app">LAUNCH_MOBITEXTER</string>
+    <string name="delete_conversation">مسح المحادثة</string>
+    <string name="sync_messages_from_server">المزامنة مع الخادم…</string>
+    <string name="incoming_call">تلقى دعوة</string>
+    <string name="outgoing_call">مكالمة هاتفية</string>
+    <string name="welcome_message">Welcome,
+        \nMobiTexter is a Messenger &amp; SMS Texting app
+        \nText from your laptop, mobile and any Android device using your own phone number.
+        \nSend and receive text on the laptop/pc/computer browser from http://www.mobitexter.net/
+        \nFor any queries, get in touch with us at support@mobitexter.net</string>
+
+    <string name="info_app_not_found_to_open_file">لم يتم العثور على أي تطبيق لفتح هذا الملف</string>
+    <string name="unable_to_play_requested_audio_file">لم يتم العثور على أي تطبيق لفتح هذا الملف</string>
+    <string name="file_not_selected">هل فاتتك اختيار الملف?</string>
+    <string name="info_attachment_max_allowed_file_size">لا يمكن إرسال حد أقصى لحجم ملف التحميل!</string>
+    <string name="info_file_attachment_error">لا يمكن أن ترسل! حدث خطأ غير متوقع أثناء قراءة الملف</string>
+    <string name="select_file_count_limit">لا يمكن اختيار أكثر من ملف واحد</string>
+    <string name="info_file_attachment_mime_type_not_supported">لا يمكن إرسال هذا النوع من الملفات!</string>
+    <string name="ScheduleText">جدول</string>
+    <string name="enter_mt_message_hint">اكتب رسالة…</string>
+    <string name="messageOptions">خيارات الرسالة</string>
+    <string name="conversation">محادثة</string>
+    <string name="conversation_options">خيارات</string>
+    <string name="enter_support_query_hint">أدخل استفساراتك أو تقارير الأخطاء أو الملاحظات هنا</string>
+    <string name="info_message_scheduled">تم جدولة الرسالة بنجاح</string>
+    <string name="sync_older_messages">هل تريد مزامنة الرسائل القديمة?</string>
+    <string name="dialog_delete_conversation_title">مسح المحادثة</string>
+    <string name="dialog_delete_conversation_confir">حذف جميع رسائل [name]?</string>
+    <string name="negetiveButtonText">واضح</string>
+    <string name="scheduleDialogHeader">جدول الرسائل</string>
+    <string name="scheduledDateText">الموعد المقرر:</string>
+    <string name="scheduledTimeText">جدول زمني:</string>
+    <string name="defaultDate">dd-mm-yyyy</string>
+    <string name="defaultTime">HH:MM:SS</string>
+    <string name="selectionRequestText">حدد التاريخ والوقت لجدولة رسالتك.</string>
+    <string name="wearable_action_title">الرد</string>
+    <string name="wearable_action_label">الرد على</string>
+    <string name="verify_phone_number_notify_message">إرسال رسالة نصية للتحقق من رقمك ، سنكتشفه تلقائيًا عند وصوله</string>
+    <string name="verification_send_sms_itself">نحتاج إلى تأكيد أن [phone_number] هو رقم هاتفك. سيتم استخدام هاتفك لإرسال رسالة نفسه.</string>
+    <string name="confirm_your_number">قم بتاكيد رقمك</string>
+    <string name="edit">تصحيح</string>
+    <string name="confirm">أكد</string>
+    <string name="skip">تخطى</string>
+    <string name="you_string">أنت</string>
+    <string name="view_option_string">عرض</string>
+    <string name="message_option_string">رسالة</string>
+    <string name="applozic_account_closed">يرجى الاتصال HearMe لتنشيط الدردشة في التطبيق الخاص بك</string>
+    <string name="applozic_free_version_not_allowed_on_release_build">يرجى الاتصال HearMe لتنشيط الدردشة في التطبيق الخاص بك</string>
+    <string name="quick_conversation_loading">تحميل المحادثة…</string>
+    <string name="alert_for_empty_message">هل تريد إرسال رسالة بدون نص?</string>
+    <string name="yes_alert">نعم</string>
+    <string name="subtitle_last_seen_at_time">اخر ظهور</string>
+    <string name="is_typing">يكتب…</string>
+    <string name="user_online">عبر الانترنت</string>
+    <string name="removing_channel_user">إزالة…</string>
+    <string name="adding_channel_user">إضافة…</string>
+    <string name="deleting_channel_user">حذف…</string>
+    <string name="channel_member_exit">الخروج…</string>
+    <string name="channel_update">تحديث معلومات المجموعة…</string>
+    <string name="dialog_remove_group_user">إزالة[name] من عند[group]?</string>
+    <string name="dialog_add_group_user">اضف [name] إليه [group]?</string>
+    <string name="group_name_info">[group]</string>
+    <string name="groupType_info">[groupType]</string>
+    <string name="group_string">مجموعة</string>
+    <string name="broadcast_string">بث</string>
+    <string name="new_broadcast_name_info">بث جديد</string>
+    <string name="mute_Group">صامت</string>
+    <string name="unmute_Group">غير الصامت</string>
+    <string name="user_name_info">[name]</string>
+    <string name="channel_member_title">اختر جهة اتصال</string>
+    <string name="channel_exit_button">EXIT GROUP</string>
+    <string name="channel_delete_group_button">DELETE GROUP</string>
+    <string name="broadcast_exit_button">EXIT BROADCAST</string>
+    <string name="broadcast_delete_button">DELETE BROADCAST</string>
+    <string name="channel_created_by">صنع من قبل</string>
+    <string name="remove_member">إزالة</string>
+    <string name="add">إضافة</string>
+    <string name="group_creating_info">إنشاء مجموعة ، يرجى الانتظار…</string>
+    <string name="broadcast_creating_info">إنشاء البث ، يرجى الانتظار…</string>
+    <string name="channel_exit">خروج</string>
+    <string name="channel_deleting">حذف</string>
+    <string name="leave_channel">هل أنت متأكد أنك تريد الخروج من هذا[groupType]?</string>
+    <string name="exit_channel_message_info">هل أنت متأكد أنك تريد الخروج [group] [groupType]?</string>
+    <string name="delete_channel_messages_and_channel_info">هل أنت متأكد أنك تريد حذف [group] [groupType]?</string>
+    <string name="channel_name_empty">اسم المجموعة لا يمكن أن يكون فارغا</string>
+    <string name="channel_add_alert">غير قادر على إضافة مشارك في المجموعة لأنك لست مشاركًا</string>
+    <string name="channel_edit_alert">غير قادر على تغيير اسم المجموعة لأنك لست مشاركًا</string>
+    <string name="admin_text">مشرف المجموعة</string>
+    <string name="user_not_in_this_group_text">لم تعد أحد المشاركين في هذه المجموعة</string>
+    <string name="group_has_been_deleted_text">تم حذف هذه المجموعة</string>
+    <string name="update_channel_title_name">أدخل اسم المجموعة</string>
+    <string name="new_channel_name_hint">أسم المجموعة…</string>
+    <string name="user_block_info">حظر [name]? لن يتمكن المستخدم المحظور من إرسال الرسائل إليك</string>
+    <string name="user_un_block_info">رفع الحظر[name] لإرسال رسالة</string>
+    <string name="please_wait_info">فضلا انتظر…</string>
+    <string name="applozic_userId_error_info_in_logs">UserId لا يمكن أن تكون فارغة أو فارغة ويجب ألا يكون مفتاح القناة فارغًا</string>
+    <string name="applozic_channel_error_info_in_logs">يرجى التحقق من أن اسم المجموعة فارغ أو فارغ أو أنه يوجد عضو واحد على الأقل لإضافته في المجموعة</string>
+    <string name="applozic_add_user_to_multiple_channel_error_info_in_logs">UserId لا يمكن أن تكون فارغة أو فارغة وقائمة مفاتيح القناة يجب أن لا تكون فارغة</string>
+    <string name="user_logout_info">خروج ناجحة</string>
+    <string name="unable_share_message">غير قادر على مشاركتك أنت لست مشاركًا في هذه المجموعة</string>
+    <string name="user_is_blocked">غير قادر على إرسال المستخدم محظور</string>
+    <string name="when_on_wifi">عندما على شبكة Wi-Fi</string>
+    <string name="when_on_cellular_network">عندما تكون على الشبكة الخلوية</string>
+    <string name="media_auto_download">تنزيل الوسائط التلقائي</string>
+    <string name="applozic_network_usage">استخدام الشبكة</string>
+    <string name="enable_vibration_notification">تمكين الاهتزاز عند الإخطار</string>
+    <string name="user_has_been_deleted_text">تم حذف المستخدم</string>
+    <string name="make_admin_text_info">جعل المشرف المجموعة</string>
+    <string name="attachment_string">المرفق</string>
+    <string name="photo_string">صورة</string>
+    <string name="contact_string">اتصل</string>
+    <string name="video_string">فيديو</string>
+    <string name="audio_string">سمعي</string>
+    <string name="al_location_string">موقع</string>
+    <string name="restricted_words_are_not_allowed">غير مسموح بالكلمات المقيدة</string>
+    <string name="warning">تحذير!!!</string>
+    <string name="ok_alert">حسنا</string>
+
+    <string name="JUST_NOW">في هذة اللحظة</string>
+    <string name="YESTERDAY">في الامس</string>
+
+    <plurals name="HOURS" tools:ignore="MissingQuantity">
+        <item quantity="one">%d ساعة</item>
+        <item quantity="other">%d ساعات</item>
+    </plurals>
+
+    <plurals name="MINUTES" tools:ignore="MissingQuantity">
+        <item quantity="one">%d دقيقة</item>
+        <item quantity="other">%d mins</item>
+    </plurals>
+
+    <plurals name="MINUTES_AGO" tools:ignore="MissingQuantity">
+        <item quantity="one">%d دقيقة</item>
+        <item quantity="other">%d دقائق</item>
+    </plurals>
+
+    <plurals name="HOURS_AGO" tools:ignore="MissingQuantity">
+        <item quantity="one">%d دقيقة</item>
+        <item quantity="other">%d دقائق</item>
+    </plurals>
+    <string name="translation">ترجمة</string>
+    <string name="not_sub_cat">الفئة الفرعية غير متوفرة</string>
+    <string name="no_traduction">الترجمة غير متوفرة</string>
+    <string name="statusUser">مرحبا! أنا أستخدم HearMe</string>
+
+
+
+
+</resources>

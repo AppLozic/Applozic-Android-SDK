@@ -10,6 +10,7 @@ import android.provider.ContactsContract;
 import android.provider.MediaStore;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
+import android.util.Log;
 
 import com.applozic.mobicomkit.api.attachment.FileClientService;
 import com.applozic.mobicomkit.uiwidgets.R;
@@ -18,6 +19,7 @@ import com.applozic.mobicomkit.uiwidgets.conversation.ConversationUIService;
 import com.applozic.mobicomkit.uiwidgets.conversation.activity.ConversationActivity;
 import com.applozic.mobicomkit.uiwidgets.conversation.activity.MobiComAttachmentSelectorActivity;
 import com.applozic.mobicomkit.uiwidgets.conversation.activity.MobicomLocationActivity;
+import com.applozic.mobicommons.people.contact.Contact;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -125,4 +127,5 @@ public class MultimediaOptionFragment extends DialogFragment {
         this.menuOptionsResourceId = resourceId;
         show(supportFragmentManager, "Attachment options");
     }
+
 }

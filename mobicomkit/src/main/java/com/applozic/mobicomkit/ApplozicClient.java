@@ -47,6 +47,8 @@ public class ApplozicClient {
     private static final String HIDE_ACTION_MESSAGES = "HIDE_ACTION_MESSAGES";
     private static final String NOTIFICATION_MUTE_THRESHOLD = "NOTIFICATION_MUTE_THRESHOLD";
     private static final String SKIP_DELETED_GROUPS = "SKIP_DELETED_GROUPS";
+    private static final String ENABLE_DEVICE_CONTACT_SYNC = "ENABLE_DEVICE_CONTACT_SYNC";
+
 
     public static ApplozicClient applozicClient;
     public SharedPreferences sharedPreferences;
@@ -175,6 +177,12 @@ public class ApplozicClient {
         sharedPreferences.edit().putString(GROUP_DEFAULT_IMAGE, groupImageName).commit();
         return this;
     }
+
+    public ApplozicClient enableDeviceContactSync(boolean enable) {
+        sharedPreferences.edit().putBoolean(ENABLE_DEVICE_CONTACT_SYNC, enable).apply();
+        return this;
+    }
+
 
     public String getMessageMetaDataServiceName() {
         return sharedPreferences.getString(MESSAGE_META_DATA_SERVICE, null);

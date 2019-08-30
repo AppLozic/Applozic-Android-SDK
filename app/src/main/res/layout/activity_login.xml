@@ -3,7 +3,6 @@
     android:id="@+id/layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background"
     android:configChanges="orientation"
     android:gravity="center_horizontal"
     android:orientation="vertical"
@@ -12,8 +11,34 @@
     android:paddingRight="@dimen/mobicom_activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingStart="@dimen/mobicom_activity_horizontal_margin"
+    android:background="@color/white"
     android:paddingEnd="@dimen/mobicom_activity_horizontal_margin"
     tools:context="com.applozic.mobicomkit.sample.LoginActivity">
+    <TextView
+        android:id="@+id/alphabeticImage"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_gravity="center"
+        android:layout_marginLeft="8dp"
+        android:background="@drawable/mobiframework_circular_text_view"
+        android:gravity="center"
+        android:textColor="#ffffff"
+        android:textSize="20sp"
+        android:layout_marginStart="8dp"
+
+        android:visibility="gone" />
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/contactImage"
+        android:layout_width="130dp"
+        android:layout_height="130dp"
+        android:layout_gravity="center"
+        android:layout_marginBottom="10dp"
+        android:layout_margin="5dp"
+        android:gravity="center"
+        android:padding="10dp"
+        android:src="@drawable/ic_contact_picture"
+        android:visibility="visible" />
 
     <!-- Login progress -->
     <ProgressBar
@@ -30,36 +55,36 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginBottom="0dp"
-        android:text="@string/mobicomkit_label"
-        android:textColor="#FFFFFF"
+        android:textColor="#000"
         android:textSize="24sp"
         android:textStyle="bold" />
 
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginBottom="5dp"
-        android:text="@string/mobicomkitdemo"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:textColor="#FFFFFF" />
+
+
+    <!-- <TextView
+         android:id="@+id/textView"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_gravity="center_horizontal"
+         android:layout_marginBottom="5dp"
+         android:text="@string/mobicomkitdemo"
+         android:textAppearance="?android:attr/textAppearanceSmall"
+         android:textColor="#000" />-->
 
     <Spinner
         android:id="@+id/spinner_for_url"
         android:layout_width="300dp"
         android:layout_height="30dp"
         android:layout_gravity="center"
-        android:background="#FFFFFF"
         android:entries="@array/select_url"
+        android:isScrollContainer="true"
         android:textAlignment="center" />
 
     <ScrollView
         android:id="@+id/login_form"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:background="@color/scrollview_background">
+        android:layout_gravity="center" >
 
         <LinearLayout
             android:id="@+id/email_login_form"
@@ -68,76 +93,74 @@
             android:layout_gravity="center"
             android:orientation="vertical">
 
-            <EditText
-                android:id="@+id/userId"
-                style="@style/EditText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
-                android:layout_marginTop="5dp"
-                android:background="#FFF"
-                android:hint="@string/prompt_user_id"
-                android:imeOptions="actionNext"
-                android:inputType="text"
-                android:maxLines="1"
-                android:padding="10dp"
-                android:password="false"
-                android:singleLine="true" />
+            <!--  <EditText
+                  android:id="@+id/userId"
+                  style="@style/EditText"
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:layout_marginTop="100dp"
+                  android:layout_marginBottom="40dp"
+                  android:background="#FFF"
+                  android:hint="@string/prompt_user_id"
+                  android:imeOptions="actionNext"
+                  android:inputType="text"
+                  android:maxLines="1"
+                  android:padding="10dp"
+                  android:password="false"
+                  android:singleLine="true"
+                  android:textColorHint="#ccc" />-->
 
-            <AutoCompleteTextView
-                android:id="@+id/email"
-                style="@style/EditText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
-                android:background="#FFF"
-                android:hint="@string/prompt_email"
-                android:imeOptions="actionNext"
-                android:inputType="textEmailAddress"
-                android:maxLines="1"
-                android:padding="10dp"
-                android:password="false"
-                android:singleLine="true"
-                android:windowSoftInputMode="adjustResize" />
+            <!--  <AutoCompleteTextView
+                   android:id="@+id/email"
+                   style="@style/EditText"
+                   android:layout_width="match_parent"
+                   android:layout_height="wrap_content"
+                   android:layout_marginBottom="5dp"
+                   android:background="#FFF"
+                   android:hint="@string/prompt_email"
+                   android:imeOptions="actionNext"
+                   android:inputType="textEmailAddress"
+                   android:maxLines="1"
+                   android:padding="10dp"
+                   android:password="false"
+                   android:singleLine="true"
+                   android:windowSoftInputMode="adjustResize" />-->
 
-            <EditText
-                android:id="@+id/phoneNumber"
-                style="@style/EditText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
-                android:background="#FFF"
-                android:hint="@string/prompt_phone_number"
-                android:imeOptions="actionNext"
-                android:inputType="phone|number"
-                android:maxLines="1"
-                android:padding="10dp"
-                android:singleLine="true" />
+            <!-- <EditText
+                  android:id="@+id/phoneNumber"
+                  style="@style/EditText"
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:layout_marginBottom="5dp"
+                  android:background="#FFF"
+                  android:hint="@string/prompt_phone_number"
+                  android:imeOptions="actionNext"
+                  android:inputType="phone|number"
+                  android:maxLines="1"
+                  android:padding="10dp"
+                  android:singleLine="true" />-->
 
-            <EditText
-                android:id="@+id/password"
-                style="@style/EditText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
-                android:background="#FFF"
-                android:hint="@string/prompt_password"
-                android:imeActionId="@+id/login"
-                android:imeActionLabel="@string/action_sign_in_short"
-                android:imeOptions="actionUnspecified|actionDone"
-                android:inputType="textPassword"
-                android:maxLines="1"
-                android:padding="10dp"
-                android:phoneNumber="false"
-                android:singleLine="true" />
-
+            <!-- <EditText
+                  android:id="@+id/password"
+                  style="@style/EditText"
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:layout_marginBottom="5dp"
+                  android:background="#FFF"
+                  android:hint="@string/prompt_password"
+                  android:imeActionId="@+id/login"
+                  android:imeActionLabel="@string/action_sign_in_short"
+                  android:imeOptions="actionUnspecified|actionDone"
+                  android:inputType="textPassword"
+                  android:maxLines="1"
+                  android:padding="10dp"
+                  android:phoneNumber="false"
+                  android:singleLine="true" />-->
             <EditText
                 android:id="@+id/displayName"
-                style="@style/EditText"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_marginBottom="5dp"
-                android:background="#FFF"
                 android:hint="@string/prompt_display_name"
                 android:imeOptions="actionNext"
                 android:inputType="text"
@@ -145,23 +168,51 @@
                 android:padding="10dp"
                 android:password="false"
                 android:singleLine="true" />
+            <!--  <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dip"
+                android:text="@string/spinner_title"
+                android:layout_marginBottom="5dp"
+                />-->
+
+            <Spinner
+                android:id="@+id/sp"
+                android:layout_width="match_parent"
+                android:layout_height="39dp"
+                android:layout_marginTop="5dp"
+                />
+
+            <!--  <VideoView
+                  android:id="@+id/VideoView"
+                  android:layout_width="match_parent"
+                  android:layout_marginTop="50dip"
+                  android:layout_height="206dp" />-->
+
         </LinearLayout>
     </ScrollView>
 
-    <Button
-        android:id="@+id/email_sign_in_button"
-        style="@style/Button"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="8dp"
-        android:configChanges="orientation"
-        android:imeOptions="flagNoExtractUi"
-        android:padding="15dp"
-        android:text="@string/action_sign_in"
-        android:textColor="#ffffff"
-        android:textSize="20sp" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_weight="1"
+        android:gravity="center|bottom"
+        android:orientation="vertical">
 
+        <Button
+            android:id="@+id/email_sign_in_button"
+            style="@style/Button"
+            android:layout_width="127dp"
+            android:layout_height="40dp"
+            android:layout_alignParentBottom="true"
+            android:layout_gravity="center_horizontal|center"
+            android:layout_marginBottom="10dp"
+            android:configChanges="orientation"
+            android:imeOptions="flagNoExtractUi"
+            android:text="@string/action_sign_in"
+            android:textColor="#ffffff"
+            android:textSize="12sp" />
+    </LinearLayout>
     <LinearLayout
         android:id="@+id/footerSnack"
         android:layout_width="match_parent"

@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical">
+
+    <MultiAutoCompleteTextView
+        android:id="@+id/multiAutoCompleteTextView1"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="start"
+        android:layout_weight="8"
+        android:cursorVisible="true"
+        android:hint="@string/enter_message_hint"
+        android:inputType="textCapSentences|textMultiLine"
+        android:maxLines="6"
+        android:minHeight="50dp"
+        android:minLines="2"
+        android:textAlignment="viewStart"
+        android:textColor="@color/black"
+        android:textColorHint="@color/edittext_hint_color"
+        android:layout_margin="10dp"
+        android:textSize="16sp" />
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_below="@id/multiAutoCompleteTextView1"
+        android:layout_marginTop="30dp"
+        android:orientation="vertical">
+
+        <Button
+            android:id="@+id/translation"
+            style="@style/Button"
+            android:layout_width="127dp"
+            android:layout_height="40dp"
+            android:layout_below="@id/multiAutoCompleteTextView1"
+            android:layout_gravity="center_vertical|center"
+            android:layout_marginTop="0dp"
+            android:layout_marginBottom="10dp"
+            android:imeOptions="flagNoExtractUi"
+            android:text="@string/translation"
+            android:textColor="#ffffff"
+            android:textSize="12sp" />
+    </LinearLayout>
+    <TextView
+        android:id="@+id/no_traduction"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:text="@string/no_traduction"
+        android:textColor="@color/compose_action_button"
+        android:textSize="20dp" />
+    <VideoView
+        android:id="@+id/videoView"
+        android:layout_width="fill_parent"
+        android:layout_height="250dp"
+        android:layout_centerInParent="true"
+        android:layout_gravity="center"
+        android:layout_marginTop="50dp"></VideoView>
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_gravity="bottom"
+        android:gravity="bottom"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:layout_weight="2"
+            android:background="@drawable/input"
+            android:orientation="vertical">
+
+
+            <LinearLayout
+                android:id="@+id/edit_text_linear_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:layout_marginStart="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_weight="1"
+                android:orientation="horizontal">
+
+
+                <EditText
+                    android:id="@+id/conversation_message"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:layout_weight="8"
+                    android:background="@color/apploizc_transparent_color"
+                    android:cursorVisible="true"
+                    android:hint="@string/enter_message_hint"
+                    android:inputType="textCapSentences|textMultiLine"
+                    android:maxLines="6"
+                    android:minHeight="50dp"
+                    android:minLines="2"
+                    android:textAlignment="viewStart"
+                    android:textColor="@color/black"
+                    android:enabled="false"
+                    android:textColorHint="@color/edittext_hint_color"
+                    android:textSize="16sp" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <FrameLayout
+            android:id="@+id/actionButtonLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="0"
+            android:gravity="center">
+
+            <ImageButton
+                android:id="@+id/conversation_send"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_margin="10dp"
+                android:layout_gravity="bottom|end"
+                android:background="@drawable/button_circle"
+                android:clickable="true"
+                android:gravity="center"
+                android:scaleType="center"
+                android:src="@drawable/mobicom_ic_action_send"
+                android:visibility="visible" />
+
+        </FrameLayout>
+    </LinearLayout>
+
+</RelativeLayout>

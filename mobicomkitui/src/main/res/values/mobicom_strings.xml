@@ -2,7 +2,7 @@
 <resources  xmlns:tools="http://schemas.android.com/tools"
     tools:ignore="MissingTranslation">
 
-    <string name="app_name">Applozic</string>
+    <string name="app_name">HearMe</string>
     <string name="conversations">Conversations</string>
     <string name="channel_create_title">New group</string>
     <string name="channel_members_title">Add members</string>

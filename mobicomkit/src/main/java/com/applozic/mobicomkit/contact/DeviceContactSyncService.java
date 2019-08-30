@@ -7,11 +7,15 @@ import android.net.Uri;
 import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.v4.app.JobIntentService;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.applozic.mobicomkit.api.account.user.MobiComUserPreference;
 import com.applozic.mobicomkit.api.account.user.UserService;
+import com.applozic.mobicommons.people.ALContactProcessor;
 import com.applozic.mobicommons.people.contact.Contact;
+import com.google.i18n.phonenumbers.PhoneNumberUtil;
+import com.google.i18n.phonenumbers.Phonenumber;
 
 import java.util.Date;
 import java.util.HashSet;
@@ -22,7 +26,7 @@ import java.util.Set;
  */
 public class DeviceContactSyncService extends JobIntentService {
 
-    private static final String TAG= "DvcContactSync";
+    private static final String TAG = "DvcContactSync";
     public static final String PROCESS_USER_DETAILS = "PROCESS_USER_DETAILS";
     public static final String PROCESS_MODIFIED_DEVICE_CONTACTS = "PROCESS_MODIFIED_DEVICE_CONTACTS";
 
@@ -35,12 +39,14 @@ public class DeviceContactSyncService extends JobIntentService {
 
     @Override
     protected void onHandleWork(@NonNull Intent intent) {
-        if(intent == null){
+        if (intent == null) {
             return;
         }
         Thread thread = new Thread(new DeviceContactSync(intent.getBooleanExtra(PROCESS_USER_DETAILS, false), intent.getBooleanExtra(PROCESS_MODIFIED_DEVICE_CONTACTS, false)));
         thread.start();
     }
+
+
 
     private class DeviceContactSync implements Runnable {
 
@@ -64,12 +70,13 @@ public class DeviceContactSyncService extends JobIntentService {
                 e.printStackTrace();
             }
         }
+
     }
 
     private void process(boolean processUserDetails) {
         Uri uri = ContactsContract.CommonDataKinds.Phone.CONTENT_URI;
         String[] projection = new String[]{ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME,
-                ContactsContract.CommonDataKinds.Phone.NUMBER,  ContactsContract.CommonDataKinds.Phone.LOOKUP_KEY};
+                ContactsContract.CommonDataKinds.Phone.NUMBER, ContactsContract.CommonDataKinds.Phone.LOOKUP_KEY};
         Cursor people = getApplicationContext().getContentResolver().query(uri, projection, null, null, null);
         AppContactService appContactService = new AppContactService(this);
         Log.i(TAG, "Found " + people.getCount() + " device contacts");
@@ -94,7 +101,7 @@ public class DeviceContactSyncService extends JobIntentService {
         if (processUserDetails) {
             MobiComUserPreference.getInstance(DeviceContactSyncService.this).setDeviceContactSyncTime(new Date().getTime());
         }
-        if(people != null){
+        if (people != null) {
             people.close();
         }
     }

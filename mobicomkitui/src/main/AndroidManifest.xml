@@ -35,18 +35,34 @@
         tools:node="merge" />
 
     <application>
+
+        <service
+            android:name=".SampleSpellCheckerService"
+            android:permission="android.permission.BIND_TEXT_SERVICE">
+            <intent-filter>
+                <action android:name="android.service.textservice.SpellCheckerService" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.view.textservice.scs"
+                android:resource="@xml/spellchecker" />
+        </service>
+
+        <activity android:name=".conversation.fragment.text_to_sign" />
+        <activity android:name=".conversation.fragment.details_sign_to_text" />
+        <activity android:name=".conversation.fragment.sign_to_text" />
+
         <meta-data
             android:name="share_text"
             android:value="@string/invite_message"
             tools:node="merge" />
-
         <meta-data
             android:name="activity.open.on.notification"
             android:value="com.applozic.mobicomkit.uiwidgets.conversation.activity.ConversationActivity"
             tools:node="merge" />
 
         <provider
-            android:name="com.applozic.mobicomkit.uiwidgets.ALFileProvider"
+            android:name=".ALFileProvider"
             android:authorities="${applicationId}.provider"
             android:exported="false"
             android:grantUriPermissions="true"
@@ -57,42 +73,39 @@
         </provider>
 
         <activity
-            android:name="com.applozic.mobicomkit.uiwidgets.conversation.activity.ConversationActivity"
+            android:name=".conversation.activity.ConversationActivity"
             android:configChanges="keyboardHidden|screenSize|locale|smallestScreenSize|screenLayout|orientation"
             android:label="@string/app_name"
             android:launchMode="singleTask"
             android:theme="@style/ApplozicTheme"
             tools:node="merge" />
-
         <activity
-            android:name="com.applozic.mobicomkit.uiwidgets.conversation.activity.ContactSelectionActivity"
+            android:name=".conversation.activity.ContactSelectionActivity"
             android:configChanges="keyboardHidden|screenSize|smallestScreenSize|screenLayout|orientation"
             android:launchMode="singleTop"
-            android:parentActivityName="com.applozic.mobicomkit.uiwidgets.conversation.activity.ConversationActivity"
+            android:parentActivityName=".conversation.activity.ConversationActivity"
             android:theme="@style/ApplozicTheme"
             tools:node="merge">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.applozic.mobicomkit.uiwidgets.conversation.activity.ConversationActivity" />
         </activity>
-
         <activity
-            android:name="com.applozic.mobicomkit.uiwidgets.conversation.activity.ChannelCreateActivity"
+            android:name=".conversation.activity.ChannelCreateActivity"
             android:configChanges="keyboardHidden|screenSize|smallestScreenSize|screenLayout|orientation"
             android:launchMode="singleTop"
-            android:parentActivityName="com.applozic.mobicomkit.uiwidgets.conversation.activity.ConversationActivity"
+            android:parentActivityName=".conversation.activity.ConversationActivity"
             android:theme="@style/ApplozicTheme"
             tools:node="merge">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.applozic.mobicomkit.uiwidgets.conversation.activity.ConversationActivity" />
         </activity>
-
         <activity
-            android:name="com.applozic.mobicomkit.uiwidgets.conversation.activity.MobiComAttachmentSelectorActivity"
+            android:name=".conversation.activity.MobiComAttachmentSelectorActivity"
             android:configChanges="keyboardHidden|screenSize|smallestScreenSize|screenLayout|orientation"
             android:launchMode="singleTop"
-            android:parentActivityName="com.applozic.mobicomkit.uiwidgets.conversation.activity.ConversationActivity"
+            android:parentActivityName=".conversation.activity.ConversationActivity"
             android:theme="@style/ApplozicTheme"
             android:windowSoftInputMode="stateHidden|adjustResize"
             tools:node="merge">
@@ -100,45 +113,40 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.applozic.mobicomkit.uiwidgets.conversation.activity.ConversationActivity" />
         </activity>
-
         <activity
-            android:name="com.applozic.mobicomkit.uiwidgets.conversation.activity.ChannelNameActivity"
+            android:name=".conversation.activity.ChannelNameActivity"
             android:configChanges="keyboardHidden|screenSize|smallestScreenSize|screenLayout|orientation"
             android:launchMode="singleTop"
-            android:parentActivityName="com.applozic.mobicomkit.uiwidgets.conversation.activity.ConversationActivity"
+            android:parentActivityName=".conversation.activity.ConversationActivity"
             android:theme="@style/ApplozicTheme"
             tools:node="merge" />
-
         <activity
-            android:name="com.applozic.mobicomkit.uiwidgets.conversation.activity.ChannelInfoActivity"
+            android:name=".conversation.activity.ChannelInfoActivity"
             android:configChanges="keyboardHidden|screenSize|smallestScreenSize|screenLayout|orientation"
             android:launchMode="singleTop"
-            android:parentActivityName="com.applozic.mobicomkit.uiwidgets.conversation.activity.ConversationActivity"
+            android:parentActivityName=".conversation.activity.ConversationActivity"
             android:theme="@style/ApplozicTheme"
             tools:node="merge">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.applozic.mobicomkit.uiwidgets.conversation.activity.ConversationActivity" />
         </activity>
-
         <activity
-            android:name="com.applozic.mobicomkit.uiwidgets.conversation.richmessaging.payment.PaymentActivity"
+            android:name=".conversation.richmessaging.payment.PaymentActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="Image"
-            android:parentActivityName="com.applozic.mobicomkit.uiwidgets.conversation.activity.ConversationActivity"
+            android:parentActivityName=".conversation.activity.ConversationActivity"
             android:theme="@style/ApplozicTheme"
             tools:node="merge" />
-
         <activity
             android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
             android:theme="@style/Base.Theme.AppCompat"
             tools:node="merge" />
-
         <activity
-            android:name="com.applozic.mobicomkit.uiwidgets.people.activity.MobiComKitPeopleActivity"
+            android:name=".people.activity.MobiComKitPeopleActivity"
             android:configChanges="keyboardHidden|screenSize|smallestScreenSize|screenLayout|orientation"
             android:label="@string/app_name"
-            android:parentActivityName="com.applozic.mobicomkit.uiwidgets.conversation.activity.ConversationActivity"
+            android:parentActivityName=".conversation.activity.ConversationActivity"
             android:theme="@style/ApplozicTheme"
             android:windowSoftInputMode="adjustResize"
             tools:node="merge">
@@ -149,9 +157,9 @@
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
             </intent-filter>
-
             <intent-filter>
                 <action android:name="android.intent.action.SEND" />
+
                 <category android:name="android.intent.category.DEFAULT" />
 
                 <data android:mimeType="image/png" />
@@ -168,25 +176,24 @@
                 android:resource="@xml/searchable_contacts"
                 tools:node="merge" />
         </activity>
-
         <activity
-            android:name="com.applozic.mobicomkit.uiwidgets.conversation.activity.FullScreenImageActivity"
+            android:name=".conversation.activity.FullScreenImageActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="Image"
-            android:parentActivityName="com.applozic.mobicomkit.uiwidgets.conversation.activity.ConversationActivity"
+            android:parentActivityName=".conversation.activity.ConversationActivity"
             android:theme="@style/Applozic_FullScreen_Theme"
             tools:node="merge">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.applozic.mobicomkit.uiwidgets.conversation.activity.ConversationActivity" />
         </activity>
-
         <activity
-            android:name="com.applozic.mobicomkit.uiwidgets.conversation.activity.MobicomLocationActivity"
+            android:name=".conversation.activity.MobicomLocationActivity"
             android:configChanges="keyboardHidden|screenSize|smallestScreenSize|screenLayout|orientation"
-            android:parentActivityName="com.applozic.mobicomkit.uiwidgets.conversation.activity.ConversationActivity"
+            android:parentActivityName=".conversation.activity.ConversationActivity"
             android:theme="@style/ApplozicTheme"
             android:windowSoftInputMode="adjustResize"
             tools:node="merge" />
     </application>
+
 </manifest>

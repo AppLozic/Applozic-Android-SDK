@@ -18,5 +18,11 @@
     <style name="AppTheme" parent="AppBaseTheme">
         <!-- All customizations that are NOT specific to a particular API-level can go here. -->
     </style>
+    <style name="Button">
+        <item name="android:gravity">center</item>
+        <item name="android:layout_gravity">fill</item>
+        <item name="android:textColor">@color/textbuttoncolor</item>
+        <item name="android:background">@color/buttonbgcolor</item>
+    </style>
 
 </resources>

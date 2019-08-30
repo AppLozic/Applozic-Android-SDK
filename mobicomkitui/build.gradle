@@ -22,7 +22,7 @@ android {
         minSdkVersion 14
         targetSdkVersion rootProject.hasProperty("targetSdkVersion") ? rootProject.targetSdkVersion : defaultTargetSdkVersion
         versionCode 1
-        versionName "5.47"
+        versionName "5.46"
     }
     buildTypes {
         release {
@@ -51,9 +51,17 @@ dependencies {
     implementation "com.android.support.constraint:constraint-layout:${rootProject.hasProperty("constraintLayoutVersion") ? rootProject.constraintLayoutVersion : defaultConstraintLayoutVersion}"
     api project(':mobicomkit')
     //Note: use this for customization
-    //api 'com.applozic.communication.message:mobicomkit:5.47' //Note: use this in case customization is not required
+    //api 'com.applozic.communication.message:mobicomkit:5.46' //Note: use this in case customization is not required
+    implementation 'com.android.support.constraint:constraint-layout:1.1.3'
+    //api project(':app')
+
+
+    implementation project(':FFmpegAndroid')
+
+
+
 }
-/* ext {
+/*ext {
     // Where you will see your artifact in Bintray's web interface
     // The "bintrayName" should match the name of the Bintray repro.
     bintrayRepo = 'maven'
@@ -67,7 +75,7 @@ dependencies {
     artifact = 'mobicomkitui'
 
     libraryDescription = 'Applozic Communication UI Widget'
-    libraryVersion = '5.47'
+    libraryVersion = '5.46'
 
     developerId = 'devashish'
     developerName = 'Applozic'
@@ -130,4 +138,3 @@ bintray {
         }
     }
 }*/
-
