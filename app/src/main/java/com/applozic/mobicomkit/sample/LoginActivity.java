@@ -142,7 +142,7 @@ public class LoginActivity extends Activity implements ActivityCompat.OnRequestP
     private Spinner sp;
     private int touchCount = 0;
     private MobiComUserPreference mobiComUserPreference;
-    private boolean isDeviceContactSync = false;
+    private boolean isDeviceContactSync = true;
     private VideoView videoView;
     private MediaController mediaController;
 
