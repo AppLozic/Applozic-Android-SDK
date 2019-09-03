@@ -24,7 +24,7 @@ import android.widget.ArrayAdapter;
 /**
  * Created by sunil on 21/3/16.
  */
-public class ApplozicSampleApplication extends MultiDexApplication {
+public class ApplozicSampleApplication extends MultiDexApplication implements ALContactProcessor {
 
     @Override
     public void onCreate() {
@@ -51,5 +51,31 @@ public class ApplozicSampleApplication extends MultiDexApplication {
     protected void attachBaseContext(Context base) {
         super.attachBaseContext(base);
         MultiDex.install(this);
+    }
+
+    @Override
+    public String processContact(String contactNumber, String countryCode) {
+        if (TextUtils.isEmpty(contactNumber)) {
+            return "";
+        }
+        Phonenumber.PhoneNumber phoneNumber;
+        PhoneNumberUtil phoneUtil = PhoneNumberUtil.getInstance();
+        if (TextUtils.isEmpty(contactNumber)) {
+            return "";
+        }
+        try {
+            phoneNumber = phoneUtil.parse(contactNumber, countryCode);
+            if (phoneNumber.hasCountryCode()) {
+                countryCode = String.valueOf(phoneNumber.getCountryCode());
+            }
+            contactNumber = String.valueOf(phoneNumber.getNationalNumber());
+        } catch (Exception ex) {
+            try {
+                contactNumber = String.valueOf(Long.parseLong(contactNumber));
+            } catch (Exception e) {
+                return contactNumber;
+            }
+        }
+        return "+" + countryCode + contactNumber;
     }
 }
