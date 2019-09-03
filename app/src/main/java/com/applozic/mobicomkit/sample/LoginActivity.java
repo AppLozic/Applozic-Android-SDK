@@ -540,7 +540,11 @@ public class LoginActivity extends Activity implements ActivityCompat.OnRequestP
 
                    // buildContactData();
 
-                    ApplozicClient.getInstance(context).enableDeviceContactSync(isDeviceContactSync);
+                    //ApplozicClient.getInstance(context).enableDeviceContactSync(isDeviceContactSync);
+                     if (isDeviceContactSync) {
+                        Intent intent = new Intent(context, DeviceContactSyncService.class);
+                        DeviceContactSyncService.enqueueWork(context, intent);
+                    }
 
 
                     //Start FCM registration....
