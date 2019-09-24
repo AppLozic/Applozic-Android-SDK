@@ -30,7 +30,7 @@ public class SyncCallService {
     private static final String TAG = "SyncCall";
 
     public static boolean refreshView = false;
-    private static SyncCallService syncCallService;
+    private static volatile SyncCallService syncCallService;
     private Context context;
     private MobiComMessageService mobiComMessageService;
     private MobiComConversationService mobiComConversationService;
@@ -51,7 +51,11 @@ public class SyncCallService {
 
     public static SyncCallService getInstance(Context context) {
         if (syncCallService == null) {
-            syncCallService = new SyncCallService(context);
+            synchronized(SyncCallService.class) {
+                if(syncCallService == null) {
+                    syncCallService = new SyncCallService(context);
+                }
+            }
         }
         return syncCallService;
     }
