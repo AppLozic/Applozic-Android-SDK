@@ -118,7 +118,7 @@ dependencies {
     // implementation 'de.hdodenhof:circleimageview:2.2.0' //for circular images
     //  implementation 'com.theartofdev.edmodo:android-image-cropper:2.7.0'//for image cropping
     // implementation 'com.github.bumptech.glide:glide:4.7.1' //for loading images
-     implementation 'com.android.support:cardview-v7:27.1.1' //card view library
+    implementation 'com.android.support:cardview-v7:27.1.1' //card view library
     api 'com.google.code.gson:gson:2.8.5' //JSON parsing library
     // api 'com.google.firebase:firebase-messaging:17.1.0'//for FCM notification
     api 'com.google.android.gms:play-services-maps:15.0.1'//for google maps
@@ -129,8 +129,19 @@ dependencies {
     implementation 'com.android.support:recyclerview-v7:24.2.0'
     implementation 'com.googlecode.libphonenumber:libphonenumber:7.0.4'
 
+    // import aws
+    implementation 'com.amazonaws:aws-android-sdk-cognitoidentityprovider:2.6.29'
+    implementation 'com.amazonaws:aws-android-sdk-core:2.6.29'
+
+    implementation 'com.amazonaws:aws-android-sdk-s3:2.6.29'
+    implementation('com.amazonaws:aws-android-sdk-mobile-client:2.6.29@aar') { transitive = true }
+    implementation 'com.amazonaws:aws-android-sdk-ddb:2.6.+'
+    implementation 'com.amazonaws:aws-android-sdk-ddb-document:2.6.+'
 
 
+    implementation 'com.chaos.view:pinview:1.3.0'
+    implementation 'com.hbb20:ccp:2.0.2'
+    implementation 'com.github.stfalcon:smsverifycatcher:0.3.2'
 
 
 }

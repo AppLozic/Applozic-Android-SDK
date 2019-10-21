@@ -9,21 +9,28 @@
         android:name="android.permission.READ_EXTERNAL_STORAGE"
         android:maxSdkVersion="18" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.DOWNLOAD_WITHOUT_NOTIFICATION" />
-
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.RECEIVE_SMS" />
+    <uses-permission android:name="android.permission.READ_SMS" />
+    <uses-permission android:name="android.permission.SEND_SMS" />
 
     <application
         android:name=".ApplozicSampleApplication"
         android:allowBackup="true"
+        android:debuggable="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:testOnly="false"
-        android:debuggable="true"
         android:theme="@style/ApplozicTheme"
-        tools:replace="android:allowBackup"
         tools:ignore="HardcodedDebugMode">
-        <activity android:name=".PhoneVerification"></activity>
+        <activity android:name=".LoginAWS"></activity>
+
+        <service
+            android:name="com.amazonaws.mobileconnectors.s3.transferutility.TransferService"
+            android:enabled="true" />
+
+        <activity android:name=".PhoneVerification" />
         <activity android:name=".MainScreen" />
         <activity android:name=".DownloadDictionary" />
         <activity
@@ -64,8 +71,6 @@
             android:name="com.applozic.loginActivity"
             android:value="com.applozic.mobicomkit.sample.LoginActivity" />
 
-
-
         <service
             android:name=".pushnotification.FcmListenerService"
             android:exported="true"
@@ -104,6 +109,7 @@
         <meta-data
             android:name="activity.open.on.call.button.click"
             android:value="com.applozic.mobicomkit.sample.MainActivity" />
+
     </application>
 
 </manifest>

@@ -34,7 +34,8 @@ public class SplashScreenActivity extends Activity {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                if (Applozic.isConnected(SplashScreenActivity.this) && getData.get(0).equals(getData.get(1))) {
+                if (Applozic.isConnected(SplashScreenActivity.this)) {
+                    //&& getData.get(0).equals(getData.get(1))
                     Intent mainIntent = new Intent(SplashScreenActivity.this, ConversationActivity.class);
                     SplashScreenActivity.this.startActivity(mainIntent);
                     SplashScreenActivity.this.finish();

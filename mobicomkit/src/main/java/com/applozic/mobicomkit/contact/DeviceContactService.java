@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.provider.ContactsContract;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.applozic.mobicomkit.api.account.user.UserService;
 import com.applozic.mobicomkit.contact.database.ContactDatabase;
@@ -149,6 +150,7 @@ public class DeviceContactService implements BaseContactService {
     public Contact getContactFromContactCursor(Cursor people) {
         String contactNO = people.getString(people.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
         String displayName = people.getString(people.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
+        Log.i("TAG","displayName" +displayName);
         String lookupKey = "lkupkey-" + people.getString(people.getColumnIndex(ContactsContract.CommonDataKinds.Phone.LOOKUP_KEY));
 
 
@@ -166,6 +168,8 @@ public class DeviceContactService implements BaseContactService {
         try {
             if (context.getApplicationContext() instanceof ALContactProcessor) {
                 formattedPhoneNumber = ((ALContactProcessor) context.getApplicationContext()).processContact(contactNO, countryCode);
+                Log.i("TAG","displayName" +displayName);
+
             }
         } catch (ClassCastException e) {
 

@@ -107,6 +107,12 @@
     <string name="welcome_msg">Welcome to HearMe</string>
     <string name="init">Initialization...</string>
     <string name="init_wait">Please wait</string>
+    <string name="titleSignIn">Enter your phone number</string>
+    <string name="VerifNumber">Verify phone number</string>
+    <string name="textVerifNumber">Tap Next to verify your account with your phone number.</string>
+    <string name="textConfirmCode">Enter the 6-digit code we sent to</string>
+    <string name="confirmCode">continue</string>
+    <string name="resendCode">Resend code</string>
 
 
 </resources>

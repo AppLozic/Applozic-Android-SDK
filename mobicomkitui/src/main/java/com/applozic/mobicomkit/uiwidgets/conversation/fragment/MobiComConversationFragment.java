@@ -9,17 +9,10 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
-import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.ColorFilter;
-import android.graphics.PixelFormat;
-import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.location.Location;
@@ -29,8 +22,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Vibrator;
-import android.preference.PreferenceManager;
-import android.provider.OpenableColumns;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
@@ -40,7 +31,6 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v4.view.GestureDetectorCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -50,10 +40,8 @@ import android.text.TextWatcher;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.TypedValue;
-import android.view.ContextMenu;
 import android.view.GestureDetector;
 import android.view.Gravity;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -165,17 +153,10 @@ import com.applozic.mobicommons.people.contact.Contact;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
 import java.lang.ref.WeakReference;
-import java.lang.reflect.Array;
 import java.lang.reflect.Type;
 import java.net.URLConnection;
-import java.nio.file.Files;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -190,12 +171,6 @@ import java.util.Timer;
 
 import static android.view.View.VISIBLE;
 import static java.util.Collections.disjoint;
-
-import com.github.hiteshsondhi88.libffmpeg.ExecuteBinaryResponseHandler;
-import com.github.hiteshsondhi88.libffmpeg.FFmpeg;
-import com.github.hiteshsondhi88.libffmpeg.LoadBinaryResponseHandler;
-import com.github.hiteshsondhi88.libffmpeg.exceptions.FFmpegCommandAlreadyRunningException;
-import com.github.hiteshsondhi88.libffmpeg.exceptions.FFmpegNotSupportedException;
 
 /**
  * reg
@@ -320,6 +295,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
     // call database
     public final DatabaseHelper helper = new DatabaseHelper(getContext());
     public final ConcatWithFFMpeg concat = new ConcatWithFFMpeg();
+    public final ContactFFmpegGroup concatGroup = new ContactFFmpegGroup();
 
 
     public static int dp(float value) {
@@ -400,7 +376,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
         mainEditTextLinearLayout = (LinearLayout) list.findViewById(R.id.main_edit_text_linear_layout);
         audioRecordFrameLayout = (FrameLayout) list.findViewById(R.id.audio_record_frame_layout);
         messageTemplateView = (RecyclerView) list.findViewById(R.id.mobicomMessageTemplateView);
-      //  applozicLabel = list.findViewById(R.id.applozicLabel);
+        //  applozicLabel = list.findViewById(R.id.applozicLabel);
         Configuration config = getResources().getConfiguration();
         recordButtonWeakReference = new WeakReference<ImageButton>(recordButton);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
@@ -1139,6 +1115,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
 
     public void sendOpenGroupMessage(String messageText) {
 
+        Toast.makeText(getContext(), "sendOpenmessage1", Toast.LENGTH_SHORT).show();
         attachReplyCancelLayout.setVisibility(View.GONE);
         replayRelativeLayout.setVisibility(View.GONE);
 
@@ -1197,16 +1174,26 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
             if (disjointResult) {
 
                 if (channel != null && Channel.GroupType.OPEN.getValue().equals(channel.getType())) {
-
                     sendOpenGroupMessage(messageEditText.getText().toString().trim());
                 } else {
-                    if (!messageEditText.getText().toString().trim().contains("Address")) {
+                    sendMessage(messageEditText.getText().toString().trim());
+
+                }
+
+              /*  else {
+                    if (!messageEditText.getText().toString().trim().contains("maps.google") && channel == null) {
                         concat.loadFFMpegBinary(getContext());
                         concat.sendVideoMessage(getContext(), messageEditText.getText().toString().trim(), contact.getContactIds());
-                    } else {
-                        sendMessage(messageEditText.getText().toString().trim());
+
                     }
-                }
+                   /* else if (channel != null && Message.ContentType.DEFAULT.getValue() == 0) {
+
+                        concatGroup.loadFFMpegBinary(getContext());
+                        concatGroup.sendVideoMessage(getContext(), messageEditText.getText().toString().trim(), String.valueOf(channel.getKey()));
+
+                    }*/
+
+
                 messageEditText.setText("");
                 scheduleOption.setText(R.string.ScheduleText);
                 if (scheduledTimeHolder.getTimestamp() != null) {
@@ -2553,11 +2540,17 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
 
 
     public void sendMessage(String message, Map<String, String> messageMetaData, FileMeta fileMetas, String fileMetaKeyStrings, short messageContentType) {
+        Log.i("TAG","messageContentType"+ messageContentType);
+
         MobiComUserPreference userPreferences = MobiComUserPreference.getInstance(getActivity());
         Message messageToSend = new Message();
 
         if (channel != null) {
             messageToSend.setGroupId(channel.getKey());
+            if ( TextUtils.isEmpty(filePath) && messageContentType == Message.ContentType.DEFAULT.getValue()) {
+                concatGroup.loadFFMpegBinary(getContext());
+                concatGroup.sendVideoMessage(getContext(), messageEditText.getText().toString().trim(), String.valueOf(channel.getKey()));
+            }
             if (!TextUtils.isEmpty(channel.getClientGroupId())) {
                 messageToSend.setClientGroupId(channel.getClientGroupId());
             }
@@ -2572,6 +2565,11 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
             messageToSend.setTo(TextUtils.join(",", toList));
             messageToSend.setContactIds(TextUtils.join(",", contactIds));*/
         } else {
+            if ( messageContentType == Message.ContentType.DEFAULT.getValue() && TextUtils.isEmpty(filePath)) {
+                concat.loadFFMpegBinary(getContext());
+                concat.sendVideoMessage(getContext(), messageEditText.getText().toString().trim(), contact.getContactIds());
+            }
+
             messageToSend.setTo(contact.getContactIds());
             messageToSend.setContactIds(contact.getContactIds());
         }
@@ -2586,7 +2584,10 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
         messageToSend.setSendToDevice(Boolean.FALSE);
         messageToSend.setType(sendType.getSelectedItemId() == 1 ? Message.MessageType.MT_OUTBOX.getValue() : Message.MessageType.OUTBOX.getValue());
         messageToSend.setTimeToLive(getTimeToLive());
-        messageToSend.setMessage(message);
+        //messageToSend.setMessage(message);
+
+
+
         messageToSend.setDeviceKeyString(userPreferences.getDeviceKeyString());
         messageToSend.setScheduledAt(scheduledTimeHolder.getTimestamp());
         messageToSend.setSource(Message.Source.MT_MOBILE_APP.getValue());

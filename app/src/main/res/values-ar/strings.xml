@@ -100,6 +100,18 @@
     <string name="welcome_msg">مرحبا بكم في HearMe</string>
     <string name="init">تهيئة ...</string>
     <string name="init_wait">من فضلك انتظر</string>
+    <string name="titleSignIn">أدخل رقم هاتفك</string>
+    <string name="VerifNumber">تحقق من رقم الهاتف</string>
+    <string name="textVerifNumber">انقر للتحقق من حسابك باستخدام رقم هاتفك.</string>
+    <string name="textConfirmCode">أدخل الرمز المكون من 6 أرقام الذي أرسلناه إليه</string>
+    <string name="confirmCode">مواصلة</string>
+    <string name="resendCode">إعادة إرسال الرمز</string>
+
+
+
+
+
+
 
 
 

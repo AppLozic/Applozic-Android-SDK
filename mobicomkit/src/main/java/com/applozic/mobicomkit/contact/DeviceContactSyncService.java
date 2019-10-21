@@ -79,6 +79,7 @@ public class DeviceContactSyncService extends JobIntentService {
                 ContactsContract.CommonDataKinds.Phone.NUMBER, ContactsContract.CommonDataKinds.Phone.LOOKUP_KEY};
         Cursor people = getApplicationContext().getContentResolver().query(uri, projection, null, null, null);
         AppContactService appContactService = new AppContactService(this);
+        Log.i(TAG, "FoundPeople " + people);
         Log.i(TAG, "Found " + people.getCount() + " device contacts");
 
         DeviceContactService deviceContactService = new DeviceContactService(getApplicationContext());

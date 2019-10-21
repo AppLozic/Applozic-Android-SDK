@@ -46,17 +46,18 @@
 
 
     <ProgressBar
-            android:id="@+id/progressBar_storage"
-            style="?android:attr/progressBarStyleLarge"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:layout_alignParentBottom="true"
-            android:layout_marginLeft="5dp"
-            android:layout_marginTop="414dp"
-            android:layout_marginRight="5dp"
-            android:indeterminate="true"
-            android:progressDrawable="@drawable/green_progress"
-            tools:layout_editor_absoluteX="0dp"
-            tools:layout_editor_absoluteY="0dp" />
+        android:id="@+id/progressBar_storage"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="match_parent"
+        android:layout_height="35dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginLeft="5dp"
+        android:layout_marginTop="414dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginBottom="75dp"
+        android:indeterminate="true"
+        android:progressDrawable="@drawable/green_progress"
+        tools:layout_editor_absoluteX="0dp"
+        tools:layout_editor_absoluteY="0dp" />
 
 </RelativeLayout>

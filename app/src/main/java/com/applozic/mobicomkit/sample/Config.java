@@ -13,5 +13,10 @@ public class Config {
     //url storage videos
     public String  videopath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/HearMe/";
 
+   public String  accessKey = "";
+   public String secretKey = "";
+   public String url_linguistic_server = "http://51.91.11.164:3001/translate?text=";
+
+
 
 }

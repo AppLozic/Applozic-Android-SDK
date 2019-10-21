@@ -1,10 +1,8 @@
 package com.applozic.mobicomkit.uiwidgets.conversation.fragment;
 
-import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -28,9 +26,8 @@ import java.io.Writer;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Hashtable;
 
-public class ConcatWithFFMpeg extends AppCompatActivity {
+public class ContactFFmpegGroup extends AppCompatActivity {
     protected Contact contact;
     Config config = new Config();
 
@@ -83,12 +80,12 @@ public class ConcatWithFFMpeg extends AppCompatActivity {
         if (items.length == 1) {
             if (AllCategory.contains(items[0].toLowerCase())) {
                 String message = myFile + "/" + items[0].toLowerCase()+".mp4";
-                Log.i("TAG", "***sendVideoMessage OneItem***" + message);
+                Log.i("TAG", "***sendVideoMessage OneItem***" + items);
 
                 new MessageBuilder(context)
                         .setContentType(Message.ContentType.ATTACHMENT.getValue())
-                        .setTo(contact)
-                        //setGroupId()
+                        //.setTo(contact)
+                        .setGroupId(Integer.valueOf(contact))
                         .setFilePath(message)
                         .setMessage(msg)
                         .send();
@@ -193,8 +190,8 @@ public class ConcatWithFFMpeg extends AppCompatActivity {
                     //addTextViewToLayout("SUCCESS with output : "+s);
                     new MessageBuilder(context)
                             .setContentType(Message.ContentType.ATTACHMENT.getValue())
-                            .setTo(contact)
-                            //setGroupId()
+                            //.setTo(contact)
+                            .setGroupId(Integer.valueOf(contact))
                             .setFilePath(outputFile)
                             .setMessage(msg)
                             .send();
