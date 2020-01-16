@@ -86,7 +86,7 @@
     <string name="phone_state_permission_not_granted">Les autorisations n\'ont pas été accordées pour l\'état du téléphone</string>
     <string name="phone_call_permission_not_granted">L\'autorisation n\'a pas été accordée pour un appel téléphonique</string>
     <string name="phone_camera_permission_not_granted">L\'autorisation n\'a pas été accordée pour la caméra</string>
-    <string name="record_audio_permission_not_granted">Les autorisations n\'ont pas été accordées pour l'enregistrement audio</string>
+    <string name="record_audio_permission_not_granted">Les autorisations n\'ont pas été accordées pour l\'enregistrement audio</string>
     <string name="audio_or_camera_permission_not_granted">L\'autorisation n\'a pas été accordée pour l\'enregistrement vidéo ou audio</string>
 
     <string name="contact_permission_granted">Contacts La permission a été accordée</string>
@@ -268,7 +268,7 @@
     <string-array name="channel_users_menu_option">
         <item>Message</item>
         <item>Retirer</item>
-        <item>Faire un groupe d'administrateur</item>
+        <item>Faire un groupe d\'administrateur</item>
     </string-array>
 
     <!--Multimedia options -->
@@ -554,6 +554,11 @@
     <string name="not_sub_cat">Sous catégorie non disponible</string>
     <string name="no_traduction">Traduction non disponible</string>
     <string name="statusUser">Salut! J\'utilise HearMe</string>
+
+    <string name="noConversationLabel">Vous n\'avez pas de conversations</string>
+    <string name="noSearchFoundForChatMessages">Aucune conversation trouvée</string>
+    <string name="restrictedWordMessage">Les mots restreints ne sont pas autorisés</string>
+
 
 
 

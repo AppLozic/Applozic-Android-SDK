@@ -352,9 +352,9 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ApplozicService.initWithContext(getApplication());
-        Log.i("TAG", "***conversation_send1***" + contact);
         String jsonString = FileUtils.loadSettingsJsonFile(getApplicationContext());
         if (!TextUtils.isEmpty(jsonString)) {
+            Log.i("TAG jsonString","jsonString"+ jsonString);
             alCustomizationSettings = (AlCustomizationSettings) GsonUtils.getObjectFromJson(jsonString, AlCustomizationSettings.class);
         } else {
             alCustomizationSettings = new AlCustomizationSettings();

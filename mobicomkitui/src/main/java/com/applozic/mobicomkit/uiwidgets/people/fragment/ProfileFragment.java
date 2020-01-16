@@ -21,6 +21,7 @@ import android.support.v7.widget.AppCompatCheckBox;
 import android.support.v7.widget.Toolbar;
 import android.text.InputType;
 import android.text.TextUtils;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -127,6 +128,7 @@ public class ProfileFragment extends Fragment {
 
         contactService = new AppContactService(getActivity());
         userContact = contactService.getContactById(MobiComUserPreference.getInstance(getActivity()).getUserId());
+        Log.i(TAG,"userContact "+ userContact);
         if (!TextUtils.isEmpty(userContact.getDisplayName())) {
             displayNameText.setText(userContact.getDisplayName());
         }

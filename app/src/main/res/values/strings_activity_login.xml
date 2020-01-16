@@ -11,8 +11,6 @@
     <string name="error_invalid_email">This email address is invalid</string>
     <string name="error_invalid_password">This password is too short</string>
     <string name="error_incorrect_password">This password is incorrect</string>
-    <string name="error_field_required">This field is required</string>
-    <string name="text_alert">Alert</string>
     <string name="mobicomkitdemo">Demo App</string>
     <string-array name="select_url">
         <item>https://apps.applozic.com</item>

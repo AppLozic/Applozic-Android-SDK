@@ -1,8 +1,10 @@
 package com.applozic.mobicomkit.sample;
 
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DownloadManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
@@ -13,6 +15,8 @@ import android.os.StatFs;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.VideoView;
@@ -25,6 +29,8 @@ import com.amazonaws.mobileconnectors.cognitoidentityprovider.continuations.Auth
 import com.amazonaws.mobileconnectors.cognitoidentityprovider.continuations.ChallengeContinuation;
 import com.amazonaws.mobileconnectors.cognitoidentityprovider.continuations.MultiFactorAuthenticationContinuation;
 import com.amazonaws.mobileconnectors.cognitoidentityprovider.handlers.AuthenticationHandler;
+import com.amazonaws.regions.Regions;
+import com.amazonaws.services.dynamodbv2.model.AttributeValue;
 import com.applozic.mobicomkit.uiwidgets.conversation.activity.ConversationActivity;
 import com.applozic.mobicomkit.uiwidgets.conversation.fragment.DatabaseHelper;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -50,8 +56,10 @@ import java.nio.charset.Charset;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+
 import android.os.AsyncTask;
 
 import com.amazonaws.auth.BasicAWSCredentials;
@@ -67,8 +75,6 @@ import com.amazonaws.util.IOUtils;
  * Created by Nozha GH
  */
 public class DownloadDictionary extends AppCompatActivity {
-    private final String KEY = "AKIAJ4MFOD3DFJO7CY7Q";
-    private final String SECRET = "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";
 
     static final Integer READ_STORAGE_PERMISSION_REQUEST_CODE = 0x3;
     //call videoPath
@@ -95,6 +101,7 @@ public class DownloadDictionary extends AppCompatActivity {
     final DatabaseHelper helper = new DatabaseHelper(this);
     private static final String TAG = "Cognito";
     private CognitoCachingCredentialsProvider credentialsProvider;
+    private Map<String, AttributeValue> result;
 
 
     @Override
@@ -105,39 +112,67 @@ public class DownloadDictionary extends AppCompatActivity {
         AWSMobileClient.getInstance().initialize(this).execute();
 
         videoView = (VideoView) findViewById(R.id.VideoView);
-
+        progressBar = (ProgressBar) findViewById(R.id.progressBar_storage);
+        progressBar.setVisibility(View.INVISIBLE);
 
 
         Intent intent = getIntent();
         Bundle extras = getIntent().getExtras();
-        //Get Select item
-        String selectedItem = extras.getString("selectedItem");
+        Map<String, AttributeValue> data = (HashMap<String, AttributeValue>) intent.getSerializableExtra("tag");
 
-        //Get list of select object
-        Map<String, String> List_data = (HashMap<String, String>) intent.getSerializableExtra("dataObject");
-        // String List_data = extras.getString("NewList");
-
-        Log.v("TAG", "***ListObject*** " + List_data);
-        Log.i("TAG", "***SelectItem***  " + selectedItem);
-
-        String urlCorpus = List_data.get("url-corpus");
-        String urlJson = List_data.get("url-json");
-        final String size = List_data.get("size");
-        final String tag = List_data.get("tag");
-        final String hash = List_data.get("hash");
-        Log.i("TAG", "***Size***  " + size);
-        Log.i("TAG", "***TestKey***  " + urlCorpus);
-        Log.i("TAG", "***TestKey***  " + urlJson);
-
-        FreeMemory(size, tag, urlJson, urlCorpus, hash);
-        //downloadFileAWS();
+        result = data;
+        videoView.setVisibility(View.INVISIBLE);
+        Log.i(TAG,"dataTags"+ data);
+        //dataTags{tag={S: LSF,}, size={N: 0,}, status={N: 1,}, hash={S: [B@aaaa50,}, id={N: 0,}, length={N: 0,}}
+        // check if space device available
+        CheckFreeMemory(data);
     }
 
+    // Calculate available espace storage
+    void CheckFreeMemory(Map<String, AttributeValue> data) {
+        //details.setText("Vérification de l'espace");
+        StatFs stat = new StatFs(Environment.getExternalStorageDirectory().getPath());
+        long bytesAvailable;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+            bytesAvailable = stat.getBlockSizeLong() * stat.getAvailableBlocksLong();
+        } else {
+            bytesAvailable = (long) stat.getBlockSize() * (long) stat.getAvailableBlocks();
+        }
+        long megAvailable = bytesAvailable;
+
+        Log.i("TAG", "AvailableMB : " + megAvailable);
+        Log.i("TAG", "AvailableMB2 : " + bytesAvailable);
+        // test
+        if (Long.parseLong(data.get("size").getN()) <= megAvailable) {
+            //if space exists then download
+             proceed(data.get("tag").getS()+".json");
+        } else {
+            //details.setText("Oups ! espace requise non disponible");
+            videoView.setVisibility(View.INVISIBLE);
+            progressBar.setVisibility(View.INVISIBLE);
+            AlertDialog alertDialog = new AlertDialog.Builder(DownloadDictionary.this, R.style.AlertDialogStyle).create();
+            alertDialog.setTitle(getString(R.string.text_alert));
+            alertDialog.setMessage(getString(R.string.checkSpace));
+            alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.ok_alert),
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+            alertDialog.show();
+        }
+    }
+
+
+    //    ReadFile(new File(config.videopath + fileName + "/" + fileName + ".json"), fileName, size);
     // Parsing json and store in DB
-    public void ReadFile(File file, String tag, String size) {
+    public void ReadFile(String file) {
         try {
-            File myFile = new File(getExternalFilesDir(String.valueOf(file)), "");
-            Log.i("TAG", "myFile" + myFile);
+          //  final File myFile = new File(getExternalFilesDir(config.videopath),file);
+            final File myFile = new File(getExternalFilesDir(config.videopath)+"/"+result.get("tag").getS()+"/",file);
+
+
+            Log.i(TAG, "myFile ReadFile" + myFile);
             FileInputStream stream = new FileInputStream(myFile);
             String jsonStr = null;
             try {
@@ -150,22 +185,40 @@ public class DownloadDictionary extends AppCompatActivity {
             } finally {
                 stream.close();
             }
-
-
             JSONArray jsonArry = new JSONArray(jsonStr);
-            Log.i("TAG", "***jsonObjjjjj***  " + jsonArry);
+            Log.i(TAG, "***jsonObjjjjj***  " + jsonArry +jsonArry.length());
+            //[{"name":"chiffre","category":"List"},{"name":"zero","category":"chiffre"},{"name":"1","category":"chiffre"},{"name":"2","category":"chiffre"},{"name":"3","category":"chiffre"}]
             for (int i = 0; i < jsonArry.length(); i++) {
+               // for (int j = 0; j < jsonArry.getJSONObject(i).length(); j++) {
 
-                Log.e("Message", "loop");
-                JSONObject e = jsonArry.getJSONObject(i);
-                byte[] bytes = callEncode(e.getString("path"), e.getString("name"), tag, size);
-                Log.e("TAG", "getString" + e.getString("path"));
-                Log.e("TAG", "encodeByte" + bytes);
+                    JSONObject e = jsonArry.getJSONObject(i);
+                    Log.i(TAG, "jsonArry.getJSONObject(i)" +jsonArry.getJSONObject(i));
+                    Log.i(TAG, "ejsonArry " + e + jsonArry.getJSONObject(i).length());
+                    //{"name":"chiffre","category":"List"}
+                    //call download video
+                    proceed("video/" + e.getString("name") + ".mp4");
 
-                helper.insert(e.getString("name"), e.getString("category"), 1);
-                Log.i("TAG", "MyInsert " + e.getString("name") + e.getString("path") + e.getString("category"));
+                    helper.insert(e.getString("name"), e.getString("category"), 1);
+                    Log.i(TAG, "MyInsert " + e.getString("name") + e.getString("category"));
+                //}
             }
+            //get folder size
+            /*long FolderSize = getFileFolderSize(new File(config.videopath));
 
+            String size = result.get("size").getN();
+
+            Log.i("TAG", "FolderSize : " + FolderSize+ " size in database : "+size);
+
+            // check if size in Internal storage equal to size in firebase
+            if (FolderSize >= Long.parseLong(size)) {
+                //Insert size in DB
+                helper.insertInConfig(Long.parseLong(size), FolderSize);
+                //go intent conversation
+                goConversation();
+            }else{
+                //redowload
+                CheckFreeMemory(result);
+            }*/
         } catch (Exception e) {
             e.printStackTrace();
             Log.i("TAG", "***Exception***  " + e);
@@ -174,15 +227,14 @@ public class DownloadDictionary extends AppCompatActivity {
     }
 
     //call encdoe
-    public byte[] callEncode(final String path, final String name, final String tag, final String size) {
-        Log.i("TAG", "***callEncode***  " + path);
+   /* public byte[] callEncode(final String name) {
 
         Thread thread = new Thread(new Runnable() {
 
             @Override
             public void run() {
                 try {
-                    encodeByte(path, name, tag, size);
+                    encodeByte(name);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -191,10 +243,10 @@ public class DownloadDictionary extends AppCompatActivity {
 
         thread.start();
         return new byte[0];
-    }
+    }*/
 
     //encode videos to  bytes
-    private byte[] encodeByte(String url, String name, String tag, String size) {
+  /*  private byte[] encodeByte(String name) {
 
         try {
             URL imageUrl = new URL(url);
@@ -223,10 +275,10 @@ public class DownloadDictionary extends AppCompatActivity {
             Log.d("TAG", "ErrorByteArray: " + e.toString());
         }
         return null;
-    }
+    }*/
 
     // decode bytes to videos
-    public FileOutputStream decodeByte(byte[] data, String name, String tag, String size) throws IOException {
+ /*   public FileOutputStream decodeByte(byte[] data, String name, String tag, String size) throws IOException {
         Log.i("TAG", "sizeeee" + size);
         byte[] decodedBytes = data;
 
@@ -272,178 +324,30 @@ public class DownloadDictionary extends AppCompatActivity {
 
         return out;
 
-    }
-
-    // Calculate available espace storage
-    void FreeMemory(String size, String tag, String urlJson, String urlCorpus, String hash) {
-
-        //details.setText("Vérification de l'espace");
-        StatFs stat = new StatFs(Environment.getExternalStorageDirectory().getPath());
-        long bytesAvailable;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
-            bytesAvailable = stat.getBlockSizeLong() * stat.getAvailableBlocksLong();
-        } else {
-            bytesAvailable = (long) stat.getBlockSize() * (long) stat.getAvailableBlocks();
-        }
-        long megAvailable = bytesAvailable;
-
-        Log.e("TAG", "AvailableMB : " + megAvailable);
-        Log.e("TAG", "AvailableMB2 : " + bytesAvailable);
-
-        // test
-        if (Long.parseLong(size) <= megAvailable) {
-            //details.setText("Great ! espace requise disponible");
-
-
-            //if espace exists then download
-            download(urlJson, tag, ".json", hash, size);
-
-        } else {
-            //details.setText("Oups ! espace requise non disponible");
-        }
-    }
-
-    //download JSON
-    public void download(String url, final String tag, final String extension, final String hash, final String size) {
-
-        Log.e("TAG", "*******Download********");
-        Log.e("TAG", "videopathdown" + config.videopath);
-
-        // storageReference= FirebaseStorage.getInstance().getReference();
-        //ref=storageReference.child(url);
-        FirebaseStorage storage = FirebaseStorage.getInstance();
-        StorageReference httpsReference = storage.getReferenceFromUrl(url);
-        // check if file exists
-        File dir = new File(config.videopath + tag + extension);
-        //details.setText("Vérification du fichier existe ou non ");
-        if (dir.exists()) {
-            //details.setText("Suppression avec succés ");
-            dir.delete();
-        }
-        httpsReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-
-            @Override
-            public void onSuccess(Uri uri) {
-                String url = uri.toString();
-                Log.e("TAG", "uri: " + uri.toString());
-                try {
-                    downloadFile(DownloadDictionary.this, tag, extension, config.videopath + tag, url, hash, size);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (NoSuchAlgorithmException e) {
-                    e.printStackTrace();
-                }
-                Log.e("TAG", "uri: " + uri.toString());
-                //Handle whatever you're going to do with the URL here
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Log.e("TAG", "ExceptionInDownload " + e);
-            }
-        });
-    }
-
-    void downloadFile(Context context, final String fileName, final String fileExtension, String destinationDirectory, String url, final String hash, final String size) throws IOException, NoSuchAlgorithmException {
-        Log.e("TAG", "*******DownloadFile********");
-        // details.setText("Début de Téléchargement" + fileName + fileExtension);
-
-        Uri uri = Uri.parse(url);
-        DownloadManager.Request request = new DownloadManager.Request(uri);
-        request.allowScanningByMediaScanner();
-        request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_HIDDEN);
-        request.setDestinationInExternalFilesDir(context, destinationDirectory, fileName + fileExtension);
-
-        final DownloadManager manager = (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
-
-        final long downloadId = manager.enqueue(request);
-
-        final ProgressBar mProgressBar = (ProgressBar) findViewById(R.id.progressBar_storage);
-
-
-        new Thread(new Runnable() {
-
-            @Override
-            public void run() {
-
-                boolean downloading = true;
-
-                while (downloading) {
-                    Log.i("TAG", "downloading " + downloading);
-                    DownloadManager.Query q = new DownloadManager.Query();
-                    q.setFilterById(downloadId);
-
-                    final Cursor cursor = manager.query(q);
-                    cursor.moveToFirst();
-                    final int bytes_downloaded = cursor.getInt(cursor
-                            .getColumnIndex(DownloadManager.COLUMN_BYTES_DOWNLOADED_SO_FAR));
-                    final int bytes_total = cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_TOTAL_SIZE_BYTES));
-
-                    if (cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_STATUS)) == DownloadManager.STATUS_SUCCESSFUL) {
-                        downloading = false;
-
-                        runOnUiThread(new Runnable() {
-                            //   @Override
-                            public void run() {
-                                // Stuff that updates the UI
-                                //    getMd5OfFile(new File(videopath + fileName + "/" + fileName + ".zip"), hash, videopath, fileName);
-                                ReadFile(new File(config.videopath + fileName + "/" + fileName + ".json"), fileName, size);
-                            }
-                        });
-
-                    }
-
-                    final int dl_progress = (int) ((bytes_downloaded * 100l) / bytes_total);
-
-                    runOnUiThread(new Runnable() {
-
-                        @Override
-                        public void run() {
-                            // details.setText("Téléchargement en cours...");
-                            //ProgressPerc.setText((int) dl_progress);
-                            mProgressBar.setProgress((int) dl_progress);
-                            int bytesdown = bytes_downloaded / (1024 * 1024);
-                            int bytestotal = bytes_total / (1024 * 1024);
-                            // ProgressPerc.setText(bytesdown + "/" + bytestotal + " Mo");
-                            //   details.setText(statusMessage(cursor));
-                        }
-                    });
-
-                    cursor.close();
-
-                }
-            }
-
-        }).start();
-    }
-
+    }*/
     // get size folder in internal storage
     public long getFileFolderSize(File dir) {
         File myFile = new File(getExternalFilesDir(String.valueOf(dir)), "");
+        Log.i(TAG,"getFileFolderSize"+ myFile);
         long size = 0;
         if (myFile.isDirectory()) {
-
             for (File file : myFile.listFiles()) {
-                if (file.isFile()) {
+                //if (file.isFile()) {
                     size += file.length();
-                }
+               // }
             }
         }
-        Log.i("TAG", "getFileFolderSize: " + size);
-
-        return size;
+        return size * 1000;
     }
 
     public void goConversation() {
 
-        Intent intent = new Intent(context, ConversationActivity.class);
+        Intent intent = new Intent(DownloadDictionary.this, ConversationActivity.class);
         startActivity(intent);
-        finish();
+        //finish();
     }
 
-
-
-    private void proceed() {
+    private void proceed(final String file) {
         final CognitoSettings cognitoSettings = new CognitoSettings(this);
 
         /*Identity pool credentials provider*/
@@ -469,14 +373,14 @@ public class DownloadDictionary extends AppCompatActivity {
                         // Set up as a credentials provider.
                         Log.i(TAG, "got id token - setting credentials using token");
                         Map<String, String> logins = new HashMap<>();
-                        logins.put("cognito-idp.eu-west-1.amazonaws.com/eu-west-1_3CLusdQiz", idToken);
+                        logins.put("cognito-idp.eu-west-1.amazonaws.com/eu-west-1_avsgY0cXS", idToken);
                         credentialsProvider.setLogins(logins);
 
                         Log.i(TAG, "using credentials for the logged in user");
 
                         /*refresh provider off main thread*/
                         Log.i(TAG, "refreshing credentials provider in asynctask..");
-                        new RefreshAsyncTask().execute();
+                        new RefreshAsyncTask().execute(file);
 
                     } else {
                         Log.i(TAG, "no token...");
@@ -485,14 +389,17 @@ public class DownloadDictionary extends AppCompatActivity {
                     Log.i(TAG, "user session not valid - using identity pool credentials - guest user");
                 }
 
-                downloadWithTransferUtility();
+                //performAction(action);
+                downloadWithTransferUtility(file);
+
             }
 
             @Override
             public void getAuthenticationDetails(AuthenticationContinuation authenticationContinuation, String userId) {
                 Log.i(TAG, " Not logged in! using identity pool credentials for guest user");
 
-                downloadWithTransferUtility();
+               // performAction(action);
+                downloadWithTransferUtility(file);
             }
 
             @Override
@@ -510,40 +417,45 @@ public class DownloadDictionary extends AppCompatActivity {
                 Log.i(TAG, "error getting session: " + exception.getLocalizedMessage());
 //                proceed using guest user credentials
 
-                downloadWithTransferUtility();
+                //performAction(action);
+                downloadWithTransferUtility(file);
             }
         });
     }
 
-    private class RefreshAsyncTask extends AsyncTask<Integer, Void, Integer> {
-
-        @Override
-        protected Integer doInBackground(Integer... integers) {
-            Log.i(TAG, "in asynctask doInBackground()");
-            credentialsProvider.refresh();
-            return integers[0];
+    /*private void performAction(int action) {
+        switch (action) {
+            case 1:
+                //uploadWithTransferUtility();
+                break;
+            case 2:
+                downloadWithTransferUtility();
         }
-
-        @Override
-        protected void onPostExecute(Integer action) {
-            Log.i(TAG, "in asynctask onPostExecute()");
-
-            downloadWithTransferUtility();
-        }
+    }*/
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.i(TAG, "onDestroy()... clearing credentials provider");
+        /*clear the cached/saved credentials so we don't use them for guest user if not logged in*/
+        credentialsProvider.clear();
     }
 
-    private void downloadWithTransferUtility() {
+    private void downloadWithTransferUtility(final String file) {
+
+        final File myFile = new File(getExternalFilesDir(config.videopath)+"/"+result.get("tag").getS()+"/",file);
+
+        //details.setText("Vérification du fichier existe ou non ");
+        if (myFile.exists()) {
+            //details.setText("Suppression avec succés");
+            myFile.delete();
+        }
 
         AmazonS3Client s3Client = new AmazonS3Client(credentialsProvider);
 
-
         try {
             /*need to clear cached files at some stage*/
-            File outputDir = getCacheDir();
-            final File tempCacheFile = File.createTempFile("bonjour", ".mp4", outputDir);
-            final File myFile = new File(Environment.getExternalStorageDirectory(),"bonjour.mp4");
-            Log.i("TAG","MyFile" + myFile.getAbsolutePath());
-
+            //final File myFile = new File(Environment.getExternalStorageDirectory(),"bonjour.mp4");
+            Log.i(TAG,"MyFile downloadWithTransferUtility" + myFile.getAbsolutePath());
 
             TransferUtility transferUtility =
                     TransferUtility.builder()
@@ -554,7 +466,8 @@ public class DownloadDictionary extends AppCompatActivity {
 
             TransferObserver downloadObserver =
                     transferUtility.download(
-                            "bonjour.mp4", myFile);
+                            //video/bonjour.mp4
+                            file, myFile);
 
             // Attach a listener to the observer to get state update and progress notifications
             downloadObserver.setTransferListener(new TransferListener() {
@@ -563,33 +476,74 @@ public class DownloadDictionary extends AppCompatActivity {
                 public void onStateChanged(int id, TransferState state) {
                     if (TransferState.COMPLETED == state) {
                         // Handle a completed upload.
-                        Log.i(TAG, "state change, image download complete");
-
-                        // Bitmap bmp = BitmapFactory.decodeFile(tempCacheFile.getAbsolutePath());
-                        //imageView.setImageBitmap(bmp);
+                        progressBar.setVisibility(View.INVISIBLE);
+                        if (file.contains(".json")){
+                            Log.i(TAG,"file .json");
+                            ReadFile(file);
+                        }
+                        Log.i(TAG, "state change, file complete");
                     }
                 }
-
                 @Override
                 public void onProgressChanged(int id, long bytesCurrent, long bytesTotal) {
+                    progressBar.setVisibility(View.VISIBLE);
                     float percentDonef = ((float) bytesCurrent / (float) bytesTotal) * 100;
                     int percentDone = (int) percentDonef;
                     Log.i(TAG, "   ID:" + id + "   bytesCurrent: "
                             + bytesCurrent + "   bytesTotal: " + bytesTotal + " " + percentDone + "%");
                 }
-
                 @Override
                 public void onError(int id, Exception ex) {
                     // Handle errors
-                    Log.i(TAG, "error downloading image: " + ex.getLocalizedMessage());
+                    Log.e(TAG, "error downloading video: " + ex);
                 }
             });
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
-            Log.i(TAG, "downloading image error: " + e.getLocalizedMessage());
+
+            Log.i(TAG, "downloading video error: " + e);
         }
     }
 
+    private class RefreshAsyncTask extends AsyncTask<String, Void, String> {
+
+       /* @Override
+        protected String doInBackground(Integer... integers) {
+            Log.i(TAG, "in asynctask doInBackground()");
+            credentialsProvider.refresh();
+           // return integers[0];
+        }*/
+
+        @Override
+        protected String doInBackground(String... strings) {
+            credentialsProvider.refresh();
+
+            return strings[0];
+        }
+
+        @Override
+        protected void onPostExecute(String file) {
+            Log.i(TAG, "in asynctask onPostExecute()");
+
+            //downloadWithTransferUtility(file);
+            if (!file.contains(".json")) {
+                //get folder size
+                long FolderSize = getFileFolderSize(new File(config.videopath));
+
+                String size = result.get("size").getN();
+
+                Log.i("TAG", "FolderSize : " + FolderSize + " size in database : " + size);
+
+                // check if size in Internal storage equal to size in firebase
+                if (FolderSize >= Long.parseLong(size)) {
+                    //Insert size in DB
+                    helper.insertInConfig(Long.parseLong(size), FolderSize);
+                    //go intent conversation
+                    goConversation();
+                }
+            }
+        }
+    }
 }
 
 

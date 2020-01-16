@@ -106,6 +106,23 @@
     <string name="textConfirmCode">Entrez le code à 6 chiffres que nous avons envoyé à</string>
     <string name="confirmCode">continue</string>
     <string name="resendCode">Renvoyer le code</string>
+    <string name="spinnerTags">Veuillez remplir...</string>
+    <string name="error_field_required">Ce champ est obligatoire</string>
+    <string name="text_alert">Alerte</string>
+    <string name="checkSpace">Espace requise non disponible</string>
+    <string name="msg_confirm_exit">Êtes-vous sûr de vouloir quitter?</string>
+    <string name="exit_btn">Oui</string>
+    <string name="not_exit_btn">Non</string>
+    <string name="resend_msg">Votre code a été re-envoyé</string>
+    <string name="confirm_error">Code de vérification invalide, veuillez réessayer.
+
+    </string>
+
+
+
+
+
+
 
 
 

@@ -12,6 +12,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Build.VERSION;
@@ -23,12 +24,10 @@ import android.support.v4.app.ActivityCompat;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.Patterns;
-import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -39,26 +38,24 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.amazonaws.services.dynamodbv2.model.AttributeValue;
 import com.applozic.mobicomkit.Applozic;
 import com.applozic.mobicomkit.ApplozicClient;
 import com.applozic.mobicomkit.api.account.register.RegistrationResponse;
 import com.applozic.mobicomkit.api.account.user.MobiComUserPreference;
-import com.applozic.mobicomkit.api.account.user.PushNotificationTask;
 import com.applozic.mobicomkit.api.account.user.User;
 import com.applozic.mobicomkit.api.account.user.UserLoginTask;
 import com.applozic.mobicomkit.contact.AppContactService;
 import com.applozic.mobicomkit.listners.AlLoginHandler;
 import com.applozic.mobicomkit.listners.AlPushNotificationHandler;
 import com.applozic.mobicomkit.uiwidgets.ApplozicSetting;
-import com.applozic.mobicomkit.uiwidgets.conversation.ConversationUIService;
-import com.applozic.mobicomkit.uiwidgets.conversation.activity.ConversationActivity;
 import com.applozic.mobicomkit.contact.DeviceContactSyncService;
 import com.applozic.mobicommons.commons.core.utils.PermissionsUtils;
 import com.applozic.mobicommons.commons.core.utils.Utils;
 import com.applozic.mobicommons.people.contact.Contact;
-import com.amazonaws.mobileconnectors.dynamodbv2.document.datatype.Document;
 
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -71,8 +68,17 @@ public class LoginActivity extends Activity implements ActivityCompat.OnRequestP
 
     private static final String TAG = "Cognito LoginActivity";
     private static final int REQUEST_CONTACTS = 1;
-    private static String[] PERMISSIONS_CONTACT = {Manifest.permission.READ_CONTACTS,
-            Manifest.permission.WRITE_CONTACTS};
+    private static String[] PERMISSIONS_CONTACT = {Manifest.permission.READ_CONTACTS, Manifest.permission.WRITE_CONTACTS};
+    private static String[] PERMISSIONS_STORAGE = {Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE};
+
+    int PERMISSION_ALL = 1;
+    String[] PERMISSIONS = {
+            android.Manifest.permission.READ_CONTACTS,
+            android.Manifest.permission.WRITE_CONTACTS,
+            android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            android.Manifest.permission.READ_EXTERNAL_STORAGE,
+    };
+
     LinearLayout layout;
     /**
      * Keep track of the login task to ensure we can cancel it if requested.
@@ -91,11 +97,14 @@ public class LoginActivity extends Activity implements ActivityCompat.OnRequestP
     private Button mEmailSignInButton;
     //CallbackManager callbackManager;
     private TextView mTitleView;
-    private Spinner mSpinnerView;
+    private Spinner mSpinnerView,spinner;
     private int touchCount = 0;
     private MobiComUserPreference mobiComUserPreference;
     private boolean isDeviceContactSync = true;
+    private ArrayList<String> list;
     //private LoginButton loginButton;
+    private List<Map<String, AttributeValue>> detailsResult;
+    private  String phone;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,13 +112,22 @@ public class LoginActivity extends Activity implements ActivityCompat.OnRequestP
         //FacebookSdk.sdkInitialize(this);
         Applozic.init(this, getString(R.string.application_key));
 
-        getDictionary();
         setContentView(R.layout.activity_login);
         setupUI(findViewById(R.id.layout));
         layout = (LinearLayout) findViewById(R.id.footerSnack);
 
         // Set up the login form.
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
+        spinner = (Spinner) findViewById(R.id.sp);
+
+
+        //get all tags
+        getDictionary();
+        //get phone number from Phoneverification
+
+        Bundle extras = getIntent().getExtras();
+        phone = extras.getString("phone");
+
 
         if (Utils.hasMarshmallow()) {
             showRunTimePermission();
@@ -183,6 +201,8 @@ public class LoginActivity extends Activity implements ActivityCompat.OnRequestP
     }
 
 
+
+
     public void setupUI(View view) {
         //Set up touch listener for non-text box views to hide keyboard.
         if (!(view instanceof EditText)) {
@@ -222,31 +242,32 @@ public class LoginActivity extends Activity implements ActivityCompat.OnRequestP
      * errors are presented and no actual login attempt is made.
      */
     public void attemptLogin(User.AuthenticationType authenticationType) {
+
         if (mAuthTask != null) {
             return;
         }
 
         // Reset errors.
-        mUserIdView.setError(null);
+        //mUserIdView.setError(null);
         //mEmailView.setError(null);
         //mPasswordView.setError(null);
         mDisplayName.setError(null);
 
         // Store values at the time of the login attempt.
-        String email = mEmailView.getText().toString();
-        String phoneNumber = mPhoneNumberView.getText().toString();
-        String userId = mUserIdView.getText().toString().trim();
-       // String password = mPasswordView.getText().toString();
+        //String email = mEmailView.getText().toString();
+        //String phoneNumber = mPhoneNumberView.getText().toString();
+        //String userId = mUserIdView.getText().toString().trim();
+        // String password = mPasswordView.getText().toString();
         String displayName = mDisplayName.getText().toString();
 
         boolean cancel = false;
         View focusView = null;
 
-        if (TextUtils.isEmpty(mUserIdView.getText().toString()) || mUserIdView.getText().toString().trim().length() == 0) {
+       /* if (TextUtils.isEmpty(mUserIdView.getText().toString()) || mUserIdView.getText().toString().trim().length() == 0) {
             mUserIdView.setError(getString(R.string.error_field_required));
             focusView = mUserIdView;
             cancel = true;
-        }
+        }*/
         // Check for a valid password, if the user entered one.
        /* if ((TextUtils.isEmpty(mPasswordView.getText().toString()) || mPasswordView.getText().toString().trim().length() == 0) && !isPasswordValid(mPasswordView.getText().toString())) {
             mPasswordView.setError(getString(R.string.error_invalid_password));
@@ -255,16 +276,35 @@ public class LoginActivity extends Activity implements ActivityCompat.OnRequestP
         }*/
 
         // Check for a valid email address.
-        if (TextUtils.isEmpty(email)) {
-            /*mEmailView.setError(getString(R.string.error_field_required));
+        /*if (TextUtils.isEmpty(email)) {
+            mEmailView.setError(getString(R.string.error_field_required));
             focusView = mEmailView;
-            cancel = true;*/
+            cancel = true;
         } else if (!isEmailValid(email)) {
             mEmailView.setError(getString(R.string.error_invalid_email));
             focusView = mEmailView;
             cancel = true;
+        }*/
+
+        if (TextUtils.isEmpty(displayName) || displayName.trim().length() == 0) {
+            mDisplayName.setError(getString(R.string.error_field_required));
+            focusView = mDisplayName;
+            cancel = true;
         }
 
+        if (spinner.getSelectedItemPosition() > 0) {
+            // get spinner value
+            Log.i(TAG,"select spinner"+ spinner.getSelectedItemPosition() + detailsResult.get((spinner.getSelectedItemPosition()) - 1));
+            // Showing selected spinner item
+        } else {
+            // nothing selected
+            TextView errorText = (TextView)spinner.getSelectedView();
+            errorText.setError("");
+            errorText.setTextColor(Color.RED);//just to highlight that this is an error
+            errorText.setText(LoginActivity.this.getResources().getString(R.string.error_field_required));//changes the selected item text to this
+            focusView = spinner;
+            cancel = true;
+        }
         if (cancel) {
             // There was an error; don't attempt login and focus the first
             // form field with an error.
@@ -277,12 +317,17 @@ public class LoginActivity extends Activity implements ActivityCompat.OnRequestP
             // callback for login process
 
             User user = new User();
-            user.setUserId(userId);
+            user.setUserId(phone);
             //user.setEmail(email);
             //user.setPassword(password);
             user.setDisplayName(displayName);
-            user.setContactNumber(phoneNumber);
+
+            user.setContactNumber(phone);
             user.setAuthenticationTypeId(authenticationType.getValue());
+            //starting DownloadDictionary
+             Intent intent = new Intent(LoginActivity.this, DownloadDictionary.class);
+             intent.putExtra("tag", (Serializable) detailsResult.get((spinner.getSelectedItemPosition()) - 1));
+             startActivity(intent);
 
             Applozic.connectUser(this, user, new AlLoginHandler() {
                 @Override
@@ -321,14 +366,14 @@ public class LoginActivity extends Activity implements ActivityCompat.OnRequestP
                     });
 
                     //starting main MainActivity
-                    Intent mainActvity = new Intent(context, MainActivity.class);
+                    /*Intent mainActvity = new Intent(context, MainActivity.class);
                     startActivity(mainActvity);
                     Intent intent = new Intent(context, ConversationActivity.class);
                     if (ApplozicClient.getInstance(LoginActivity.this).isContextBasedChat()) {
                         intent.putExtra(ConversationUIService.CONTEXT_BASED_CHAT, true);
                     }
                     startActivity(intent);
-                    finish();
+                    finish();*/
                 }
 
                 @Override
@@ -383,8 +428,6 @@ public class LoginActivity extends Activity implements ActivityCompat.OnRequestP
             contactRaj.setFullName("rajni");
             contactRaj.setImageURL("https://fbcdn-profile-a.akamaihd.net/hprofile-ak-xap1/v/t1.0-1/p200x200/12049601_556630871166455_1647160929759032778_n.jpg?oh=7ab819fc614f202e144cecaad0eb696b&oe=56EBA555&__gda__=1457202000_85552414c5142830db00c1571cc50641");
             contactList.add(contactRaj);
-
-
             //Adarsh
             Contact contact2 = new Contact();
             contact2.setUserId("rathan");
@@ -425,10 +468,10 @@ public class LoginActivity extends Activity implements ActivityCompat.OnRequestP
         return !TextUtils.isEmpty(email) && Patterns.EMAIL_ADDRESS.matcher(email).matches();
     }
 
-    private boolean isPasswordValid(String password) {
+    /*private boolean isPasswordValid(String password) {
         //TODO: Replace this with your own logic
         return password.length() > 5;
-    }
+    }*/
 
     @Override
     public void onBackPressed() {
@@ -446,7 +489,6 @@ public class LoginActivity extends Activity implements ActivityCompat.OnRequestP
                 }
             }, 3000);
         }
-
     }
 
     /**
@@ -519,29 +561,26 @@ public class LoginActivity extends Activity implements ActivityCompat.OnRequestP
     private void requestContactsPermissions() {
         if (ActivityCompat.shouldShowRequestPermissionRationale(this,
                 Manifest.permission.READ_CONTACTS)
-                || ActivityCompat.shouldShowRequestPermissionRationale(this,
-                Manifest.permission.WRITE_CONTACTS)) {
+                || ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_CONTACTS)) {
 
             Snackbar.make(layout, R.string.contact_permission,
                     Snackbar.LENGTH_INDEFINITE)
                     .setAction(R.string.ok_alert, new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            ActivityCompat
-                                    .requestPermissions(LoginActivity.this, PERMISSIONS_CONTACT,
-                                            REQUEST_CONTACTS);
+                            ActivityCompat.requestPermissions(LoginActivity.this, PERMISSIONS,
+                                    PERMISSION_ALL);
                         }
                     }).show();
         } else {
-            ActivityCompat.requestPermissions(this, PERMISSIONS_CONTACT, REQUEST_CONTACTS);
+            ActivityCompat.requestPermissions(this, PERMISSIONS, PERMISSION_ALL);
         }
-
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
 
-        if (requestCode == REQUEST_CONTACTS) {
+        if (requestCode == PERMISSION_ALL) {
             if (PermissionsUtils.verifyPermissions(grantResults)) {
                 showSnackBar(R.string.contact_permission_granted);
 
@@ -566,7 +605,6 @@ public class LoginActivity extends Activity implements ActivityCompat.OnRequestP
                 Snackbar.LENGTH_SHORT)
                 .show();
     }
-
     /**
      * Use an AsyncTask to fetch the user's email addresses on a background thread, and update
      * the email text field with results on the main UI thread.
@@ -602,34 +640,82 @@ public class LoginActivity extends Activity implements ActivityCompat.OnRequestP
 
         GetAllDataAsyncTask getAllDataTask = new GetAllDataAsyncTask();
         /*get all contacts for list of given telephone numbers*/
-        getAllDataTask.execute();
-
+       getAllDataTask.execute();
     }
-
     /**
-     * Async Task to get all contacts
+     * Async Task to get all Tags
      */
-    private class GetAllDataAsyncTask extends AsyncTask<Void, Void, List<Document>> {
+     class GetAllDataAsyncTask extends AsyncTask<Void,Void,  List<Map<String, AttributeValue>>> {
         @Override
-        protected List<Document> doInBackground(Void... voids) {
-            List<Document> docsList = null;
-
+        protected  List<Map<String, AttributeValue>> doInBackground(Void... voids) {
+            List<String> List = new ArrayList<String>();
+            List<Map<String, AttributeValue>> rows = new ArrayList<>();
             Log.i(TAG, "in GetAllContactsAsyncTask doInBackground....");
             DatabaseAccess databaseAccess = DatabaseAccess.getInstance(LoginActivity.this);
             try {
                 /*get all the contacts out table*/
-                docsList = databaseAccess.getAllData();
-               // databaseAccess.getItem();
+                //docsList = databaseAccess.getAllData();
+                rows = databaseAccess.getAllData();
+
             } catch (Exception e) {
-                Log.i(TAG, "error getting all contacts: " + e.getMessage());
+                Log.i(TAG, "error getting all Tags: " + e.getMessage());
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        Log.i(TAG, "Error getting all Data");
+                        Log.i(TAG, "Error getting all Tags");
                     }
                 });
             }
-            return docsList;
+            return rows;
         }
+
+        @Override
+        protected void onPostExecute(List<Map<String, AttributeValue>> result) {
+            if (result != null) {
+                fullSpinner(result);
+            }
+        }
+
+    }
+    public  void  fullSpinner(final List<Map<String, AttributeValue>> result){
+        //Log.i(TAG,"get full spinner" + list);
+        detailsResult = result;
+        List<String> tags = new ArrayList<String>();
+
+        for (int i = 0; i < result.size(); i++){
+
+            tags.add(this.getResources().getString(R.string.spinnerTags));
+            tags.add(result.get(i).get("tag").getS());
+        }
+        // Creating adapter for spinner
+        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item,tags);
+        // Drop down layout style - list view with radio button
+        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        // attaching data adapter to spinner
+        spinner.setAdapter(dataAdapter);
+       // spinner.setOnItemSelectedListener(this);
+
+       /* spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
+                if (position > 0) {
+                    // get spinner value
+                    String item = parent.getItemAtPosition(position).toString();
+                    // Showing selected spinner item
+                    Toast.makeText(parent.getContext(), "Selected: " +result.get((position) - 1), Toast.LENGTH_LONG).show();
+                } else {
+                    // nothing selected
+                    TextView errorText = (TextView)spinner.getSelectedView();
+                    errorText.setError("");
+                    errorText.setTextColor(Color.RED);//just to highlight that this is an error
+                    errorText.setText(LoginActivity.this.getResources().getString(R.string.error_field_required));//changes the selected item text to this
+                }
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+            }
+           });*/
     }
 }
+

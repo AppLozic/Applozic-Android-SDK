@@ -37,6 +37,8 @@ public class LoginAWS extends AppCompatActivity {
     private PinView verifyCodeET;
     private SmsVerifyCatcher smsVerifyCatcher;
     private Button verifyCodeButton;
+    private String number;
+    private int totalAttemptsSend;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,7 +47,7 @@ public class LoginAWS extends AppCompatActivity {
        // final String   editTextUsername = "+21692071299";
 
 
-        String number;
+
         if (savedInstanceState == null) {
             Bundle extras = getIntent().getExtras();
             if(extras == null) {
@@ -64,14 +66,14 @@ public class LoginAWS extends AppCompatActivity {
         verifyCodeButton = (Button) findViewById(R.id.buttonLogin);
 
         // final String verificationCode = verifyCodeET.getText().toString();
-        smsVerifyCatcher = new SmsVerifyCatcher(this, new OnSmsCatchListener<String>() {
+        /*smsVerifyCatcher = new SmsVerifyCatcher(this, new OnSmsCatchListener<String>() {
             @Override
             public void onSmsCatch(String message) {
                 String code = parseCode(message);//Parse verification code
                 verifyCodeET.setText(code);
                 //then you can send verification code to server
             }
-        });
+        });*/
 
         VerifUser(number);
     }
@@ -92,17 +94,17 @@ public class LoginAWS extends AppCompatActivity {
         return code;
     }
 
-    @Override
+  /*  @Override
     protected void onStart() {
         super.onStart();
         smsVerifyCatcher.onStart();
-    }
+    }*/
 
-    @Override
+   /* @Override
     protected void onStop() {
         super.onStop();
         smsVerifyCatcher.onStop();
-    }
+    }*/
 
     /**
      * need for Android 6 real time permissions
@@ -212,6 +214,7 @@ public class LoginAWS extends AppCompatActivity {
                 user.updateAttributesInBackground(userAttributes, handler);
 
                 Intent intent = new Intent(LoginAWS.this, LoginActivity.class);
+                intent.putExtra("phone",number);
                 startActivity(intent);
 
 

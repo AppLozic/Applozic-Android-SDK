@@ -100,7 +100,7 @@ public class details_sign_to_text extends AppCompatActivity {
                 intent.putExtra(ConversationUIService.TAKE_ORDER, true); //Skip chat list for showing on back press
                 startActivity(intent);*/
                 concat.loadFFMpegBinary(details_sign_to_text.this);
-                concat.sendVideoMessage(details_sign_to_text.this, footerText.getText().toString().trim(), CONTACT_ID);
+                concat.sendVideoMessage(details_sign_to_text.this,footerText.getText().toString().trim(), footerText.getText().toString().trim(), CONTACT_ID);
                 footerText.setText("");
                 Intent intent = new Intent(details_sign_to_text.this, ConversationActivity.class);
                 intent.putExtra(ConversationUIService.USER_ID, CONTACT_ID);

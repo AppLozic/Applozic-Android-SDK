@@ -2567,7 +2567,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
         } else {
             if ( messageContentType == Message.ContentType.DEFAULT.getValue() && TextUtils.isEmpty(filePath)) {
                 concat.loadFFMpegBinary(getContext());
-                concat.sendVideoMessage(getContext(), messageEditText.getText().toString().trim(), contact.getContactIds());
+                concat.sendVideoMessage(getContext(), messageEditText.getText().toString().trim(), messageEditText.getText().toString().trim(), contact.getContactIds());
             }
 
             messageToSend.setTo(contact.getContactIds());

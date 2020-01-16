@@ -106,6 +106,25 @@
     <string name="textConfirmCode">أدخل الرمز المكون من 6 أرقام الذي أرسلناه إليه</string>
     <string name="confirmCode">مواصلة</string>
     <string name="resendCode">إعادة إرسال الرمز</string>
+    <string name="spinnerTags">يرجى ملء ...</string>
+    <string name="error_field_required">هذا الحقل مطلوب</string>
+    <string name="text_alert">إنذار</string>
+    <string name="checkSpace">المساحة المطلوبة غير متوفرة</string>
+    <string name="error_phone_invalid">رقم الهاتف غير صالح</string>
+    <string name="msg_confirm_exit">هل أنت متأكد من انك تريد الخروج؟</string>
+    <string name="exit_btn">نعم</string>
+    <string name="not_exit_btn">لا</string>
+    <string name="resend_msg">تم إعادة إرسال الرمز الخاص بك</string>
+    <string name="confirm_error">رمز التحقق غير صالح ، يرجى المحاولة مرة أخرى.</string>
+
+
+
+
+
+
+
+
+
 
 
 

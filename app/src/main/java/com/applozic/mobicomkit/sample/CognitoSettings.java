@@ -9,7 +9,7 @@ import com.amazonaws.regions.Regions;
 
 public class CognitoSettings {
 
-    private String userPoolId = "eu-west-1_avsgY0cXS";
+    public static String userPoolId = "eu-west-1_avsgY0cXS";
     private String clientId = "59bs6tj70jicrtgh0th4hohepe";
     private String clientSecret = "bki5v4jhmih0s62vc17l6k7bc7ks15iofjt254ff179fjjvsjkr";
     private Regions cognitoRegion = Regions.EU_WEST_1;
@@ -17,6 +17,7 @@ public class CognitoSettings {
     private String identityPoolId = "eu-west-1:16ef245d-d292-40e2-8cce-b61dad918976";
 
     private Context context;
+
 
 
     public CognitoSettings(Context context) {

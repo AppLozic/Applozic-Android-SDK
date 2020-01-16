@@ -38,9 +38,6 @@ public class sign_to_text extends AppCompatActivity {
     public final int ITEMS_PER_PAGE = 6;
     private int currentPage = 0;
 
-
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,10 +49,15 @@ public class sign_to_text extends AppCompatActivity {
         final String CONTACT_ID = extras.getString("CONTACT_ID");
 
 
-
-
         ArrayList getAllCat = helper.getAllCategory("List");
+
         Log.i("TAG", "getAllCat" + getAllCat);
+
+
+
+        Log.i("TAG", "getAll" +  helper.getAllData());
+
+
 
         final int TOTAL_NUM_ITEMS = getAllCat.size() - 1;
 
@@ -78,7 +80,6 @@ public class sign_to_text extends AppCompatActivity {
                 Toast.makeText(sign_to_text.this, generatePage(currentPage, LAST_PAGE, ITEMS_REMAINING).get(i), Toast.LENGTH_SHORT).show();
             }
         });
-
 
         gv.setAdapter(new CustomGrid(sign_to_text.this,CONTACT_ID, generatePage(currentPage, LAST_PAGE, ITEMS_REMAINING)));
 

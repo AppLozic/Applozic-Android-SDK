@@ -234,6 +234,11 @@
     <string name="no_traduction">Translation not available</string>
     <string name="statusUser">Hey there! I\'m using HearMe</string>
 
+    <string name="noConversationLabel">You have no conversations</string>
+    <string name="noSearchFoundForChatMessages">No conversation found</string>
+    <string name="restrictedWordMessage">Restricted words are not allowed</string>
+
+
 
 
 </resources>

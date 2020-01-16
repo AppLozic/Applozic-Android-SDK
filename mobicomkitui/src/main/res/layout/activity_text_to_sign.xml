@@ -27,22 +27,44 @@
         android:layout_height="fill_parent"
         android:layout_below="@id/multiAutoCompleteTextView1"
         android:layout_marginTop="30dp"
-        android:orientation="vertical">
+        android:gravity="center_horizontal"
 
-        <Button
-            android:id="@+id/translation"
-            style="@style/Button"
-            android:layout_width="127dp"
-            android:layout_height="40dp"
-            android:layout_below="@id/multiAutoCompleteTextView1"
-            android:layout_gravity="center_vertical|center"
-            android:layout_marginTop="0dp"
-            android:layout_marginBottom="10dp"
-            android:imeOptions="flagNoExtractUi"
-            android:text="@string/translation"
-            android:textColor="#ffffff"
-            android:textSize="12sp" />
+        >
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            >
+
+
+            <Button
+                android:id="@+id/translation"
+                style="@style/Button"
+                android:layout_width="127dp"
+                android:layout_height="40dp"
+                android:layout_below="@id/multiAutoCompleteTextView1"
+                android:layout_marginTop="0dp"
+                android:layout_marginBottom="10dp"
+                android:imeOptions="flagNoExtractUi"
+                android:text="@string/translation"
+                android:textColor="#ffffff"
+                android:textSize="12sp" />
+
+            <CheckBox
+                android:id="@+id/sendToServer"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_gravity="center"
+                android:layout_marginLeft="20dp"
+                android:text="" />
+
+
+        </LinearLayout>
+
+
     </LinearLayout>
+
     <TextView
         android:id="@+id/no_traduction"
         android:layout_width="match_parent"

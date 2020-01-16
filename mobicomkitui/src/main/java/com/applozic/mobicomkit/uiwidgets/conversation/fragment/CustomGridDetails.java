@@ -136,8 +136,8 @@ public class CustomGridDetails extends BaseAdapter {
 
 
             textViewAndroid.setText(capitalize(gridViewString.get(i)));
-            videoView.setVideoPath(String.valueOf(myFile) + "/" + gridViewString.get(i) + ".mp4");
-            Log.i("TAG", "GridDetails " + String.valueOf(myFile) + "/" + gridViewString.get(i) + ".mp4");
+            videoView.setVideoPath(String.valueOf(myFile) + "/video/" + gridViewString.get(i) + ".mp4");
+            Log.i("TAG", "GridDetails " + String.valueOf(myFile) + "/video/" + gridViewString.get(i) + ".mp4");
             //videoView.seekTo(100);
             videoView.start();
             videoView.requestFocus();

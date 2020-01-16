@@ -90,7 +90,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     // get all data from database
-    public void getAllData() {
+    public ArrayList getAllData() {
         SQLiteDatabase db = this.getReadableDatabase();
         ArrayList<String> array_list = new ArrayList<String>();
 
@@ -108,12 +108,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                         String data = cursor.getString(i);
                         String column_name = cursor.getColumnName(i);
                         Log.i("TAG", "Cursor" + data + column_name);
+                        array_list.add(column_name+ " : "+ data);
                     }
                 }
                 while (cursor.moveToNext());
             }
 
         }
+
+        return array_list;
 
 
     }

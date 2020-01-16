@@ -87,7 +87,7 @@ public class CustomGrid extends BaseAdapter {
             });
 
             textViewAndroid.setText(capitalize(gridViewString.get(i)));
-            videoView.setVideoPath(String.valueOf(myFile) + "/" + gridViewString.get(i) + ".mp4");
+            videoView.setVideoPath(String.valueOf(myFile) + "/video/" + gridViewString.get(i) + ".mp4");
             videoView.start();
 
 

@@ -32,6 +32,7 @@ import java.util.Hashtable;
 
 public class ConcatWithFFMpeg extends AppCompatActivity {
     protected Contact contact;
+    String TAG;
     Config config = new Config();
 
     @Override
@@ -42,7 +43,8 @@ public class ConcatWithFFMpeg extends AppCompatActivity {
     // Loading ffmpeg
     public void loadFFMpegBinary(Context context) {
         FFmpeg ffmpeg;
-        Log.e("TAG", "***start loadFFMpegBinary***");
+         TAG  = "FFmpeg";
+        Log.i(TAG, "***start loadFFMpegBinary***");
         //initUI();
         ffmpeg = FFmpeg.getInstance(context);
         try {
@@ -50,32 +52,32 @@ public class ConcatWithFFMpeg extends AppCompatActivity {
                 @Override
                 public void onFailure() {
                     //  showUnsupportedExceptionDialog();
-                    Log.e("TAG", "Load");
+                    Log.i(TAG, "Load ffmpeg");
 
                 }
             });
         } catch (FFmpegNotSupportedException e) {
             // showUnsupportedExceptionDialog();
-            Log.e("TAG", "Exeption " + e);
+            Log.e(TAG, "Exception " + e);
 
         }
     }
 
     // replace text message with video message
-    public void sendVideoMessage(Context context, String msg, String contact) {
+    public void sendVideoMessage(Context context, String resultTranslation, String msg, String contact) {
         final DatabaseHelper helper = new DatabaseHelper(context);
         final ArrayList AllCategory = helper.getAllCategoryWithoutCondition();
 
-        File myFile = new File(context.getExternalFilesDir(config.videopath), "LSF");
+        File myFile = new File(context.getExternalFilesDir(config.videopath)+"/LSF", "video");
         File myFileConcat = new File(config.videopathConcat);
-        Log.i("TAG", "myFileConcat" + myFileConcat);
+        Log.i(TAG, "myFileConcat" + myFileConcat);
 
 
-        Log.i("TAG", "***sendVideoMessage***");
-        String[] items = (msg.trim().split("\\s+"));
+        Log.i(TAG, "***sendVideoMessage***");
+        String[] items = (resultTranslation.trim().split("\\s+"));
 
-        Log.i("TAG", "***sendVideoMessage msg*** " + msg);
-        Log.i("TAG", "***sendVideoMessage items length*** " + items.length);
+        Log.i(TAG, "***sendVideoMessage msg*** " + resultTranslation);
+        Log.i(TAG, "***sendVideoMessage items length*** " + items.length);
 
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         String imageFileName = "VID_" + timeStamp + "_" + ".mp4";
@@ -83,7 +85,7 @@ public class ConcatWithFFMpeg extends AppCompatActivity {
         if (items.length == 1) {
             if (AllCategory.contains(items[0].toLowerCase())) {
                 String message = myFile + "/" + items[0].toLowerCase()+".mp4";
-                Log.i("TAG", "***sendVideoMessage OneItem***" + message);
+                Log.i(TAG, "***sendVideoMessage OneItem***" + message);
 
                 new MessageBuilder(context)
                         .setContentType(Message.ContentType.ATTACHMENT.getValue())
@@ -102,7 +104,7 @@ public class ConcatWithFFMpeg extends AppCompatActivity {
             String outputFile = myFileConcat + "/" + imageFileName;
 
 
-            Log.i("TAG", "***sendVideoMessage MultipleItem***");
+            Log.i(TAG, "***sendVideoMessage MultipleItem***");
 
             ArrayList<String> list = new ArrayList<String>();
 
@@ -112,7 +114,7 @@ public class ConcatWithFFMpeg extends AppCompatActivity {
 
                     list.add(myFile + "/" + items[i].toLowerCase() + ".mp4");
 
-                    Log.d("TAG", "******Concatenating*******" + items[i]);
+                    Log.d(TAG, "******Concatenating*******" + items[i]);
                 }
             }
             String generatelist = generateList(context, new ArrayList[]{list});
@@ -150,10 +152,10 @@ public class ConcatWithFFMpeg extends AppCompatActivity {
             for (Object input : inputs[0]) {
 
                 writer.write("file '" + input + "'\n");
-                Log.d("TAG", "Writing to list file: file '" + input + "'");
+                Log.d(TAG, "Writing to list file: file '" + input + "'");
             }
         } catch (IOException e) {
-            Log.e("TAG", "Generate list ffmpeg IOException " + e);
+            Log.e(TAG, "Generate list ffmpeg IOException " + e);
             e.printStackTrace();
             return "/";
         } finally {
@@ -165,13 +167,13 @@ public class ConcatWithFFMpeg extends AppCompatActivity {
             }
         }
 
-        Log.d("TAG", "Wrote list file to " + list.getAbsolutePath());
+        Log.d(TAG, "Wrote list file to " + list.getAbsolutePath());
         return list.getAbsolutePath();
     }
 
 
     private void execFFmpegBinary(final File list, final Context context, final String[] command, final String outputFile, final String msg, final String contact) {
-        Log.e("TAG", "***execFFmpegBinary***" + command);
+        Log.d(TAG, "***execFFmpegBinary***" + command);
         final FFmpeg ffmpeg;
 
         try {
@@ -181,13 +183,13 @@ public class ConcatWithFFMpeg extends AppCompatActivity {
                 @Override
                 public void onFailure(String s) {
                     // addTextViewToLayout("FAILED with output : "+s);
-                    Log.e("TAG", "execFFmpeg onFailure" + s);
+                    Log.e(TAG, "execFFmpeg onFailure" + s);
                 }
 
                 @Override
                 public void onSuccess(String s) {
-                    Log.d("TAG", "execFFmpeg onSuccess" + s);
-                    Log.d("TAG", "execFFmpeg File" + list);
+                    Log.d(TAG, "execFFmpeg onSuccess" + s);
+                    Log.d(TAG, "execFFmpeg File" + list);
 
 
                     //addTextViewToLayout("SUCCESS with output : "+s);
@@ -206,7 +208,7 @@ public class ConcatWithFFMpeg extends AppCompatActivity {
 
                 @Override
                 public void onProgress(String s) {
-                    Log.d("TAG", "Started command : ffmpeg " + command);
+                    Log.d(TAG, "Started command : ffmpeg " + command);
                     // addTextViewToLayout("progress : "+s);
                     // progressDialog.setMessage("Processing\n"+s);
                 }
@@ -215,21 +217,21 @@ public class ConcatWithFFMpeg extends AppCompatActivity {
                 public void onStart() {
                     // outputLayout.removeAllViews();
 
-                    Log.d("TAG", "Started command : ffmpeg " + command);
+                    Log.d(TAG, "Started command : ffmpeg " + command);
                     // progressDialog.setMessage("Processing...");
                     // progressDialog.show();
                 }
 
                 @Override
                 public void onFinish() {
-                    Log.d("TAG", "Finished command : ffmpeg " + command);
+                    Log.d(TAG, "Finished command : ffmpeg " + command);
                     // progressDialog.dismiss();
 
                 }
             });
         } catch (FFmpegCommandAlreadyRunningException e) {
             // do nothing for now
-            Log.d("TAG", "error for : ffmpeg " + e);
+            Log.e(TAG, "error for : ffmpeg " + e);
 
         }
     }

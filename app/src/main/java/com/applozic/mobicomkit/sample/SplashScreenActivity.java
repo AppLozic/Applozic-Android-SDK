@@ -28,7 +28,7 @@ public class SplashScreenActivity extends Activity {
         setContentView(R.layout.splash_screen_layout);
 
         // get size config
-        final ArrayList getData = helper.getDataConfig();
+        //final ArrayList getData = helper.getDataConfig();
 
 
         new Handler().postDelayed(new Runnable() {

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
 
-    <string name="app_name">Applozic</string>
-    <string name="mobicomkit_label">Applozic</string>
+    <string name="app_name">HearMe</string>
+    <string name="mobicomkit_label">HearMe</string>
     <string name="title_activity_main">MainActivity</string>
     <string name="title_section1">Section 1</string>
     <string name="title_section2">Chat using Fragment </string>
@@ -113,6 +113,19 @@
     <string name="textConfirmCode">Enter the 6-digit code we sent to</string>
     <string name="confirmCode">continue</string>
     <string name="resendCode">Resend code</string>
+    <string name="spinnerTags">Please fill in..</string>
+    <string name="error_field_required">This field is required</string>
+    <string name="text_alert">Alert</string>
+    <string name="checkSpace">Required space not available</string>
+    <string name="error_phone_invalid">Phone Number is Invalid</string>
+    <string name="msg_confirm_exit">Are you sure you want to exit?</string>
+    <string name="exit_btn">Yes</string>
+    <string name="not_exit_btn">No</string>
+    <string name="resend_msg">Your code has been re-sent</string>
+    <string name="confirm_error">Invalid verification code, please try again.</string>
+
+
+
 
 
 </resources>

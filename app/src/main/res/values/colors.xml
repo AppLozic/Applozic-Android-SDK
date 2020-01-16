@@ -10,6 +10,7 @@
     <color name="bg_screen2">#20d2bb</color>
     <color name="bg_screen3">#2fa9e1</color>
     <color name="bg_screen4">#c873f4</color>
+    <color name="red">#FF0000</color>
 
 
     <!-- dots inactive colors -->

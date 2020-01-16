@@ -42,7 +42,7 @@
             android:layout_marginBottom="10dp"
             android:gravity="center"
             android:padding="10dp"
-            android:src="@drawable/liz"
+            android:src="@drawable/cover"
             android:visibility="visible" />
 
 

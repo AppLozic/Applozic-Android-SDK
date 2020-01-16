@@ -551,6 +551,10 @@
     <string name="no_traduction">الترجمة غير متوفرة</string>
     <string name="statusUser">مرحبا! أنا أستخدم HearMe</string>
 
+    <string name="noConversationLabel"></string>
+    <string name="noSearchFoundForChatMessages"></string>
+    <string name="restrictedWordMessage"></string>
+
 
 
 
