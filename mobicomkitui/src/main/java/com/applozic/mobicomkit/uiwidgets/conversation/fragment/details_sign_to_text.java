@@ -18,6 +18,7 @@ import com.applozic.mobicomkit.contact.AppContactService;
 import com.applozic.mobicomkit.uiwidgets.R;
 import com.applozic.mobicomkit.uiwidgets.conversation.ConversationUIService;
 import com.applozic.mobicomkit.uiwidgets.conversation.activity.ConversationActivity;
+import com.applozic.mobicommons.people.channel.Channel;
 import com.applozic.mobicommons.people.contact.Contact;
 
 import java.util.ArrayList;
@@ -34,8 +35,12 @@ public class details_sign_to_text extends AppCompatActivity {
     public final int ITEMS_PER_PAGE = 6;
     private int currentPage = 0;
     protected Contact contact;
+    protected Channel channel;
+    int LAST_PAGE;
+
     AppContactService appContactService;
     public final ConcatWithFFMpeg concat = new ConcatWithFFMpeg();
+    public final ContactFFmpegGroup concatGroup = new ContactFFmpegGroup();
 
 
     @Override
@@ -47,6 +52,8 @@ public class details_sign_to_text extends AppCompatActivity {
         //Get Select item
         String subCategory = extras.getString("subCategory");
         final String CONTACT_ID = extras.getString("CONTACT_ID");
+        final String type = extras.getString("type");
+
         Log.i("TAG", "subCategory " + subCategory);
 
 
@@ -57,7 +64,7 @@ public class details_sign_to_text extends AppCompatActivity {
         final int TOTAL_NUM_ITEMS = getAllCat.size();
 
         final int ITEMS_REMAINING = TOTAL_NUM_ITEMS % ITEMS_PER_PAGE;
-        final int LAST_PAGE = TOTAL_NUM_ITEMS / ITEMS_PER_PAGE;
+        LAST_PAGE = TOTAL_NUM_ITEMS / ITEMS_PER_PAGE;
 
         final int totalPages = TOTAL_NUM_ITEMS / ITEMS_PER_PAGE;
 
@@ -78,20 +85,20 @@ public class details_sign_to_text extends AppCompatActivity {
         ImageButton send = (ImageButton) findViewById(R.id.conversation_send);
 
         //retrive data from SharedPreferences
-        final SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        final String msg = preferences.getString(CONTACT_ID, "");
-        Log.i("TAG", "SharedPreferences signtext" + msg);
+        //final SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        //final String msg = preferences.getString(CONTACT_ID, "");
+        //Log.i("TAG", "SharedPreferences signtext" + msg);
 
-        footerText.setText(msg);
+        //footerText.setText(msg);
 
         send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
 
-                Log.i("TAG", "***conversation_send***" + CONTACT_ID);
+                Log.i("TAG", "***conversation_send***" + CONTACT_ID + type);
                 //  final String message = preferences.getString(CONTACT_ID, "");
-                Log.i("TAG", "***conversation_send***" + msg);
+                //Log.i("TAG", "***conversation_send msg***" + msg);
 
 
                /* Intent intent = new Intent(details_sign_to_text.this, ConversationActivity.class);
@@ -99,14 +106,35 @@ public class details_sign_to_text extends AppCompatActivity {
                 intent.putExtra(ConversationUIService.DEFAULT_TEXT, footerText.getText().toString());
                 intent.putExtra(ConversationUIService.TAKE_ORDER, true); //Skip chat list for showing on back press
                 startActivity(intent);*/
-                concat.loadFFMpegBinary(details_sign_to_text.this);
-                concat.sendVideoMessage(details_sign_to_text.this,footerText.getText().toString().trim(), footerText.getText().toString().trim(), CONTACT_ID);
-                footerText.setText("");
-                Intent intent = new Intent(details_sign_to_text.this, ConversationActivity.class);
-                intent.putExtra(ConversationUIService.USER_ID, CONTACT_ID);
-                intent.putExtra(ConversationUIService.DEFAULT_TEXT, "");
-                intent.putExtra(ConversationUIService.TAKE_ORDER, true); //Skip chat list for showing on back press
-                startActivity(intent);
+
+
+                Log.i("TAG", "contactorgroup : " + contact + "channel : " + channel);
+                if (type.equals("user")) {
+                    Log.i("TAG", "heerre");
+                    concat.loadFFMpegBinary(details_sign_to_text.this);
+                    concat.sendVideoMessage(details_sign_to_text.this, footerText.getText().toString().trim(), footerText.getText().toString().trim(), CONTACT_ID);
+                    footerText.setText("");
+
+                    Intent intent = new Intent(details_sign_to_text.this, ConversationActivity.class);
+                    intent.putExtra(ConversationUIService.USER_ID, CONTACT_ID);
+                    intent.putExtra(ConversationUIService.DEFAULT_TEXT, "");
+                    intent.putExtra(ConversationUIService.TAKE_ORDER, true); //Skip chat list for showing on back press
+                    startActivity(intent);
+
+                } else if (type.equals("group")) {
+
+                    concatGroup.loadFFMpegBinary(details_sign_to_text.this);
+                    concatGroup.sendVideoMessage(details_sign_to_text.this, footerText.getText().toString().trim(), footerText.getText().toString().trim(), CONTACT_ID);
+                    footerText.setText("");
+
+
+                    Intent intent = new Intent(details_sign_to_text.this, ConversationActivity.class);
+                    intent.putExtra(ConversationUIService.GROUP_ID, CONTACT_ID);
+                    intent.putExtra(ConversationUIService.DEFAULT_TEXT, "");
+                    intent.putExtra(ConversationUIService.TAKE_ORDER, true); //Skip chat list for showing on back press
+                    startActivity(intent);
+
+                }
 
 
             }
@@ -168,7 +196,7 @@ public class details_sign_to_text extends AppCompatActivity {
 
     }
 
-    private void toggleButtons(int totalPages) {
+  /*  private void toggleButtons(int totalPages) {
         if (currentPage == totalPages) {
             nextBtn.setEnabled(false);
             nextBtn.getBackground().setAlpha(45);
@@ -186,6 +214,37 @@ public class details_sign_to_text extends AppCompatActivity {
             prevBtn.getBackground().setAlpha(0xFF);
         }
 
+    }*/
+
+    private void toggleButtons(int totalPages) {
+        Log.i("TAG", "items " + currentPage + totalPages + LAST_PAGE);
+
+        if (currentPage == totalPages && totalPages != 0) {
+            nextBtn.setEnabled(false);
+            nextBtn.getBackground().setAlpha(45);
+            prevBtn.setEnabled(true);
+            prevBtn.getBackground().setAlpha(0xFF);
+        } else if (currentPage == totalPages) {
+            nextBtn.setEnabled(false);
+            nextBtn.getBackground().setAlpha(45);
+            prevBtn.setEnabled(false);
+            prevBtn.getBackground().setAlpha(45);
+        } else if (currentPage == 0 && LAST_PAGE != currentPage) {
+            prevBtn.setEnabled(false);
+            prevBtn.getBackground().setAlpha(45);
+            nextBtn.setEnabled(true);
+            nextBtn.getBackground().setAlpha(0xFF);
+        } else if (currentPage >= 1 && currentPage <= 6) {
+            nextBtn.setEnabled(true);
+            prevBtn.setEnabled(true);
+            nextBtn.getBackground().setAlpha(0xFF);
+            prevBtn.getBackground().setAlpha(0xFF);
+        } else if (currentPage == LAST_PAGE) {
+            prevBtn.setEnabled(false);
+            nextBtn.setEnabled(false);
+            prevBtn.getBackground().setAlpha(45);
+            nextBtn.getBackground().setAlpha(45);
+        }
     }
 
     public ArrayList<String> generatePage(int currentPage, int LAST_PAGE, int ITEMS_REMAINING, ArrayList getAllCat) {

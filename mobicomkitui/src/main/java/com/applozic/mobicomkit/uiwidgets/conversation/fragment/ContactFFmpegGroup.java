@@ -1,6 +1,8 @@
 package com.applozic.mobicomkit.uiwidgets.conversation.fragment;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -10,6 +12,7 @@ import android.widget.Toast;
 
 import com.applozic.mobicomkit.api.conversation.Message;
 import com.applozic.mobicomkit.api.conversation.MessageBuilder;
+import com.applozic.mobicomkit.uiwidgets.R;
 import com.applozic.mobicommons.people.contact.Contact;
 import com.github.hiteshsondhi88.libffmpeg.ExecuteBinaryResponseHandler;
 import com.github.hiteshsondhi88.libffmpeg.FFmpeg;
@@ -30,6 +33,7 @@ import java.util.Date;
 public class ContactFFmpegGroup extends AppCompatActivity {
     protected Contact contact;
     Config config = new Config();
+  String  TAG = "ContactFFmpegGroup";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -59,20 +63,20 @@ public class ContactFFmpegGroup extends AppCompatActivity {
     }
 
     // replace text message with video message
-    public void sendVideoMessage(Context context, String msg, String contact) {
+    public void sendVideoMessage(Context context, String resultTranslation, String msg, String contact) {
         final DatabaseHelper helper = new DatabaseHelper(context);
         final ArrayList AllCategory = helper.getAllCategoryWithoutCondition();
 
-        File myFile = new File(context.getExternalFilesDir(config.videopath), "LSF");
+        File myFile = new File(context.getExternalFilesDir(config.videopath)+"/LSF", "video");
         File myFileConcat = new File(config.videopathConcat);
-        Log.i("TAG", "myFileConcat" + myFileConcat);
+        Log.i(TAG, "myFileConcat" + myFileConcat);
 
 
-        Log.i("TAG", "***sendVideoMessage***");
-        String[] items = (msg.trim().split("\\s+"));
+        Log.i("", "***sendVideoMessage***");
+        String[] items = (resultTranslation.trim().split("\\s+"));
 
-        Log.i("TAG", "***sendVideoMessage msg*** " + msg);
-        Log.i("TAG", "***sendVideoMessage items length*** " + items.length);
+        Log.i("", "***sendVideoMessage msg*** " + resultTranslation);
+        Log.i(TAG, "***sendVideoMessage items length*** " + items.length);
 
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         String imageFileName = "VID_" + timeStamp + "_" + ".mp4";
@@ -80,7 +84,7 @@ public class ContactFFmpegGroup extends AppCompatActivity {
         if (items.length == 1) {
             if (AllCategory.contains(items[0].toLowerCase())) {
                 String message = myFile + "/" + items[0].toLowerCase()+".mp4";
-                Log.i("TAG", "***sendVideoMessage OneItem***" + items);
+                Log.i(TAG, "***sendVideoMessage OneItem***" + message);
 
                 new MessageBuilder(context)
                         .setContentType(Message.ContentType.ATTACHMENT.getValue())
@@ -92,7 +96,19 @@ public class ContactFFmpegGroup extends AppCompatActivity {
                 SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
                 preferences.edit().remove(contact).commit();
             } else {
-                Toast.makeText(context, "words does not exists", Toast.LENGTH_SHORT).show();
+               // Toast.makeText(context, "words does not exists", Toast.LENGTH_SHORT).show();
+                int style = context.getResources().getIdentifier("AlertDialogStyle", "style", getPackageName());
+
+                AlertDialog alertDialog = new AlertDialog.Builder(context, style).create();
+                alertDialog.setTitle(context.getResources().getString(R.string.text_alert));
+                alertDialog.setMessage(context.getResources().getString(R.string.words_noexist));
+                alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, context.getResources().getString(R.string.ok_alert),
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        });
+                alertDialog.show();
             }
         } else {
 

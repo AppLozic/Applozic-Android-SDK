@@ -51,9 +51,9 @@ public class AlCustomizationSettings extends JsonMarker {
     private String chatBackgroundImageName;
 
     private String audioPermissionNotFoundMsg;
-    private String noConversationLabel = "You have no conversations";
-    private String noSearchFoundForChatMessages = "No conversation found";
-    private String restrictedWordMessage = "Restricted words are not allowed";
+    private String noConversationLabel = String.valueOf(R.string.noConversationLabel);
+    private String noSearchFoundForChatMessages = String.valueOf(R.string.noSearchFoundForChatMessages);
+    private String restrictedWordMessage = String.valueOf(R.string.restrictedWordMessage);
     private boolean locationShareViaMap = true;
     private boolean startNewFloatingButton;
     private boolean startNewButton = true;

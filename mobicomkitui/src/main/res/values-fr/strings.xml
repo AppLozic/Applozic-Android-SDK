@@ -559,6 +559,10 @@
     <string name="noSearchFoundForChatMessages">Aucune conversation trouvée</string>
     <string name="restrictedWordMessage">Les mots restreints ne sont pas autorisés</string>
 
+    <string name="text_alert">Alerte</string>
+    <string name="words_noexist">Le mot n\'existe pas</string>
+
+
 
 
 

@@ -9,6 +9,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="start"
+        android:layout_margin="10dp"
         android:layout_weight="8"
         android:cursorVisible="true"
         android:hint="@string/enter_message_hint"
@@ -19,7 +20,6 @@
         android:textAlignment="viewStart"
         android:textColor="@color/black"
         android:textColorHint="@color/edittext_hint_color"
-        android:layout_margin="10dp"
         android:textSize="16sp" />
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -34,8 +34,7 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="center"
-            >
+            android:gravity="center">
 
 
             <Button
@@ -73,6 +72,17 @@
         android:text="@string/no_traduction"
         android:textColor="@color/compose_action_button"
         android:textSize="20dp" />
+
+    <ProgressBar
+        android:id="@+id/progress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_centerHorizontal="true"
+
+        android:layout_centerVertical="true"
+        android:visibility="gone" />
+
     <VideoView
         android:id="@+id/videoView"
         android:layout_width="fill_parent"
@@ -121,6 +131,7 @@
                     android:layout_weight="8"
                     android:background="@color/apploizc_transparent_color"
                     android:cursorVisible="true"
+                    android:enabled="false"
                     android:hint="@string/enter_message_hint"
                     android:inputType="textCapSentences|textMultiLine"
                     android:maxLines="6"
@@ -128,7 +139,6 @@
                     android:minLines="2"
                     android:textAlignment="viewStart"
                     android:textColor="@color/black"
-                    android:enabled="false"
                     android:textColorHint="@color/edittext_hint_color"
                     android:textSize="16sp" />
             </LinearLayout>
@@ -146,8 +156,8 @@
                 android:id="@+id/conversation_send"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
-                android:layout_margin="10dp"
                 android:layout_gravity="bottom|end"
+                android:layout_margin="10dp"
                 android:background="@drawable/button_circle"
                 android:clickable="true"
                 android:gravity="center"

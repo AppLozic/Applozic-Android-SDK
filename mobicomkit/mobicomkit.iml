@@ -130,21 +130,5 @@
     <orderEntry type="library" name="Gradle: android.arch.lifecycle:common:1.0.3@jar" level="project" />
     <orderEntry type="module" module-name="mobicommons" />
     <orderEntry type="library" name="Gradle: org.apache.http.legacy-android-27" level="project" />
-    <orderEntry type="module" module-name="mobicommons" />
-    <orderEntry type="module" module-name="mobicommons" />
-    <orderEntry type="module" module-name="mobicommons" />
-    <orderEntry type="module" module-name="mobicommons" />
-    <orderEntry type="module" module-name="mobicommons" />
-    <orderEntry type="module" module-name="mobicommons" />
-    <orderEntry type="module" module-name="mobicommons" />
-    <orderEntry type="module" module-name="mobicommons" />
-    <orderEntry type="module" module-name="mobicommons" />
-    <orderEntry type="module" module-name="mobicommons" />
-    <orderEntry type="module" module-name="mobicommons" />
-    <orderEntry type="module" module-name="mobicommons" />
-    <orderEntry type="module" module-name="mobicommons" />
-    <orderEntry type="module" module-name="mobicommons" />
-    <orderEntry type="module" module-name="mobicommons" />
-    <orderEntry type="module" module-name="mobicommons" />
   </component>
 </module>

@@ -16,12 +16,13 @@
 
     <application
         android:name=".ApplozicSampleApplication"
-        android:allowBackup="false"
+        android:allowBackup="true"
         android:fullBackupContent="false"
         android:label="@string/app_name"
         android:icon="@drawable/logo"
         android:supportsRtl="true"
         android:testOnly="false"
+        android:debuggable="true"
         android:theme="@style/ApplozicTheme"
         tools:ignore="HardcodedDebugMode"
         tools:replace="android:allowBackup">

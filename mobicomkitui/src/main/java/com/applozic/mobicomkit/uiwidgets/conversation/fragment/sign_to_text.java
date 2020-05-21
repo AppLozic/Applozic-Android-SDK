@@ -37,6 +37,7 @@ public class sign_to_text extends AppCompatActivity {
     TextView dataPaginate;
     public final int ITEMS_PER_PAGE = 6;
     private int currentPage = 0;
+    int LAST_PAGE;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +48,7 @@ public class sign_to_text extends AppCompatActivity {
         Bundle extras = getIntent().getExtras();
         //Get Select item
         final String CONTACT_ID = extras.getString("CONTACT_ID");
+        final String Type = extras.getString("type");
 
 
         ArrayList getAllCat = helper.getAllCategory("List");
@@ -59,10 +61,10 @@ public class sign_to_text extends AppCompatActivity {
 
 
 
-        final int TOTAL_NUM_ITEMS = getAllCat.size() - 1;
+        final int TOTAL_NUM_ITEMS = getAllCat.size();
 
         final int ITEMS_REMAINING = TOTAL_NUM_ITEMS % ITEMS_PER_PAGE;
-        final int LAST_PAGE = TOTAL_NUM_ITEMS / ITEMS_PER_PAGE;
+         LAST_PAGE = TOTAL_NUM_ITEMS / ITEMS_PER_PAGE;
 
         final int totalPages = TOTAL_NUM_ITEMS / ITEMS_PER_PAGE;
 
@@ -74,6 +76,9 @@ public class sign_to_text extends AppCompatActivity {
         prevBtn.setEnabled(false);
         prevBtn.getBackground().setAlpha(45);
 
+        toggleButtons(totalPages);
+
+
         gv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -81,7 +86,7 @@ public class sign_to_text extends AppCompatActivity {
             }
         });
 
-        gv.setAdapter(new CustomGrid(sign_to_text.this,CONTACT_ID, generatePage(currentPage, LAST_PAGE, ITEMS_REMAINING)));
+        gv.setAdapter(new CustomGrid(sign_to_text.this,CONTACT_ID,Type, generatePage(currentPage, LAST_PAGE, ITEMS_REMAINING)));
 
         nextBtn.setOnClickListener(new View.OnClickListener() {
 
@@ -92,7 +97,7 @@ public class sign_to_text extends AppCompatActivity {
                 dataPaginate.setText((currentPage+1) + " / " + (totalPages+1));
 
                 // enableDisableButtons();
-                gv.setAdapter(new CustomGrid(sign_to_text.this,CONTACT_ID, generatePage(currentPage, LAST_PAGE, ITEMS_REMAINING)));
+                gv.setAdapter(new CustomGrid(sign_to_text.this,CONTACT_ID,Type, generatePage(currentPage, LAST_PAGE, ITEMS_REMAINING)));
                 toggleButtons(totalPages);
 
             }
@@ -103,7 +108,7 @@ public class sign_to_text extends AppCompatActivity {
                 currentPage -= 1;
                 dataPaginate.setText((currentPage+1) + " / " + (totalPages+1));
 
-                gv.setAdapter(new CustomGrid(sign_to_text.this,CONTACT_ID, generatePage(currentPage, LAST_PAGE, ITEMS_REMAINING)));
+                gv.setAdapter(new CustomGrid(sign_to_text.this,CONTACT_ID, Type, generatePage(currentPage, LAST_PAGE, ITEMS_REMAINING)));
 
                 toggleButtons(totalPages);
             }
@@ -113,12 +118,14 @@ public class sign_to_text extends AppCompatActivity {
     }
 
     private void toggleButtons(int totalPages) {
-        if (currentPage == totalPages) {
+        Log.i("TAG", "items "+ currentPage + totalPages + LAST_PAGE);
+
+        if (currentPage == totalPages && totalPages != 0 ) {
             nextBtn.setEnabled(false);
             nextBtn.getBackground().setAlpha(45);
             prevBtn.setEnabled(true);
             prevBtn.getBackground().setAlpha(0xFF);
-        } else if (currentPage == 0) {
+        } else if (currentPage == 0 && LAST_PAGE != currentPage) {
             prevBtn.setEnabled(false);
             prevBtn.getBackground().setAlpha(45);
             nextBtn.setEnabled(true);
@@ -129,12 +136,20 @@ public class sign_to_text extends AppCompatActivity {
             nextBtn.getBackground().setAlpha(0xFF);
             prevBtn.getBackground().setAlpha(0xFF);
         }
+        else if (currentPage == LAST_PAGE){
+            prevBtn.setEnabled(false);
+            nextBtn.setEnabled(false);
+            prevBtn.getBackground().setAlpha(45);
+            nextBtn.getBackground().setAlpha(45);
+        }
+
+
 
     }
 
     public ArrayList<String> generatePage(int currentPage, int LAST_PAGE, int ITEMS_REMAINING) {
 
-        Log.i("TAG", "generatePage" + currentPage + LAST_PAGE + ITEMS_REMAINING);
+        Log.i("TAG", "generatePage " + currentPage + LAST_PAGE + ITEMS_REMAINING);
         ArrayList getAllCat = helper.getAllCategory("List");
 
         int startItem = currentPage * ITEMS_PER_PAGE;
@@ -148,8 +163,8 @@ public class sign_to_text extends AppCompatActivity {
                 pageData.add(String.valueOf(getAllCat.get(i)));
             }
         } else {
-            for (int i = startItem; i < startItem + numOfData; i++) {
-                pageData.add(String.valueOf(getAllCat.get(i)));
+            for (int i = startItem; i <= startItem + numOfData ; i++) {
+                pageData.add(String.valueOf(getAllCat.get(i)) );
             }
         }
 

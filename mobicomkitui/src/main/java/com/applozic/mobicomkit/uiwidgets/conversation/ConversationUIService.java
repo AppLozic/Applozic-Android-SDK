@@ -1104,23 +1104,34 @@ public class ConversationUIService {
 
     public void processSL2T() {
         ConversationFragment conversationFragment = getConversationFragment();
+        if (conversationFragment.getChannel() != null) {
+            Intent intent = new Intent(fragmentActivity, sign_to_text.class);
+            intent.putExtra("CONTACT_ID", String.valueOf(conversationFragment.getChannel().getKey()));
+            intent.putExtra("type", "group");
+            fragmentActivity.startActivity(intent);
+        }else {
+            Intent intent = new Intent(fragmentActivity, sign_to_text.class);
+            intent.putExtra("CONTACT_ID", conversationFragment.getContact().getContactIds());
+            intent.putExtra("type", "user");
 
-        //Log.i("TAG", "process base CONTACT_ID1" + conversationFragment.getContact());
-        Log.i("TAG", "process base CONTACT_ID2" + conversationFragment.getContact().getContactIds());
-        Intent intent = new Intent(fragmentActivity, sign_to_text.class);
-        intent.putExtra("CONTACT_ID", conversationFragment.getContact().getContactIds());
-        fragmentActivity.startActivity(intent);
+            fragmentActivity.startActivity(intent);
+        }
     }
 
     public void processT2SL() {
         ConversationFragment conversationFragment = getConversationFragment();
 
-        //Log.i("TAG", "process base CONTACT_ID1" + conversationFragment.getContact());
-        Log.i("TAG", "process base CONTACT_ID2" + conversationFragment.getContact().getContactIds());
-        Intent intent = new Intent(fragmentActivity, text_to_sign.class);
-        intent.putExtra("CONTACT_ID", conversationFragment.getContact().getContactIds());
-        fragmentActivity.startActivity(intent);
-    }
+        if (conversationFragment.getChannel() != null) {
+            Intent intent = new Intent(fragmentActivity, text_to_sign.class);
+            intent.putExtra("CONTACT_ID", String.valueOf(conversationFragment.getChannel().getKey()));
+            intent.putExtra("type", "group");
+            fragmentActivity.startActivity(intent);
+        }else {
+            Intent intent = new Intent(fragmentActivity, text_to_sign.class);
+            intent.putExtra("CONTACT_ID", conversationFragment.getContact().getContactIds());
+            intent.putExtra("type", "user");
+            fragmentActivity.startActivity(intent);
+        }    }
 
 
 

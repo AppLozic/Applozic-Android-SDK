@@ -473,6 +473,13 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
         sendType = (Spinner) extendedSendingOptionLayout.findViewById(R.id.sendTypeSpinner);
         messageEditText = (EditText) individualMessageSendLayout.findViewById(R.id.conversation_message);
 
+        // add disabled editText
+        messageEditText.setFocusable(false);
+        messageEditText.setEnabled(false);
+        messageEditText.setCursorVisible(false);
+        messageEditText.setKeyListener(null);
+
+
         messageEditText.setTextColor(Color.parseColor(alCustomizationSettings.getMessageEditTextTextColor()));
 
         messageEditText.setHintTextColor(Color.parseColor(alCustomizationSettings.getMessageEditTextHintTextColor()));
@@ -1175,10 +1182,14 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
 
                 if (channel != null && Channel.GroupType.OPEN.getValue().equals(channel.getType())) {
                     sendOpenGroupMessage(messageEditText.getText().toString().trim());
+
                 } else {
                     sendMessage(messageEditText.getText().toString().trim());
 
                 }
+
+
+
 
               /*  else {
                     if (!messageEditText.getText().toString().trim().contains("maps.google") && channel == null) {
@@ -2540,20 +2551,26 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
 
 
     public void sendMessage(String message, Map<String, String> messageMetaData, FileMeta fileMetas, String fileMetaKeyStrings, short messageContentType) {
-        Log.i("TAG","messageContentType"+ messageContentType);
+        Log.i("TAG","messageMetaData"+ messageMetaData);
 
         MobiComUserPreference userPreferences = MobiComUserPreference.getInstance(getActivity());
         Message messageToSend = new Message();
 
         if (channel != null) {
             messageToSend.setGroupId(channel.getKey());
-            if ( TextUtils.isEmpty(filePath) && messageContentType == Message.ContentType.DEFAULT.getValue()) {
+            if ( TextUtils.isEmpty(filePath) && messageContentType == Message.ContentType.DEFAULT.getValue() && !message.contains("Address")) {
                 concatGroup.loadFFMpegBinary(getContext());
-                concatGroup.sendVideoMessage(getContext(), messageEditText.getText().toString().trim(), String.valueOf(channel.getKey()));
+                concatGroup.sendVideoMessage(getContext(), messageEditText.getText().toString().trim(), messageEditText.getText().toString().trim(), String.valueOf(channel.getKey()));
             }
             if (!TextUtils.isEmpty(channel.getClientGroupId())) {
                 messageToSend.setClientGroupId(channel.getClientGroupId());
             }
+            if (message.contains("maps.google")){
+                messageToSend.setTo(contact.getContactIds());
+                messageToSend.setContactIds(contact.getContactIds());
+                messageToSend.setMessage(message);
+            }
+
             /*   List<String> contactIds = new ArrayList<String>();
             List<String> toList = new ArrayList<String>();
             for (Contact contact : channel.getContacts()) {
@@ -2565,9 +2582,17 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
             messageToSend.setTo(TextUtils.join(",", toList));
             messageToSend.setContactIds(TextUtils.join(",", contactIds));*/
         } else {
-            if ( messageContentType == Message.ContentType.DEFAULT.getValue() && TextUtils.isEmpty(filePath)) {
+            if ( messageContentType == Message.ContentType.DEFAULT.getValue() && TextUtils.isEmpty(filePath) && !message.contains("Address")) {
+                Log.i(TAG, "Testmsgmap "+ true);
+
                 concat.loadFFMpegBinary(getContext());
                 concat.sendVideoMessage(getContext(), messageEditText.getText().toString().trim(), messageEditText.getText().toString().trim(), contact.getContactIds());
+            }
+
+            if (message.contains("maps.google")){
+                messageToSend.setTo(contact.getContactIds());
+                messageToSend.setContactIds(contact.getContactIds());
+                messageToSend.setMessage(message);
             }
 
             messageToSend.setTo(contact.getContactIds());
@@ -2626,6 +2651,7 @@ abstract public class MobiComConversationFragment extends Fragment implements Vi
         if (this.messageMetaData != null && !this.messageMetaData.isEmpty()) {
             messageMetaData.putAll(this.messageMetaData);
         }
+
 
         messageToSend.setMetadata(messageMetaData);
 

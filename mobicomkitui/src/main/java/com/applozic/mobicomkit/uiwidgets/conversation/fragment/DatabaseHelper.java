@@ -113,6 +113,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 }
                 while (cursor.moveToNext());
             }
+            cursor.close();
 
         }
 

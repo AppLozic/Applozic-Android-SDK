@@ -28,6 +28,8 @@ import com.applozic.mobicomkit.uiwidgets.R;
 import com.applozic.mobicomkit.uiwidgets.conversation.ConversationUIService;
 import com.applozic.mobicomkit.uiwidgets.conversation.activity.ConversationActivity;
 import com.applozic.mobicommons.ApplozicService;
+import com.applozic.mobicommons.people.channel.Channel;
+import com.applozic.mobicommons.people.contact.Contact;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
@@ -48,6 +50,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.MultiAutoCompleteTextView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.text.TextWatcher;
@@ -80,9 +83,12 @@ public class text_to_sign extends AppCompatActivity {
     String resultTranslation;
     ArrayList AllCategory;
     String TAG = "text_to_sign";
+    ProgressBar progress;
     public final ConcatWithFFMpeg concat = new ConcatWithFFMpeg();
+    public final ContactFFmpegGroup concatGroup = new ContactFFmpegGroup();
 
-
+    protected Contact contact;
+    protected Channel channel;
     private VideoView videoView;
     ArrayList<String> videoArray = new ArrayList<String>();
     private File myFileVideo;
@@ -98,6 +104,9 @@ public class text_to_sign extends AppCompatActivity {
         Bundle extras = getIntent().getExtras();
         //Get Select item
         final String CONTACT_ID = extras.getString("CONTACT_ID");
+        final String type = extras.getString("type");
+
+        progress = findViewById(R.id.progress);
 
         no_Translation = (TextView) findViewById(R.id.no_traduction);
         no_Translation.setVisibility(View.INVISIBLE);
@@ -128,12 +137,12 @@ public class text_to_sign extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 //call get api server
-               Boolean check =  sendToServer.isChecked();
-               if (check){
-                   new RequestAsync().execute();
-               }else{
-                   localTranslation();
-               }
+                Boolean check = sendToServer.isChecked();
+                if (check) {
+                    new RequestAsync().execute();
+                } else {
+                    localTranslation();
+                }
 
             }
         });
@@ -148,11 +157,13 @@ public class text_to_sign extends AppCompatActivity {
                 translation.setEnabled(true);
                 translation.getBackground().setAlpha(0xFF);
             }
+
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
                 Log.i(TAG, "ChangedListener beforeTextChanged" + s);
                 // TODO Auto-generated method stub
             }
+
             @Override
             public void afterTextChanged(Editable s) {
                 Log.i(TAG, "ChangedListener afterTextChanged" + s);
@@ -175,73 +186,91 @@ public class text_to_sign extends AppCompatActivity {
         sendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                concat.loadFFMpegBinary(text_to_sign.this);
                 String message = videoArray.toString().replaceAll("\\[|\\]|,", "");
 
-                concat.sendVideoMessage(text_to_sign.this, resultTranslation ,inputResult.getText().toString(), CONTACT_ID);
 
-                Intent intent = new Intent(text_to_sign.this, ConversationActivity.class);
-                intent.putExtra(ConversationUIService.USER_ID, CONTACT_ID);
-                intent.putExtra(ConversationUIService.DEFAULT_TEXT, "");
-                intent.putExtra(ConversationUIService.TAKE_ORDER, true); //Skip chat list for showing on back press
-                startActivity(intent);
+                if (type.equals("user")){
+                    concat.loadFFMpegBinary(text_to_sign.this);
+                    concat.sendVideoMessage(text_to_sign.this, resultTranslation, inputResult.getText().toString(), CONTACT_ID);
+
+                    Intent intent = new Intent(text_to_sign.this, ConversationActivity.class);
+                    intent.putExtra(ConversationUIService.USER_ID, CONTACT_ID);
+                    intent.putExtra(ConversationUIService.DEFAULT_TEXT, "");
+                    intent.putExtra(ConversationUIService.TAKE_ORDER, true); //Skip chat list for showing on back press
+                    startActivity(intent);
+                }else if (type.equals("group")){
+                    concatGroup.loadFFMpegBinary(text_to_sign.this);
+                    concatGroup.sendVideoMessage(text_to_sign.this, resultTranslation, inputResult.getText().toString(), CONTACT_ID);
+
+
+                    Intent intent = new Intent(text_to_sign.this, ConversationActivity.class);
+                    intent.putExtra(ConversationUIService.GROUP_ID, CONTACT_ID);
+                    intent.putExtra(ConversationUIService.DEFAULT_TEXT, "");
+                    intent.putExtra(ConversationUIService.TAKE_ORDER, true); //Skip chat list for showing on back press
+                    startActivity(intent);
+                }
             }
         });
 
     }
 
-   private void localTranslation(){
+    private void localTranslation() {
         resultTranslation = "";
-       videoView.setVisibility(View.VISIBLE);
-       contentMsg = inputMsg.getText().toString();
+        videoView.setVisibility(View.VISIBLE);
+        contentMsg = inputMsg.getText().toString();
 
-       resultTranslation = contentMsg;
+        resultTranslation = contentMsg;
 
-       Log.i(TAG, "contentMsg" + contentMsg);
-       final String[] splited = contentMsg.trim().split("\\s+");
-       Log.i(TAG, "splitedcontentMsg" + Arrays.toString(splited));
+        Log.i(TAG, "contentMsg" + contentMsg);
+        final String[] splited = contentMsg.trim().split("\\s+");
+        Log.i(TAG, "splitedcontentMsg" + Arrays.toString(splited));
 
-       for (int i = 0; i < splited.length; i++) {
-           if (AllCategory.contains(splited[i])) {
-               Log.i(TAG, "CheckMsgcontains" + true);
-               videoArray.add(splited[i]);
-           }
-           Log.i(TAG, "CheckvideoArray" + String.valueOf(videoArray));
+        for (int i = 0; i < splited.length; i++) {
+            if (AllCategory.contains(splited[i])) {
+                Log.i(TAG, "CheckMsgcontains" + true);
+                videoArray.add(splited[i]);
+            }
+            Log.i(TAG, "CheckvideoArray" + String.valueOf(videoArray));
 
-       }
+        }
 
-       if (videoArray.size() != 0) {
+        if (videoArray.size() != 0) {
 
-           inputResult.setText(contentMsg);
-           final String path = myFileVideo + "/LSF/video/" + videoArray.get(0) + ".mp4";
-           videoView.setVideoPath(path);
-           videoView.start();
+            inputResult.setText(contentMsg);
+            final String path = myFileVideo + "/LSF/video/" + videoArray.get(0) + ".mp4";
+            videoView.setVideoPath(path);
+            videoView.start();
 
 
-           Log.i(TAG, "CheckvideoArray size " + videoArray.size());
+            Log.i(TAG, "CheckvideoArray size " + videoArray.size());
 
-           videoView.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            videoView.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
 
-               @Override
-               public void onCompletion(MediaPlayer mp) {
-                   for (int i = 0; i < splited.length - 1; i++) {
-                       String path = myFileVideo + "/LSF/video/" + videoArray.get(i) + ".mp4";
-                       Log.i(TAG, "pathofvideo : " + path);
-                       Log.i(TAG, "pathofvideo size: " + splited.length);
-                       videoView.setVideoPath(path);
-                   }
-                   videoView.start();
+                @Override
+                public void onCompletion(MediaPlayer mp) {
+                    for (int i = 0; i < splited.length - 1; i++) {
+                        String path = myFileVideo + "/LSF/video/" + videoArray.get(i) + ".mp4";
+                        Log.i(TAG, "pathofvideo : " + path);
+                        Log.i(TAG, "pathofvideo size: " + splited.length);
+                        videoView.setVideoPath(path);
+                    }
+                    videoView.start();
 
-               }
-           });
+                }
+            });
 
-       } else if (videoArray.size() == 0) {
-           videoView.setVisibility(View.INVISIBLE);
-           no_Translation.setVisibility(View.VISIBLE);
-       }
-   }
+        } else if (videoArray.size() == 0) {
+            videoView.setVisibility(View.INVISIBLE);
+            no_Translation.setVisibility(View.VISIBLE);
+        }
+    }
 
-    class RequestAsync extends AsyncTask<String,String,ArrayList<String>> {
+    class RequestAsync extends AsyncTask<String, String, ArrayList<String>> {
+        @Override
+        protected void onPreExecute() {
+            startProgress();
+        }
+
         @SuppressLint("WrongThread")
         @Override
         protected ArrayList doInBackground(String... strings) {
@@ -251,47 +280,50 @@ public class text_to_sign extends AppCompatActivity {
 
 
             try {
-                 String result = "";
+                String result = "";
 
                 //GET Request
                 for (int i = 0; i < splited.length; i++) {
 
-                    result += splited[i]+ " ";
+                    result += splited[i] + " ";
 
                 }
 
-                return RequestHandler.sendGet(config.url_linguistic_server, "text="+result);
-            }
-            catch(Exception e){
-                Log.e("RequestHandler","Exception: " + e.getMessage());
+                return RequestHandler.sendGet(config.url_linguistic_server, "text=" + result);
+            } catch (Exception e) {
+                Log.e("RequestHandler", "Exception: " + e.getMessage());
                 return null;
             }
         }
 
         @Override
         protected void onPostExecute(ArrayList<String> s) {
-            if(s!=null){
+            String replace = s.toString().replace("[", "");
+            String replace1 = replace.replace("]", "");
+
+
+
+            startProgress();
+            if (s != null && replace1 != "") {
                 resultTranslation = "";
-                Log.i("RequestHandler", "result " + s);
+                Log.i("RequestHandler", "result " + s + "size " + s.size() + s.isEmpty()+ replace1);
                 //Toast.makeText(getApplicationContext(), s, Toast.LENGTH_LONG).show();
-                for (String text : s)
-                {
+                for (String text : s) {
                     resultTranslation += text + "\t";
                     Log.i("RequestHandler", "resultTranslation " + resultTranslation);
                 }
-
                 showVideos(s);
-            }else{
+            } else {
+                stopProgress();
                 videoView.setVisibility(View.INVISIBLE);
                 no_Translation.setVisibility(View.VISIBLE);
             }
         }
     }
 
-    private  void showVideos(final ArrayList outputVid){
+    private void showVideos(final ArrayList outputVid) {
         videoView.setVisibility(View.VISIBLE);
-        // if (videoArray.size() != 0) {
-        Log.i("RequestHandler", "outputVid "+outputVid);
+            Log.i("RequestHandler", "outputVid " + outputVid + outputVid.size() + "firstItem " + outputVid.get(0));
             inputResult.setText(contentMsg);
             final String path = myFileVideo + "/LSF/video/" + outputVid.get(0) + ".mp4";
             videoView.setVideoPath(path);
@@ -304,7 +336,7 @@ public class text_to_sign extends AppCompatActivity {
 
                 @Override
                 public void onCompletion(MediaPlayer mp) {
-                    for (int i = 0; i < outputVid.size() - 1; i++) {
+                    for (int i = 0; i < outputVid.size(); i++) {
                         String path = myFileVideo + "/LSF/video/" + videoArray.get(i) + ".mp4";
                         Log.i(TAG, "pathofvideo : " + path);
                         Log.i(TAG, "pathofvideo size: " + outputVid.size());
@@ -318,6 +350,15 @@ public class text_to_sign extends AppCompatActivity {
             videoView.setVisibility(View.INVISIBLE);
             no_traduction.setVisibility(View.VISIBLE);
         }*/
+    }
+
+    public void startProgress() {
+        progress.setVisibility(View.VISIBLE);
+    }
+
+    public void stopProgress() {
+        progress.setVisibility(View.GONE);
+
     }
 
 }

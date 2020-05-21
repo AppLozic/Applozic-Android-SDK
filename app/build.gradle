@@ -40,7 +40,14 @@ android {
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
 
-    testOptions {
+    /*aaptOptions {
+        ignoreAssetsPattern "!*ffmpeg"
+        ignoreAssetsPattern "!arm"
+        ignoreAssetsPattern "!x86"
+        ignoreAssetsPattern "armeabi-v7a"
+    }*/
+
+        testOptions {
         unitTests.includeAndroidResources true
     }
 

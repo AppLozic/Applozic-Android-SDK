@@ -238,6 +238,9 @@
     <string name="noSearchFoundForChatMessages">No conversation found</string>
     <string name="restrictedWordMessage">Restricted words are not allowed</string>
 
+    <string name="text_alert">Alert</string>
+    <string name="words_noexist">Word does not exist</string>
+
 
 
 

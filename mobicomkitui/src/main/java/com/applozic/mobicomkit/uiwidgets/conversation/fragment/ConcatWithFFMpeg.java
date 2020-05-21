@@ -1,7 +1,9 @@
 package com.applozic.mobicomkit.uiwidgets.conversation.fragment;
 
+import android.app.AlertDialog;
 import android.app.Application;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Environment;
@@ -12,6 +14,7 @@ import android.widget.Toast;
 
 import com.applozic.mobicomkit.api.conversation.Message;
 import com.applozic.mobicomkit.api.conversation.MessageBuilder;
+import com.applozic.mobicomkit.uiwidgets.R;
 import com.applozic.mobicommons.people.contact.Contact;
 import com.github.hiteshsondhi88.libffmpeg.ExecuteBinaryResponseHandler;
 import com.github.hiteshsondhi88.libffmpeg.FFmpeg;
@@ -97,7 +100,19 @@ public class ConcatWithFFMpeg extends AppCompatActivity {
                 SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
                 preferences.edit().remove(contact).commit();
             } else {
-                Toast.makeText(context, "words does not exists", Toast.LENGTH_SHORT).show();
+               // Toast.makeText(context, "words does not exists", Toast.LENGTH_SHORT).show();
+                int style = context.getResources().getIdentifier("AlertDialogStyle", "style", getPackageName());
+
+                AlertDialog alertDialog = new AlertDialog.Builder(context, style).create();
+                alertDialog.setTitle(context.getResources().getString(R.string.text_alert));
+                alertDialog.setMessage(context.getResources().getString(R.string.words_noexist));
+                alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, context.getResources().getString(R.string.ok_alert),
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        });
+                alertDialog.show();
             }
         } else {
 

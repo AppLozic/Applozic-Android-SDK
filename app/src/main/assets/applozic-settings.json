@@ -33,7 +33,6 @@
   "userNotAbleToChatTextColor": "#000000",
   "audioPermissionNotFoundMsg": "",
   "noConversationLabel": "You have no conversations",
-  "fff" : resources.openRawResource()
   "noSearchFoundForChatMessages": "No conversation found",
   "disableGlobalStoragePermission": false,
   "enableMessageFastScroll": false,

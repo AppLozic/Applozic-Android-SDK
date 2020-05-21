@@ -111,9 +111,10 @@ public class DownloadDictionary extends AppCompatActivity {
 
         AWSMobileClient.getInstance().initialize(this).execute();
 
+
         videoView = (VideoView) findViewById(R.id.VideoView);
+
         progressBar = (ProgressBar) findViewById(R.id.progressBar_storage);
-        progressBar.setVisibility(View.INVISIBLE);
 
 
         Intent intent = getIntent();
@@ -121,11 +122,11 @@ public class DownloadDictionary extends AppCompatActivity {
         Map<String, AttributeValue> data = (HashMap<String, AttributeValue>) intent.getSerializableExtra("tag");
 
         result = data;
-        videoView.setVisibility(View.INVISIBLE);
-        Log.i(TAG,"dataTags"+ data);
+        Log.i(TAG, "dataTags" + data);
         //dataTags{tag={S: LSF,}, size={N: 0,}, status={N: 1,}, hash={S: [B@aaaa50,}, id={N: 0,}, length={N: 0,}}
         // check if space device available
         CheckFreeMemory(data);
+        startProgress();
     }
 
     // Calculate available espace storage
@@ -145,11 +146,11 @@ public class DownloadDictionary extends AppCompatActivity {
         // test
         if (Long.parseLong(data.get("size").getN()) <= megAvailable) {
             //if space exists then download
-             proceed(data.get("tag").getS()+".json");
+            proceed(data.get("tag").getS() + ".json");
         } else {
             //details.setText("Oups ! espace requise non disponible");
-            videoView.setVisibility(View.INVISIBLE);
-            progressBar.setVisibility(View.INVISIBLE);
+
+            stopProgress();
             AlertDialog alertDialog = new AlertDialog.Builder(DownloadDictionary.this, R.style.AlertDialogStyle).create();
             alertDialog.setTitle(getString(R.string.text_alert));
             alertDialog.setMessage(getString(R.string.checkSpace));
@@ -163,13 +164,26 @@ public class DownloadDictionary extends AppCompatActivity {
         }
     }
 
+    public void startProgress() {
+        progressBar.setVisibility(View.VISIBLE);
+        videoView.setVisibility(View.VISIBLE);
+        videoView.setVideoURI(Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.intro));
+        videoView.start();
+
+    }
+
+    public void stopProgress() {
+        progressBar.setVisibility(View.GONE);
+        videoView.setVisibility(View.GONE);
+
+    }
 
     //    ReadFile(new File(config.videopath + fileName + "/" + fileName + ".json"), fileName, size);
     // Parsing json and store in DB
     public void ReadFile(String file) {
         try {
-          //  final File myFile = new File(getExternalFilesDir(config.videopath),file);
-            final File myFile = new File(getExternalFilesDir(config.videopath)+"/"+result.get("tag").getS()+"/",file);
+            //  final File myFile = new File(getExternalFilesDir(config.videopath),file);
+            final File myFile = new File(getExternalFilesDir(config.videopath) + "/" + result.get("tag").getS() + "/", file);
 
 
             Log.i(TAG, "myFile ReadFile" + myFile);
@@ -186,22 +200,24 @@ public class DownloadDictionary extends AppCompatActivity {
                 stream.close();
             }
             JSONArray jsonArry = new JSONArray(jsonStr);
-            Log.i(TAG, "***jsonObjjjjj***  " + jsonArry +jsonArry.length());
+            Log.i(TAG, "***jsonObjjjjj***  " + jsonArry + jsonArry.length());
             //[{"name":"chiffre","category":"List"},{"name":"zero","category":"chiffre"},{"name":"1","category":"chiffre"},{"name":"2","category":"chiffre"},{"name":"3","category":"chiffre"}]
             for (int i = 0; i < jsonArry.length(); i++) {
-               // for (int j = 0; j < jsonArry.getJSONObject(i).length(); j++) {
+                // for (int j = 0; j < jsonArry.getJSONObject(i).length(); j++) {
 
-                    JSONObject e = jsonArry.getJSONObject(i);
-                    Log.i(TAG, "jsonArry.getJSONObject(i)" +jsonArry.getJSONObject(i));
-                    Log.i(TAG, "ejsonArry " + e + jsonArry.getJSONObject(i).length());
-                    //{"name":"chiffre","category":"List"}
-                    //call download video
-                    proceed("video/" + e.getString("name") + ".mp4");
+                JSONObject e = jsonArry.getJSONObject(i);
+                Log.i(TAG, "jsonArry.getJSONObject(i)" + jsonArry.getJSONObject(i));
+                Log.i(TAG, "ejsonArry " + e + jsonArry.getJSONObject(i).length());
+                //{"name":"chiffre","category":"List"}
+                //call download video
+                proceed("video/" + e.getString("name") + ".mp4");
 
-                    helper.insert(e.getString("name"), e.getString("category"), 1);
-                    Log.i(TAG, "MyInsert " + e.getString("name") + e.getString("category"));
+                helper.insert(e.getString("name"), e.getString("category"), 1);
+                Log.i(TAG, "MyInsert " + e.getString("name") + e.getString("category"));
                 //}
             }
+            Log.i(TAG, "test"+ "hello");
+
             //get folder size
             /*long FolderSize = getFileFolderSize(new File(config.videopath));
 
@@ -328,13 +344,13 @@ public class DownloadDictionary extends AppCompatActivity {
     // get size folder in internal storage
     public long getFileFolderSize(File dir) {
         File myFile = new File(getExternalFilesDir(String.valueOf(dir)), "");
-        Log.i(TAG,"getFileFolderSize"+ myFile);
+        Log.i(TAG, "getFileFolderSize" + myFile);
         long size = 0;
         if (myFile.isDirectory()) {
             for (File file : myFile.listFiles()) {
                 //if (file.isFile()) {
-                    size += file.length();
-               // }
+                size += file.length();
+                // }
             }
         }
         return size * 1000;
@@ -343,8 +359,8 @@ public class DownloadDictionary extends AppCompatActivity {
     public void goConversation() {
 
         Intent intent = new Intent(DownloadDictionary.this, ConversationActivity.class);
-        startActivity(intent);
-        //finish();
+        DownloadDictionary.this.startActivity(intent);
+       // DownloadDictionary.this.finish();
     }
 
     private void proceed(final String file) {
@@ -398,7 +414,7 @@ public class DownloadDictionary extends AppCompatActivity {
             public void getAuthenticationDetails(AuthenticationContinuation authenticationContinuation, String userId) {
                 Log.i(TAG, " Not logged in! using identity pool credentials for guest user");
 
-               // performAction(action);
+                // performAction(action);
                 downloadWithTransferUtility(file);
             }
 
@@ -442,7 +458,7 @@ public class DownloadDictionary extends AppCompatActivity {
 
     private void downloadWithTransferUtility(final String file) {
 
-        final File myFile = new File(getExternalFilesDir(config.videopath)+"/"+result.get("tag").getS()+"/",file);
+        final File myFile = new File(getExternalFilesDir(config.videopath) + "/" + result.get("tag").getS() + "/", file);
 
         //details.setText("Vérification du fichier existe ou non ");
         if (myFile.exists()) {
@@ -455,13 +471,14 @@ public class DownloadDictionary extends AppCompatActivity {
         try {
             /*need to clear cached files at some stage*/
             //final File myFile = new File(Environment.getExternalStorageDirectory(),"bonjour.mp4");
-            Log.i(TAG,"MyFile downloadWithTransferUtility" + myFile.getAbsolutePath());
+            Log.i(TAG, "MyFile downloadWithTransferUtility" + myFile.getAbsolutePath());
 
             TransferUtility transferUtility =
                     TransferUtility.builder()
                             .context(getApplicationContext())
                             .awsConfiguration(AWSMobileClient.getInstance().getConfiguration())
                             .s3Client(s3Client)
+                            //.s3Client(new AmazonS3Client(AWSMobileClient.getInstance().getCredentialsProvider()))
                             .build();
 
             TransferObserver downloadObserver =
@@ -471,22 +488,16 @@ public class DownloadDictionary extends AppCompatActivity {
 
             // Attach a listener to the observer to get state update and progress notifications
             downloadObserver.setTransferListener(new TransferListener() {
-
                 @Override
                 public void onStateChanged(int id, TransferState state) {
                     if (TransferState.COMPLETED == state) {
                         // Handle a completed upload.
-                        progressBar.setVisibility(View.INVISIBLE);
-                        if (file.contains(".json")){
-                            Log.i(TAG,"file .json");
-                            ReadFile(file);
-                        }
                         Log.i(TAG, "state change, file complete");
+
                     }
                 }
                 @Override
                 public void onProgressChanged(int id, long bytesCurrent, long bytesTotal) {
-                    progressBar.setVisibility(View.VISIBLE);
                     float percentDonef = ((float) bytesCurrent / (float) bytesTotal) * 100;
                     int percentDone = (int) percentDonef;
                     Log.i(TAG, "   ID:" + id + "   bytesCurrent: "
@@ -507,12 +518,16 @@ public class DownloadDictionary extends AppCompatActivity {
 
     private class RefreshAsyncTask extends AsyncTask<String, Void, String> {
 
-       /* @Override
-        protected String doInBackground(Integer... integers) {
-            Log.i(TAG, "in asynctask doInBackground()");
-            credentialsProvider.refresh();
-           // return integers[0];
-        }*/
+        /* @Override
+         protected String doInBackground(Integer... integers) {
+             Log.i(TAG, "in asynctask doInBackground()");
+             credentialsProvider.refresh();
+            // return integers[0];
+         }*/
+        @Override
+        protected void onPreExecute() {
+         //   startProgress();
+        }
 
         @Override
         protected String doInBackground(String... strings) {
@@ -523,10 +538,18 @@ public class DownloadDictionary extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(String file) {
+            stopProgress();
             Log.i(TAG, "in asynctask onPostExecute()");
+            String extension = file.substring(file.lastIndexOf("."));
 
             //downloadWithTransferUtility(file);
-            if (!file.contains(".json")) {
+            if (extension.equals(".json")) {
+                Log.i(TAG,"contains  "+ "file .json" +extension);
+                ReadFile(file);
+            }
+
+            if (!extension.equals(".json") ) {
+                Log.i(TAG,"contains no  "+ "file .json" + extension);
                 //get folder size
                 long FolderSize = getFileFolderSize(new File(config.videopath));
 
@@ -540,8 +563,12 @@ public class DownloadDictionary extends AppCompatActivity {
                     helper.insertInConfig(Long.parseLong(size), FolderSize);
                     //go intent conversation
                     goConversation();
+                } else {
+                    //redowload
+                    //CheckFreeMemory(result);
                 }
             }
+
         }
     }
 }

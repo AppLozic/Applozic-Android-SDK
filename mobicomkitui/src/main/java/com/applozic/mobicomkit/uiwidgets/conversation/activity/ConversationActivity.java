@@ -395,6 +395,7 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
         }
 
         mActionBar = getSupportActionBar();
+
         if (!TextUtils.isEmpty(alCustomizationSettings.getThemeColorPrimary()) && !TextUtils.isEmpty(alCustomizationSettings.getThemeColorPrimaryDark())) {
             mActionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor(alCustomizationSettings.getThemeColorPrimary())));
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -446,8 +447,9 @@ public class ConversationActivity extends AppCompatActivity implements MessageCo
         InstructionUtil.showInfo(this, R.string.info_message_sync, BroadcastService.INTENT_ACTIONS.INSTRUCTION.toString());
 
         setToolbarTitle(getString(R.string.conversations));
-        mActionBar.setDisplayHomeAsUpEnabled(true);
-        mActionBar.setHomeButtonEnabled(true);
+
+           mActionBar.setDisplayHomeAsUpEnabled(false);
+           mActionBar.setHomeButtonEnabled(true);
 
         googleApiClient = new GoogleApiClient.Builder(getApplicationContext())
                 .addConnectionCallbacks(this)

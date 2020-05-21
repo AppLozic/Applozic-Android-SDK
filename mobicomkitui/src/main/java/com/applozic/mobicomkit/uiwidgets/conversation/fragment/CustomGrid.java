@@ -31,10 +31,11 @@ public class CustomGrid extends BaseAdapter {
     Config config = new Config();
     private File myFile;
     private String CONTACT_ID;
+    private String Type;
 
     //private final int[] gridViewImageId;
 
-    public CustomGrid(Context context,String CONTACT_ID, ArrayList<String> gridViewString) {
+    public CustomGrid(Context context,String CONTACT_ID,String Type, ArrayList<String> gridViewString) {
         mContext = context;
         File myFile = new File(mContext.getExternalFilesDir(config.videopath), "LSF");
 
@@ -42,6 +43,7 @@ public class CustomGrid extends BaseAdapter {
         this.gridViewString = gridViewString;
         this.myFile = myFile;
         this.CONTACT_ID = CONTACT_ID;
+        this.Type = Type;
     }
 
     @Override
@@ -80,6 +82,8 @@ public class CustomGrid extends BaseAdapter {
                     Intent intent = new Intent(mContext, details_sign_to_text.class);
                     intent.putExtra("subCategory", gridViewString.get(i));
                     intent.putExtra("CONTACT_ID", CONTACT_ID);
+                    intent.putExtra("type", Type);
+
                     mContext.startActivity(intent);
 
 

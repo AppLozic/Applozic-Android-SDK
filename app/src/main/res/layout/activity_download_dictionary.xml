@@ -42,6 +42,7 @@
         android:layout_marginTop="100dip"
         android:layout_centerInParent="true"
         android:layout_marginEnd="24dp"
+        android:visibility="gone"
         android:layout_marginRight="24dp" />
 
 
@@ -58,6 +59,7 @@
         android:indeterminate="true"
         android:progressDrawable="@drawable/green_progress"
         tools:layout_editor_absoluteX="0dp"
+        android:visibility="gone"
         tools:layout_editor_absoluteY="0dp" />
 
 </RelativeLayout>
