@@ -1,4 +1,4 @@
-Android Chat SDK
+Android Chat SDK Project
 
 ### Overview         
 
